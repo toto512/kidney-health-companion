@@ -1,0 +1,19 @@
+name = "kidney-food-lookup"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+# Secret, never committed: set with `npx wrangler secret put FDC_API_KEY`.
+[vars]
+ALLOWED_ORIGIN = "https://health.carciente.ca"
+
+# Approximate per-location limit, keyed by client IP (see README for caveats).
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1001"
+
+  [ratelimits.simple]
+  limit = 30
+  period = 60
+
+[observability]
+enabled = true

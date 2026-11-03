@@ -14,3 +14,5 @@ Exception: the "Check a food" online search sends the typed food name to the foo
 - `guides/*.html`: clinical reference documents shown in the guide viewer.
 
 Modules and `fetch` need an HTTP origin: `python3 -m http.server` for local work. Opening `index.html` from `file://` will not load the food list. A Capacitor web view serves from an HTTP(S) origin, so it is unaffected.
+
+If a search returns nothing, the typed text may also be sent to the Wikipedia search API for a spelling suggestion. See `privacy.html` for what is stored, what leaves the device, and the PHIPA/PIPEDA notes (marked as inference, not legal advice).

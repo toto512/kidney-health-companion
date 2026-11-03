@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Safety and privacy | My Health App</title>
+<style>
+:root{--ink:#16313a;--muted:#4d6269;--line:#dce7e4;--bg:#f4f8f7;--green:#17745f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:760px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:28px;line-height:1.25}h2{font-size:21px;margin-top:36px}
+a{color:#0b5f4d}
+table{width:100%;border-collapse:collapse;font-size:15px;background:#fff}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.note{background:#fff2d8;border:1px solid #e3c98f;border-radius:10px;padding:12px 14px}
+.inf{color:var(--muted)}
+.back{display:inline-block;margin-bottom:12px}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="./">&larr; Back to the app</a>
+<h1>Safety and privacy</h1>
+<p>Last updated: 2026-11-03.</p>
+
+<h2 id="disclaimer">Medical disclaimer</h2>
+<p class="note">This app gives general reference information only. It is not medical advice, diagnosis or treatment, and it does not replace your nephrologist, physician or renal dietitian. Do not change your diet, medicines or treatment based on this app without asking your care team. For urgent symptoms, contact your local emergency number or your care team.</p>
+<ul>
+<li>Food flags (green, amber, red, "needs more information") come from a short built-in reference list and from published food composition data. They are not personal safety ratings. Potassium and phosphorus limits depend on your labs and care plan.</li>
+<li><b>Unknown does not mean safe.</b> When a nutrient value is missing, the app shows it as not listed. A missing value is not zero and is not treated as low.</li>
+<li>Every nutrient value shows its source. Online reference values show the date they were retrieved. Values can be out of date, differ by brand and preparation, or be wrong in the source. Check the package label.</li>
+<li>Health log status labels (for example blood pressure ranges) are generic bands. They are not a diagnosis.</li>
+</ul>
+
+<h2 id="stored">What is stored on your device</h2>
+<p>The app has no account and no server-side profile. It stores data in this browser's <code>localStorage</code>, under the key <code>kidney-health-web-v1</code>, plus one display preference (<code>kidneyHealthEasyRead</code>). The data is not encrypted by the app, is not synced, and is readable by anyone who can use this browser profile or has access to the device backup.</p>
+<table>
+<thead><tr><th>Data</th><th>Fields</th></tr></thead>
+<tbody>
+<tr><td>Personal details</td><td>Name, username, phone, age, height, weight, health history (conditions)</td></tr>
+<tr><td>Care team</td><td>First and last name, relationship or role, phone number</td></tr>
+<tr><td>Medications</td><td>Medication name, dose, schedule (free text you enter)</td></tr>
+<tr><td>Health log</td><td>eGFR, serum urate, blood pressure readings with dates; urate goal</td></tr>
+<tr><td>Saved foods</td><td>Package values you enter or copy from an online reference, serving size, ingredient notes, source name, and the date saved</td></tr>
+</tbody>
+</table>
+<p><b>Delete it:</b> My profile, "Clear all information saved here" removes the data above from this browser. Clearing the site's data in your browser settings does the same.</p>
+
+<h2 id="leaves">What leaves your device</h2>
+<ul>
+<li><b>Food name searches.</b> When you use "Search online food data", the food name you typed is sent to this app's food lookup service (a Cloudflare Worker), which queries USDA FoodData Central and, as a fallback, Open Food Facts. No profile, medication or health log data is sent.</li>
+<li><b>Spelling suggestions.</b> If a search returns nothing, the same typed text may be sent to Wikipedia's search API to get a spelling suggestion.</li>
+<li><b>Network metadata.</b> Normal web requests expose your IP address and browser details to the hosting provider, the lookup service (which uses the IP for rate limiting), and the third-party sources above. Inference: the lookup service code does not log or store queries, but the hosting providers may keep their own request logs under their own policies.</li>
+<li><b>No analytics, advertising or tracking scripts</b> are included in the app (checked in the source of <code>index.html</code> on 2026-11-03).</li>
+<li>Do not type your name, diagnosis or other personal details into the food search box.</li>
+</ul>
+
+<h2 id="risks">Limits and risks</h2>
+<ul>
+<li>Unencrypted local storage: anyone with access to the unlocked device or browser profile can read the data. Use a device passcode. Avoid shared or public computers.</li>
+<li>No backup and no recovery: clearing browser data, uninstalling, or a storage error deletes the data.</li>
+<li>Printing the page can put health data on paper or in print spoolers.</li>
+</ul>
+
+<h2 id="law">Canadian privacy law (PHIPA and PIPEDA)</h2>
+<p class="note">This section is not legal advice. Everything below is <b>Inference:</b> and has not been reviewed by a lawyer or privacy officer or checked against the statute text. Get a review before store submission.</p>
+<ul class="inf">
+<li><b>Inference:</b> Ontario's PHIPA mainly regulates "health information custodians" (for example clinics, hospitals, pharmacies) and their agents. An app that holds only data you enter about yourself, on your own device, and that is not operated for a custodian, is probably not a custodian. This changes if a clinic, dietitian or other custodian distributes or uses the app with patient data, or if data is ever transferred to a server.</li>
+<li><b>Inference:</b> PIPEDA applies to personal information collected, used or disclosed in the course of commercial activity. While the operator collects no health data (it stays on the device), exposure is limited to network metadata such as IP addresses at the lookup service. An IP address can be personal information. If the app is monetized, or accounts, sync, crash reporting or analytics are added, PIPEDA obligations (consent, purpose limitation, safeguards, access and breach reporting) need a fresh review. Health information is generally treated as sensitive, which raises the consent standard.</li>
+<li><b>Inference:</b> Quebec (Law 25) and other provinces have their own rules, and the Apple and Google store listings require their own privacy declarations (Apple privacy details, Google Play Data safety form, and a public privacy policy URL). Complete those from the "What leaves your device" list above.</li>
+<li><b>Inference:</b> Data residency: the lookup service and the sources are outside Ontario or Canada in whole or in part, but only food names and network metadata cross to them.</li>
+</ul>
+
+<h2 id="contact">Contact</h2>
+<p>[Operator contact to be added before store submission.]</p>
+</main>
+</body>
+</html>

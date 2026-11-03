@@ -1,4 +1,7 @@
-name: Deploy static site to GitHub Pages
+name: Publish site to gh-pages branch
+
+# No third-party actions: the repo only allows actions owned by toto512.
+# Pages source must be set to "Deploy from a branch" > gh-pages > / (root).
 
 on:
   push:
@@ -6,37 +9,33 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  publish:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      FILES: index.html manifest.webmanifest icon.svg apple-touch-icon.png .nojekyll
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - name: Stage publishable files only
+      - name: Publish allow-listed files to gh-pages
         run: |
-          mkdir _site
-          cp index.html manifest.webmanifest icon.svg apple-touch-icon.png .nojekyll _site/
-      - name: Upload site artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          set -euo pipefail
+          REMOTE="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git init -q src
+          git -C src fetch -q --depth 1 "$REMOTE" "$GITHUB_SHA"
+          git -C src checkout -q FETCH_HEAD
+          mkdir site
+          for f in $FILES; do cp "src/$f" site/; done
+          cd site
+          git init -q -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Publish ${GITHUB_SHA}"
+          git push -q --force "$REMOTE" gh-pages

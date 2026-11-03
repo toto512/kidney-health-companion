@@ -90,6 +90,23 @@ test('falls back to OFF when USDA errors', async () => {
   assert.equal(res.status, 200);
 });
 
+test('does not cache results produced after a partial upstream failure', async () => {
+  fdcResponse = () => new Response('x', { status: 500 });
+  offResponse = () => Response.json({ products: [{ code: '9', product_name: 'Soup', nutriments: { proteins_100g: 3 } }] });
+  const first = await worker.fetch(req('/api/food?q=soup'), env(), ctx);
+  assert.equal(first.headers.get('Cache-Control'), 'no-store');
+  assert.equal(calls.length, 2);
+  await worker.fetch(req('/api/food?q=soup'), env(), ctx);
+  assert.equal(calls.length, 4);
+  // USDA empty and OFF failing must not cache an empty result either.
+  calls.length = 0;
+  fdcResponse = () => Response.json({ foods: [] });
+  offResponse = () => new Response('x', { status: 503 });
+  await worker.fetch(req('/api/food?q=beans'), env(), ctx);
+  await worker.fetch(req('/api/food?q=beans'), env(), ctx);
+  assert.equal(calls.length, 4);
+});
+
 test('502 when both sources fail; empty result is 200 with no foods', async () => {
   fdcResponse = () => new Response('x', { status: 500 });
   offResponse = () => new Response('x', { status: 503 });

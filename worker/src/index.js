@@ -188,10 +188,14 @@ async function lookup(q, env) {
   if (!foods.length && errors.length === 2) throw new UpstreamError('all sources failed');
   const sources = [...new Set(foods.map((f) => f.source))].map((s) => ATTRIBUTION[s]);
   return {
-    query: q,
-    foods,
-    attribution: sources,
-    note: 'Values are per 100 g as published by the listed source. A null value means the source did not provide it.',
+    // Any upstream failure means the result may be incomplete or lower quality; do not cache it.
+    degraded: errors.length > 0,
+    payload: {
+      query: q,
+      foods,
+      attribution: sources,
+      note: 'Values are per 100 g as published by the listed source. A null value means the source did not provide it.',
+    },
   };
 }
 
@@ -231,15 +235,19 @@ export default {
       return res;
     }
 
-    let payload;
+    let result;
     try {
-      payload = await lookup(q, env);
+      result = await lookup(q, env);
     } catch {
       return json({ error: 'Food data sources are unavailable. Try again later.' }, 502, allowed);
     }
+    const { payload, degraded } = result;
     const ttl = payload.foods.length ? CACHE_TTL_S : CACHE_TTL_EMPTY_S;
-    const res = json(payload, 200, allowed, { 'Cache-Control': `public, max-age=${ttl}`, 'X-Cache': 'MISS' });
-    ctx.waitUntil(cache.put(cacheKey, res.clone()));
+    const res = json(payload, 200, allowed, {
+      'Cache-Control': degraded ? 'no-store' : `public, max-age=${ttl}`,
+      'X-Cache': 'MISS',
+    });
+    if (!degraded) ctx.waitUntil(cache.put(cacheKey, res.clone()));
     return res;
   },
 };

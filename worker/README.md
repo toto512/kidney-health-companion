@@ -33,7 +33,7 @@ Status codes: 400 invalid query, 403 origin not allowed, 404 path, 405 method, 4
 
 - CORS: only `ALLOWED_ORIGIN` (`https://health.carciente.ca`, set in `wrangler.toml`). Requests with any other or no `Origin` header get 403. Inference: the Capacitor store apps will send a different origin (for example `https://localhost` or `capacitor://localhost`), so extend this check when the native wrapper is built.
 - Rate limit: Workers Rate Limiting binding, 30 requests per 60 s per client IP, per Cloudflare location. Cloudflare documents these limits as approximate ("Requests can exceed this threshold"). Shared mobile/CGNAT IPs can be throttled together.
-- Cache: Cache API, keyed on the lowercased normalized query, 24 h for hits, 10 min for empty results, checked after the rate limit. Failures are never cached. The cache is per Cloudflare location.
+- Cache: Cache API (custom domain or route only, see deploy step 6), keyed on the lowercased normalized query, 24 h for hits, 10 min for empty results, checked after the rate limit. Results produced after any upstream failure (partial or total) are never cached and are sent with `Cache-Control: no-store`. The cache is per Cloudflare location.
 - The FDC key is sent in the `X-Api-Key` header, never in a URL, and never returned to the client.
 
 ## Deploy (not done from this repo's CI)
@@ -52,7 +52,7 @@ Requires your Cloudflare account.
      routes = [{ pattern = "food-api.carciente.ca", custom_domain = true }]
      ```
      and redeploy.
-   - Or use the `*.workers.dev` URL printed by deploy: change `FOOD_API_URL` and the CSP host in `index.html` to it.
+   - Or use the `*.workers.dev` URL printed by deploy: change `FOOD_API_URL` and the CSP host in `index.html` to it. Cloudflare's Cache docs: "Workers deployed to custom domains have access to functional cache operations." Inference: on `*.workers.dev` the Cache API does not cache, so every request that passes the rate limiter reaches USDA/OFF and counts against the FDC quota. Prefer the custom domain.
 7. Verify: `curl -H "Origin: https://health.carciente.ca" "https://<worker-host>/api/food?q=rice"`.
 
 Rate limiter `namespace_id` ("1001") must be unique within your account; change it if taken.
@@ -63,4 +63,4 @@ Rate limiter `namespace_id` ("1001") must be unique within your account; change 
 
 ## Attribution
 
-USDA FoodData Central data is public domain (CC0 1.0). Open Food Facts data is under ODbL 1.0; keep the attribution returned in `attribution` visible wherever OFF values are shown. Inference: the current UI shows the source name per result but not the licence text; add it before store release if OFF results are shown.
+USDA FoodData Central data is public domain (CC0 1.0). Open Food Facts data is under ODbL 1.0; keep the attribution returned in `attribution` visible wherever OFF values are shown. The UI shows the `attribution` entries (name and licence) with each result list and stores them with saved references.

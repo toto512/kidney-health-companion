@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>NephroRheum: CKD 4, Gout & Hypertension Dietary Advisor</title>
+  <!-- Tailwind CSS -->
+  
+  <!-- Lucide Icons -->
+  
+  
+  <style>
+    /* Custom scrollbars and tap highlights */
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+    /* Safe-area insets for modern mobile iPhones / Android notches */
+    .safe-top {
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 16px);
+    }
+  </style>
+<style>*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{margin:0;min-width:320px;background:#f4f8f7;color:#16313a;font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;overflow-wrap:anywhere}header{position:static!important;background:#fff!important;color:#16313a!important;border-bottom:1px solid #dce7e4;padding:14px!important}main{display:block!important;width:100%!important;max-width:1050px!important;margin:auto!important;padding:14px!important}section,article{display:block!important;min-width:0;background:#fff;border:1px solid #dce7e4;border-radius:14px;padding:15px;margin:12px 0}h1,h2,h3,h4{color:#16313a;line-height:1.35}a{color:#176b70;overflow-wrap:anywhere}button,input,select{font:inherit;max-width:100%;min-height:44px}table{display:block;max-width:100%;overflow-x:auto}#foodDetailModal,#clinicalNoticeModal{display:none!important}.dark{background:#f4f8f7!important;color:#16313a!important}@media(max-width:600px){main{padding:10px!important}section,article{padding:12px;margin:9px 0}[class*="grid-cols-"]{display:grid!important;grid-template-columns:minmax(0,1fr)!important}.flex{flex-wrap:wrap}.overflow-x-auto{overflow-x:auto;max-width:100%}header .h-16{height:auto;min-height:56px;gap:8px}.text-lg{font-size:17px}}</style></head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans antialiased transition-colors duration-200">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo / Clinical Title -->
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-sky-500/20">
+            <i data-lucide="shield-alert" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="font-bold text-lg leading-tight tracking-tight text-slate-900 dark:text-white">NephroRheum</span>
+              <span class="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-200 dark:border-sky-800">Rx Clinical</span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400">CKD Stage 4 • Gout • Hypertension</p>
+          </div>
+        </div>
+
+        <!-- Controls (Theme Toggle & Info Modal trigger) -->
+        <div class="flex items-center space-x-2">
+          <button id="themeToggleBtn" aria-label="Toggle theme" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all">
+            <i id="themeIcon" data-lucide="moon" class="w-4 h-4"></i>
+          </button>
+          <button onclick="openModal('clinicalNoticeModal')" class="flex items-center space-x-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 transition-all">
+            <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-500"></i>
+            <span class=" sm:inline">Clinical Caveat</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5">
+
+    <!-- URGENT CLINICAL CONFLICT ALERT BANNER -->
+    <section class="mb-6 rounded-2xl bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 dark:from-amber-950/40 dark:via-orange-950/30 dark:to-amber-950/40 border border-amber-200 dark:border-amber-800/60 p-4 sm:p-5 shadow-sm">
+      <div class="flex items-start gap-3.5">
+        <div class="p-2 rounded-xl bg-amber-500/20 text-amber-700 dark:text-amber-400 shrink-0">
+          <i data-lucide="alert-octagon" class="w-6 h-6"></i>
+        </div>
+        <div class="flex-1 text-sm text-slate-700 dark:text-slate-300">
+          <h2 class="font-bold text-amber-900 dark:text-amber-300 text-base mb-1">Critical Triad Clinical Intersection Caution</h2>
+          <p class="leading-relaxed">
+            Standard treatments conflict: The DASH diet lowers blood pressure via high potassium, but in <strong>CKD Stage 4 (eGFR 15–29)</strong>, impaired clearance can provoke fatal hyperkalemia. Furthermore, "Lite Salt" or potassium chloride substitutes are contraindicated, and excessive plant legumes used to substitute red meat in gout must be tracked for phosphorus and potassium load.
+          </p>
+          <div class="mt-2.5 flex flex-wrap gap-2 text-xs">
+            <span class="px-2.5 py-1 rounded-full font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200">No "Lite Salt" / KCl</span>
+            <span class="px-2.5 py-1 rounded-full font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200">Zero Starfruit (Caramboxin)</span>
+            <span class="px-2.5 py-1 rounded-full font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200">Strict Phosphate Additive Ban</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUICK CHECK: CAN I EAT THIS? (HERO TOOL) -->
+    <section class="mb-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-4 sm:p-6 transition-colors">
+      <div class="max-w-2xl mx-auto text-center mb-5">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 text-xs font-semibold mb-2 border border-sky-200 dark:border-sky-800">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Interactive Evaluator
+        </div>
+        <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">"Can I Eat This?" 3-Condition Triage</h2>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Instant traffic-light safety breakdown across CKD 4, Gout, and High Blood Pressure.</p>
+      </div>
+
+      <div class="max-w-xl mx-auto space-y-3">
+        <div class="relative">
+          <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+          <input 
+            type="text" 
+            id="quickCheckInput" 
+            placeholder="Type a food (e.g., Bananas, Cherries, Beer, Salmon, Spinach, Colas)..."
+            class="w-full pl-12 pr-10 py-3.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all placeholder:text-slate-400"
+            autocomplete="off"
+          />
+          <button id="clearSearchBtn" class=" absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Quick pill shortcuts -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs no-scrollbar">
+          <span class="text-slate-400 dark:text-slate-500 shrink-0 font-medium mr-1">Try:</span>
+          <button onclick="setSearchTerm('Bananas')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 shrink-0 font-medium transition-colors">🍌 Bananas</button>
+          <button onclick="setSearchTerm('Cherries')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 shrink-0 font-medium transition-colors">🍒 Cherries</button>
+          <button onclick="setSearchTerm('Dark Colas')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 shrink-0 font-medium transition-colors">🥤 Colas</button>
+          <button onclick="setSearchTerm('Beer')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 shrink-0 font-medium transition-colors">🍺 Beer</button>
+          <button onclick="setSearchTerm('Starfruit')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 shrink-0 font-medium transition-colors">⭐ Starfruit</button>
+          <button onclick="setSearchTerm('Garlic')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 shrink-0 font-medium transition-colors">🧄 Garlic</button>
+        </div>
+
+        <!-- Live Quick Check Output Card (Appears dynamically) -->
+        <div id="quickCheckCard" class=" mt-4 p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40">
+          <div class="flex items-start justify-between">
+            <div>
+              <h3 id="qcTitle" class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"></h3>
+              <p id="qcCategory" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5"></p>
+            </div>
+            <a id="qcResearchLink" href="#" target="_blank" rel="noopener noreferrer" class="text-xs flex items-center gap-1 text-sky-600 dark:text-sky-400 hover:underline font-medium">
+              <span>Research</span>
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+
+          <!-- Triple Condition Traffic Light Badges -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-3.5">
+            <div id="qcCkdBadge" class="p-2.5 rounded-lg border text-xs">
+              <span class="font-bold block text-[11px] uppercase tracking-wide opacity-80">CKD Stage 4</span>
+              <span class="font-extrabold text-sm block mt-0.5" id="qcCkdStatus"></span>
+              <p class="text-[11px] mt-1 leading-snug" id="qcCkdNote"></p>
+            </div>
+            <div id="qcGoutBadge" class="p-2.5 rounded-lg border text-xs">
+              <span class="font-bold block text-[11px] uppercase tracking-wide opacity-80">Gout (Uric Acid)</span>
+              <span class="font-extrabold text-sm block mt-0.5" id="qcGoutStatus"></span>
+              <p class="text-[11px] mt-1 leading-snug" id="qcGoutNote"></p>
+            </div>
+            <div id="qcHtnBadge" class="p-2.5 rounded-lg border text-xs">
+              <span class="font-bold block text-[11px] uppercase tracking-wide opacity-80">Hypertension</span>
+              <span class="font-extrabold text-sm block mt-0.5" id="qcHtnStatus"></span>
+              <p class="text-[11px] mt-1 leading-snug" id="qcHtnNote"></p>
+            </div>
+          </div>
+
+          <!-- Full clinical rationale trigger -->
+          <div class="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700/80 flex items-center justify-between text-xs">
+            <span class="text-slate-500 dark:text-slate-400 font-medium" id="qcSummaryNote"></span>
+            <button id="qcDetailsBtn" class="font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-700">View Rationale &rarr;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: VIEW SWITCHER / TAB NAVIGATION -->
+    <div class="border-b border-slate-200 dark:border-slate-800 mb-6">
+      <nav class="flex space-x-2 sm:space-x-4 overflow-x-auto pb-2 no-scrollbar" aria-label="Condition Tabs">
+        <button onclick="switchTab('all')" id="tab-all" class="tab-btn active-tab flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all">
+          <i data-lucide="layers" class="w-4 h-4"></i>
+          <span>Comprehensive Index</span>
+        </button>
+        <button onclick="switchTab('ckd')" id="tab-ckd" class="tab-btn flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+          <i data-lucide="activity" class="w-4 h-4 text-emerald-500"></i>
+          <span>CKD Stage 4</span>
+        </button>
+        <button onclick="switchTab('gout')" id="tab-gout" class="tab-btn flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+          <i data-lucide="flame" class="w-4 h-4 text-purple-500"></i>
+          <span>Gout Hyperuricemia</span>
+        </button>
+        <button onclick="switchTab('htn')" id="tab-htn" class="tab-btn flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+          <i data-lucide="heart-pulse" class="w-4 h-4 text-rose-500"></i>
+          <span>Hypertension</span>
+        </button>
+        <button onclick="switchTab('global')" id="tab-global" class="tab-btn flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+          <i data-lucide="globe" class="w-4 h-4 text-blue-500"></i>
+          <span>Global Databases</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- FILTER & COUNTER BAR (VISIBLE FOR TABLES/LISTS) -->
+    <div id="filterControlBar" class="flex flex-wrap items-center justify-between gap-3 mb-5">
+      <div class="flex items-center gap-2">
+        <label for="categoryFilter" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Category:</label>
+        <select id="categoryFilter" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-sky-500">
+          <option value="all">All Food Groups</option>
+          <option value="Fruits">Fruits</option>
+          <option value="Vegetables">Vegetables</option>
+          <option value="Proteins & Meats">Proteins & Meats</option>
+          <option value="Dairy & Alternatives">Dairy & Alternatives</option>
+          <option value="Grains & Starches">Grains & Starches</option>
+          <option value="Beverages & Alcohol">Beverages & Alcohol</option>
+          <option value="Seasonings & Additives">Seasonings & Additives</option>
+        </select>
+
+        <label for="statusFilter" class="text-xs font-semibold text-slate-500 dark:text-slate-400 ml-2">Safety:</label>
+        <select id="statusFilter" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-sky-500">
+          <option value="all">All Statuses</option>
+          <option value="safe">Recommended / Safe</option>
+          <option value="caution">Caution / Portion-Controlled</option>
+          <option value="avoid">Strictly Avoid</option>
+        </select>
+      </div>
+
+      <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">
+        Showing <span id="itemCount" class="font-bold text-slate-900 dark:text-white">0</span> items
+      </div>
+    </div>
+
+    <!-- TAB 1: COMPREHENSIVE COMBINED VIEW -->
+    <section id="pane-all" class="tab-pane space-y-4">
+      <div id="combinedCardGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Dynamically injected cards -->
+      </div>
+    </section>
+
+    <!-- TAB 2: CKD STAGE 4 DEDICATED VIEW -->
+    <section id="pane-ckd" class="tab-pane  space-y-6">
+      <div class="p-4 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 text-xs sm:text-sm text-sky-900 dark:text-sky-200">
+        <h3 class="font-bold text-base flex items-center gap-2 mb-1">
+          <i data-lucide="microscope" class="w-4 h-4 text-sky-600"></i> Nephrology Principles for CKD Stage 4 (eGFR 15–29 mL/min)
+        </h3>
+        <p class="leading-relaxed">
+          Primary clinical imperatives: <strong>Restrict Potassium</strong> (&lt;2,000 mg/day) to prevent fatal arrhythmias; <strong>Restrict Inorganic Phosphorus</strong> (avoid preservatives labeled "PHOS"); <strong>Moderate Protein</strong> (0.6–0.8 g/kg/day) to avoid uremic accumulation; and <strong>Limit Sodium</strong> (&lt;1,500–2,000 mg/day) to control extracellular volume overload and progressive glomerulosclerosis.
+        </p>
+      </div>
+
+      <!-- Split Table for CKD -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Safe List -->
+        <div class="bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-950 rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold mb-4">
+            <div class="p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-950">
+              <i data-lucide="check-circle" class="w-5 h-5"></i>
+            </div>
+            <h4 class="text-base">CKD Stage 4: Allowed / Low-Toxin Foods</h4>
+          </div>
+          <div id="ckdSafeList" class="space-y-3">
+            <!-- Dynamic inject -->
+          </div>
+        </div>
+
+        <!-- Avoid List -->
+        <div class="bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-950 rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center gap-2 text-rose-700 dark:text-rose-400 font-bold mb-4">
+            <div class="p-1.5 rounded-lg bg-rose-100 dark:bg-rose-950">
+              <i data-lucide="x-octagon" class="w-5 h-5"></i>
+            </div>
+            <h4 class="text-base">CKD Stage 4: Critical Strict Avoidances</h4>
+          </div>
+          <div id="ckdAvoidList" class="space-y-3">
+            <!-- Dynamic inject -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: GOUT DEDICATED VIEW -->
+    <section id="pane-gout" class="tab-pane  space-y-6">
+      <div class="p-4 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 text-xs sm:text-sm text-purple-900 dark:text-purple-200">
+        <h3 class="font-bold text-base flex items-center gap-2 mb-1">
+          <i data-lucide="bone" class="w-4 h-4 text-purple-600"></i> Rheumatology Principles for Hyperuricemia &amp; Gout
+        </h3>
+        <p class="leading-relaxed">
+          Gout is characterized by monosodium urate crystal deposition in joints and kidneys (urate nephropathy). The biochemical focus is preventing <strong>exogenous purine loading</strong> (organ meats, small pelagic fish, beer) and <strong>adenosine triphosphate (ATP) depletion from high-fructose corn syrup</strong>. Note: Low-fat dairy and anthocyanin-rich cherries enhance urate clearance.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Safe List -->
+        <div class="bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-950 rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold mb-4">
+            <div class="p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-950">
+              <i data-lucide="check-circle" class="w-5 h-5"></i>
+            </div>
+            <h4 class="text-base">Gout: Uric Acid Lowering &amp; Neutral Foods</h4>
+          </div>
+          <div id="goutSafeList" class="space-y-3"></div>
+        </div>
+
+        <!-- Avoid List -->
+        <div class="bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-950 rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center gap-2 text-rose-700 dark:text-rose-400 font-bold mb-4">
+            <div class="p-1.5 rounded-lg bg-rose-100 dark:bg-rose-950">
+              <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+            </div>
+            <h4 class="text-base">Gout: High Purine &amp; Flare Triggers</h4>
+          </div>
+          <div id="goutAvoidList" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: HYPERTENSION DEDICATED VIEW -->
+    <section id="pane-htn" class="tab-pane  space-y-6">
+      <div class="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-xs sm:text-sm text-rose-900 dark:text-rose-200">
+        <h3 class="font-bold text-base flex items-center gap-2 mb-1">
+          <i data-lucide="gauge" class="w-4 h-4 text-rose-600"></i> Vascular &amp; Nephrologic Control of Blood Pressure
+        </h3>
+        <p class="leading-relaxed">
+          Hypertension drives glomerular sclerosis and renovascular disease. Reducing <strong>sodium chloride intake (&lt;2,000 mg/day)</strong> restores the endothelium and limits plasma volume expansion. 
+          <em>Important Clinical Adjustment:</em> The standard DASH diet encourages high-potassium foods (spinach, bananas), but CKD Stage 4 patients cannot clear potassium and must substitute non-potassium vasodilators such as dietary nitrates (beets in moderation) or allicin (garlic).
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Safe List -->
+        <div class="bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-950 rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold mb-4">
+            <div class="p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-950">
+              <i data-lucide="check-circle" class="w-5 h-5"></i>
+            </div>
+            <h4 class="text-base">Antihypertensive &amp; Vasoprotective Foods</h4>
+          </div>
+          <div id="htnSafeList" class="space-y-3"></div>
+        </div>
+
+        <!-- Avoid List -->
+        <div class="bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-950 rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center gap-2 text-rose-700 dark:text-rose-400 font-bold mb-4">
+            <div class="p-1.5 rounded-lg bg-rose-100 dark:bg-rose-950">
+              <i data-lucide="x-circle" class="w-5 h-5"></i>
+            </div>
+            <h4 class="text-base">Hypertensive Vasoconstrictors &amp; High Sodium</h4>
+          </div>
+          <div id="htnAvoidList" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: GLOBAL FOOD REFERENCE & DATABASES (TASK 4) -->
+    <section id="pane-global" class="tab-pane  space-y-6">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-7 shadow-sm">
+        <div class="max-w-3xl">
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">Task 4: Universal Reference Catalogs</span>
+          <h3 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mt-1 mb-2">Exhaustive Global Food &amp; Nutrient Databases</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
+            When patients consume regional, artisanal, packaged, or international ingredients not listed in basic charts, clinical decisions require validated biochemical registries. The following resources catalog every available whole and manufactured food item globally with milligram-level mineral breakdowns (Potassium, Phosphorus, Sodium, Purines, Nitrogen).
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- USDA FoodData Central Card -->
+            <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/40 hover:border-sky-500 transition-all flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class="px-2.5 py-1 rounded bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 text-[11px] font-bold">Gold Standard</span>
+                  <i data-lucide="database" class="w-5 h-5 text-blue-600"></i>
+                </div>
+                <h4 class="font-bold text-base text-slate-900 dark:text-white">USDA FoodData Central</h4>
+                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+                  The definitive worldwide benchmark operated by the United States Department of Agriculture. Contains lab-assayed chemical profiles for thousands of whole foods, foundation foods, and agricultural commodities.
+                </p>
+                <div class="mt-3 flex flex-wrap gap-1 text-[11px] text-slate-500">
+                  <span class="bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded">Exact Potassium (mg)</span>
+                  <span class="bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded">Phosphorus (mg)</span>
+                  <span class="bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded">Amino Acid Profile</span>
+                </div>
+              </div>
+              <div class="mt-5 pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                <a href="https://fdc.nal.usda.gov/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline">
+                  Visit USDA FoodData Portal <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                </a>
+                <a href="https://www.google.com/search?q=usda+fooddata+central+nutrient+search" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1">
+                  <i data-lucide="search" class="w-3 h-3"></i> Query
+                </a>
+              </div>
+            </div>
+
+            <!-- Open Food Facts Card -->
+            <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/40 hover:border-emerald-500 transition-all flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class="px-2.5 py-1 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold">3+ Million Products</span>
+                  <i data-lucide="globe" class="w-5 h-5 text-emerald-600"></i>
+                </div>
+                <h4 class="font-bold text-base text-slate-900 dark:text-white">Open Food Facts (Worldwide)</h4>
+                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+                  The world's largest open-access collaborative database of commercial packaged foods covering 180+ countries. Essential for identifying  phosphate food additives (E-numbers like E338-E452).
+                </p>
+                <div class="mt-3 flex flex-wrap gap-1 text-[11px] text-slate-500">
+                  <span class="bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded">Barcode Scanning</span>
+                  <span class="bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded">Additive Detector (E-codes)</span>
+                  <span class="bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded">Global Brands</span>
+                </div>
+              </div>
+              <div class="mt-5 pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                <a href="https://world.openfoodfacts.org/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
+                  Browse Open Food Facts <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                </a>
+                <a href="https://www.google.com/search?q=open+food+facts+database+search" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1">
+                  <i data-lucide="search" class="w-3 h-3"></i> Query
+                </a>
+              </div>
+            </div>
+
+            <!-- FAO INFOODS International Database -->
+            <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/40 hover:border-amber-500 transition-all flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class="px-2.5 py-1 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 text-[11px] font-bold">United Nations / FAO</span>
+                  <i data-lucide="book-open" class="w-5 h-5 text-amber-600"></i>
+                </div>
+                <h4 class="font-bold text-base text-slate-900 dark:text-white">FAO / INFOODS Global Food Composition</h4>
+                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+                  International Network of Food Data Systems maintained by the Food and Agriculture Organization. Includes indigenous foods, traditional biodiversity crops, and African/Asian/Latin American nutritional tables.
+                </p>
+              </div>
+              <div class="mt-5 pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                <a href="https://www.fao.org/infoods/infoods-home/en/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline">
+                  Visit FAO INFOODS <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                </a>
+                <a href="https://www.google.com/search?q=fao+infoods+food+composition+tables" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1">
+                  <i data-lucide="search" class="w-3 h-3"></i> Query
+                </a>
+              </div>
+            </div>
+
+            <!-- PubMed Clinical Uric Acid & Renal Diet Search -->
+            <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/40 hover:border-purple-500 transition-all flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class="px-2.5 py-1 rounded bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 text-[11px] font-bold">National Library of Medicine</span>
+                  <i data-lucide="library" class="w-5 h-5 text-purple-600"></i>
+                </div>
+                <h4 class="font-bold text-base text-slate-900 dark:text-white">PubMed Clinical Trials &amp; Purine Literature</h4>
+                <p class="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+                  Direct peer-reviewed biomedical search engine for verified biochemical purine measurements, hyperkalemia reports, and renal metabolic outcomes.
+                </p>
+              </div>
+              <div class="mt-5 pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                <a href="https://pubmed.ncbi.nlm.nih.gov/?term=CKD+stage+4+diet+purine+gout+potassium" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-bold text-purple-600 dark:text-purple-400 hover:underline">
+                  Search PubMed Studies <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                </a>
+                <a href="https://www.google.com/search?q=purine+content+foods+table+clinical+trial+ncbi" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1">
+                  <i data-lucide="search" class="w-3 h-3"></i> Query
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: DETAILED FOOD CLINICAL RATIONALE -->
+  <div id="foodDetailModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm  flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow- flex flex-col max-h-[90vh]">
+      <!-- Header -->
+      <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between">
+        <div>
+          <span id="modalFoodCategory" class="text-xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wide">Category</span>
+          <h3 id="modalFoodName" class="text-xl font-bold text-slate-900 dark:text-white mt-0.5"></h3>
+        </div>
+        <button onclick="closeModal('foodDetailModal')" class="p-2 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Scrollable content -->
+      <div class="p-5 overflow-y-auto space-y-4 text-xs sm:text-sm">
+        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+          <h4 class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5 mb-1 text-xs">
+            <i data-lucide="microchip" class="w-4 h-4 text-sky-500"></i> Biochemical &amp; Pathophysiological Mechanism
+          </h4>
+          <p id="modalRationale" class="text-slate-600 dark:text-slate-300 leading-relaxed"></p>
+        </div>
+
+        <div class="space-y-2">
+          <h4 class="font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider">Clinical Guidance by Specialty</h4>
+          
+          <div class="p-3 rounded-lg border border-slate-200 dark:border-slate-800 flex items-start gap-2.5">
+            <span id="modalCkdBadge" class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase shrink-0"></span>
+            <div>
+              <span class="font-bold text-slate-900 dark:text-white block">Nephrology (CKD 4)</span>
+              <p id="modalCkdText" class="text-slate-600 dark:text-slate-400 mt-0.5"></p>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-lg border border-slate-200 dark:border-slate-800 flex items-start gap-2.5">
+            <span id="modalGoutBadge" class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase shrink-0"></span>
+            <div>
+              <span class="font-bold text-slate-900 dark:text-white block">Rheumatology (Gout / Hyperuricemia)</span>
+              <p id="modalGoutText" class="text-slate-600 dark:text-slate-400 mt-0.5"></p>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-lg border border-slate-200 dark:border-slate-800 flex items-start gap-2.5">
+            <span id="modalHtnBadge" class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase shrink-0"></span>
+            <div>
+              <span class="font-bold text-slate-900 dark:text-white block">Cardiovascular (Hypertension)</span>
+              <p id="modalHtnText" class="text-slate-600 dark:text-slate-400 mt-0.5"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Research Web Links -->
+        <div class="pt-2 flex flex-col sm:flex-row gap-2">
+          <a id="modalWebSearchBtn" href="#" target="_blank" rel="noopener noreferrer" class="flex-1 text-center py-2.5 px-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+            <i data-lucide="search" class="w-3.5 h-3.5"></i>
+            <span>Google Scholar / Clinical Studies</span>
+          </a>
+          <a id="modalUsdaBtn" href="#" target="_blank" rel="noopener noreferrer" class="flex-1 text-center py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs transition-colors flex items-center justify-center gap-1.5">
+            <i data-lucide="database" class="w-3.5 h-3.5"></i>
+            <span>USDA Nutrient Lookup</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: MEDICAL CAVEAT & OVERVIEW -->
+  <div id="clinicalNoticeModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm  flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+        <h3 class="font-bold text-lg text-amber-600 dark:text-amber-400 flex items-center gap-2">
+          <i data-lucide="stethoscope" class="w-5 h-5"></i>
+          Nephrology &amp; Rheumatology Notice
+        </h3>
+        <button onclick="closeModal('clinicalNoticeModal')" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="mt-4 space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+        <p>
+          <strong>Why this triad is uniquely perilous:</strong> Chronic Kidney Disease Stage 4 creates a metabolic barrier where organs can no longer excrete potassium, inorganic phosphate, or nitrogenous compounds.
+        </p>
+        <ul class="list-disc pl-5 space-y-1.5">
+          <li><strong>Gout &amp; CKD:</strong> Failing kidneys cannot excrete uric acid, precipitating severe gout and urate stone formation. However, allopurinol/febuxostat must be dosed according to GFR, and diet must avoid purines without relying excessively on high-potassium beans.</li>
+          <li><strong>Hypertension &amp; CKD:</strong> High pressure destroys surviving nephrons. Yet, the classic high-potassium DASH remedy must be curtailed to prevent serum potassium exceeding 5.5 mEq/L.</li>
+          <li><strong>Always Consult:</strong> Blood chemistry labs (BUN, Creatinine, K+, PO4, Uric Acid, BP) dictate your exact personalized limits.</li>
+        </ul>
+      </div>
+      <button onclick="closeModal('clinicalNoticeModal')" class="mt-6 w-full py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold">
+        I Understand
+      </button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 text-center text-xs text-slate-500 dark:text-slate-400 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p>Clinical Reference Portal for Medical &amp; Dietary Decision Support. Not a replacement for individualized nephrology consults.</p>
+      <div class="flex items-center space-x-4">
+        <a href="https://fdc.nal.usda.gov/" target="_blank" rel="noopener noreferrer" class="hover:text-sky-600">USDA Central</a>
+        <a href="https://world.openfoodfacts.org/" target="_blank" rel="noopener noreferrer" class="hover:text-sky-600">OpenFoodFacts</a>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener noreferrer" class="hover:text-sky-600">PubMed</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- APPLICATION LOGIC -->
+  
+</body>
+</html>

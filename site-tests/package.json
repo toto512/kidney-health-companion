@@ -1,0 +1,16 @@
+{
+  "name": "site-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "lint": "cd .. && eslint -c site-tests/eslint.config.js js worker/src worker/test site-tests && node site-tests/validate.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.50.0",
+    "eslint": "^9.39.5",
+    "globals": "^15.15.0"
+  }
+}

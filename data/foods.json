@@ -1,0 +1,452 @@
+[
+ {
+  "id": "mozzarella-part-skim",
+  "name": "Mozzarella, part-skim (USDA reference)",
+  "category": "Dairy",
+  "synonyms": [
+   "mozzarella",
+   "mozzarella cheese",
+   "part skim mozzarella",
+   "part-skim mozzarella",
+   "low moisture mozzarella",
+   "low-moisture mozzarella"
+  ],
+  "purine": "low",
+  "fructose": "low",
+  "sodium": "moderate",
+  "potassium": "low",
+  "phosphorus": "moderate",
+  "protein": "moderate",
+  "portion": "1 oz (28 g)",
+  "nutrients": {
+   "sodium": 175,
+   "potassium": 24,
+   "phosphorus": 131,
+   "protein": 6.9
+  },
+  "source": "USDA Standard Reference, NDB 01028",
+  "sourceUrl": "https://www.ars.usda.gov/ARSUserFiles/80400535/Data/SR/SR28/reports/sr28fg01.pdf",
+  "basis": "Generic part-skim reference only. Per 1 oz: sodium 175 mg, potassium 24 mg, phosphorus 131 mg, protein 6.9 g. Fresh, whole-milk, shredded and branded products vary; check the exact package. Dairy is not a high-purine trigger food, but food choices do not replace gout treatment.",
+  "alternatives": "Compare the package sodium and serving size with your care plan; ask your renal dietitian whether another cheese fits your plan."
+ },
+ {
+  "id": "white-rice",
+  "name": "White rice, cooked",
+  "category": "Grains",
+  "synonyms": [
+   "rice"
+  ],
+  "purine": "low",
+  "fructose": "low",
+  "sodium": "low",
+  "potassium": "low",
+  "phosphorus": "low",
+  "protein": "low",
+  "portion": "1 cup cooked",
+  "basis": "Plain rice is a lower-sodium staple; preparation and portion still matter."
+ },
+ {
+  "id": "oatmeal",
+  "name": "Oatmeal, plain",
+  "category": "Grains",
+  "synonyms": [
+   "oats"
+  ],
+  "purine": "moderate",
+  "fructose": "low",
+  "sodium": "low",
+  "potassium": "moderate",
+  "phosphorus": "moderate",
+  "protein": "moderate",
+  "portion": "½ cup dry",
+  "basis": "Plant purines are not automatically forbidden; portions and kidney labs matter."
+ },
+ {
+  "id": "potato",
+  "name": "Potato, baked",
+  "category": "Vegetables",
+  "synonyms": [
+   "potatoes",
+   "baked potato"
+  ],
+  "purine": "low",
+  "fructose": "low",
+  "sodium": "low",
+  "potassium": "high",
+  "phosphorus": "moderate",
+  "protein": "low",
+  "portion": "1 medium potato",
+  "basis": "Potassium restriction depends on labs and medicines; this flag is not a universal ban."
+ },
+ {
+  "id": "tomato",
+  "name": "Tomato",
+  "category": "Vegetables",
+  "synonyms": [
+   "tomatoes"
+  ],
+  "purine": "low",
+  "fructose": "low",
+  "sodium": "low",
+  "potassium": "low",
+  "phosphorus": "low",
+  "protein": "low",
+  "portion": "1 medium tomato",
+  "basis": "Portion and preparation change nutrient content; follow your personal lab-based plan."
+ },
+ {
+  "id": "banana",
+  "name": "Banana",
+  "category": "Fruit",
+  "synonyms": [
+   "bananas"
+  ],
+  "purine": "low",
+  "fructose": "low",
+  "sodium": "low",
+  "potassium": "high",
+  "phosphorus": "low",
+  "protein": "low",
+  "portion": "1 medium banana",
+  "basis": "Potassium restriction depends on labs and medicines; it is not automatically restricted."
+ },
+ {
+  "id": "apple",
+  "name": "Apple",
+  "category": "Fruit",
+  "synonyms": [
+   "apples"
+  ],
+  "purine": "low",
+  "fructose": "low",
+  "sodium": "low",
+  "potassium": "low",
+  "phosphorus": "low",
+  "protein": "low",
+  "portion": "1 medium apple",
+  "basis": "A basic low-flag reference; portion and individual care plan still matter."
+ },
+ {
+  "id": "avocado",
+  "name": "Avocado",
+  "category": "Fruit",
+  "synonyms": [
+   "avocados"
+  ],
+  "purine": "low",
+  "fructose": "low",
+  "sodium": "low",
+  "potassium": "high",
+  "phosphorus": "low",
+  "protein": "low",
+  "portion": "¼ avocado",
+  "basis": "Potassium restriction depends on labs and medicines; this flag is not a universal ban."
+ },
+ {
+  "id": "beans",
+  "name": "Beans or lentils, cooked",
+  "category": "Plant protein",
+  "synonyms": [
+   "lentils",
+   "legumes"
+  ],
+  "purine": "moderate",
+  "fructose": "low",
+  "sodium": "low",
+  "potassium": "moderate",
+  "phosphorus": "moderate",
+  "protein": "moderate",
+  "portion": "½ cup cooked",
+  "basis": "Plant purines are not automatically forbidden; potassium/phosphorus restrictions depend on labs."
+ },
+ {
+  "id": "spinach",
+  "name": "Spinach, cooked",
+  "category": "Vegetables",
+  "synonyms": [],
+  "purine": "moderate",
+  "fructose": "low",
+  "sodium": "low",
+  "potassium": "high",
+  "phosphorus": "moderate",
+  "protein": "low",
+  "portion": "½ cup cooked",
+  "basis": "Potassium restriction depends on labs and medicines."
+ },
+ {
+  "id": "liver",
+  "name": "Liver / organ meats",
+  "category": "Meat",
+  "synonyms": [
+   "organ meat",
+   "kidney",
+   "sweetbread"
+  ],
+  "purine": "high",
+  "fructose": "low",
+  "sodium": "moderate",
+  "potassium": "unknown",
+  "phosphorus": "unknown",
+  "protein": "high",
+  "portion": "3 oz",
+  "basis": "The guide advises limiting organ meats for gout; nutrient values vary."
+ },
+ {
+  "id": "beef",
+  "name": "Beef, red meat",
+  "category": "Meat",
+  "synonyms": [
+   "steak",
+   "red meat",
+   "lamb",
+   "pork"
+  ],
+  "purine": "high",
+  "fructose": "low",
+  "sodium": "moderate",
+  "potassium": "unknown",
+  "phosphorus": "unknown",
+  "protein": "high",
+  "portion": "3 oz cooked",
+  "basis": "The guide advises limiting frequent large portions of red meat; protein needs are individualized."
+ },
+ {
+  "id": "deli-meat",
+  "name": "Processed deli meat",
+  "category": "Meat",
+  "synonyms": [
+   "lunch meat",
+   "cold cuts",
+   "bacon",
+   "sausage",
+   "ham"
+  ],
+  "purine": "moderate",
+  "fructose": "low",
+  "sodium": "high",
+  "potassium": "unknown",
+  "phosphorus": "unknown",
+  "protein": "high",
+  "portion": "2 oz",
+  "basis": "Processed meat can combine gout concerns with high sodium; check for phosphate additives."
+ },
+ {
+  "id": "sardines",
+  "name": "Sardines / anchovies",
+  "category": "Seafood",
+  "synonyms": [
+   "anchovies"
+  ],
+  "purine": "high",
+  "fructose": "low",
+  "sodium": "unknown",
+  "potassium": "unknown",
+  "phosphorus": "unknown",
+  "protein": "high",
+  "portion": "3 oz",
+  "basis": "The guide identifies some seafood as a food to limit; sodium varies by brand."
+ },
+ {
+  "id": "shellfish",
+  "name": "Shellfish",
+  "category": "Seafood",
+  "synonyms": [
+   "shrimp",
+   "crab",
+   "lobster",
+   "mussels"
+  ],
+  "purine": "high",
+  "fructose": "low",
+  "sodium": "unknown",
+  "potassium": "unknown",
+  "phosphorus": "unknown",
+  "protein": "high",
+  "portion": "3 oz",
+  "basis": "Some seafood is identified in gout guidance for moderation; CKD nutrients vary."
+ },
+ {
+  "id": "beer",
+  "name": "Beer",
+  "category": "Drinks",
+  "synonyms": [
+   "ale",
+   "lager"
+  ],
+  "purine": "moderate",
+  "fructose": "low",
+  "sodium": "low",
+  "potassium": "low",
+  "phosphorus": "low",
+  "protein": "low",
+  "portion": "12 fl oz",
+  "basis": "The guide recommends limiting alcohol with gout; a prescribed fluid plan may also apply."
+ },
+ {
+  "id": "spirits",
+  "name": "Spirits / liquor",
+  "category": "Drinks",
+  "synonyms": [
+   "liquor",
+   "vodka",
+   "whiskey",
+   "rum",
+   "gin"
+  ],
+  "purine": "low",
+  "fructose": "low",
+  "sodium": "low",
+  "potassium": "low",
+  "phosphorus": "low",
+  "protein": "low",
+  "portion": "1.5 fl oz",
+  "basis": "The guide recommends limiting alcohol with gout; a prescribed fluid plan may also apply."
+ },
+ {
+  "id": "soda",
+  "name": "Sugar-sweetened soda",
+  "category": "Drinks",
+  "synonyms": [
+   "soft drink",
+   "cola",
+   "high fructose corn syrup"
+  ],
+  "purine": "low",
+  "fructose": "high",
+  "sodium": "low",
+  "potassium": "low",
+  "phosphorus": "unknown",
+  "protein": "low",
+  "portion": "12 fl oz",
+  "basis": "The guide recommends limiting sugary drinks and high-fructose corn syrup."
+ },
+ {
+  "id": "water",
+  "name": "Water",
+  "category": "Drinks",
+  "synonyms": [
+   "plain water"
+  ],
+  "purine": "low",
+  "fructose": "low",
+  "sodium": "low",
+  "potassium": "low",
+  "phosphorus": "low",
+  "protein": "low",
+  "portion": "Per clinician fluid plan",
+  "basis": "Drink according to any fluid plan prescribed for kidney or heart health."
+ },
+ {
+  "id": "milk",
+  "name": "Low-fat milk",
+  "category": "Dairy",
+  "synonyms": [
+   "skim milk"
+  ],
+  "purine": "low",
+  "fructose": "low",
+  "sodium": "moderate",
+  "potassium": "moderate",
+  "phosphorus": "high",
+  "protein": "moderate",
+  "portion": "1 cup",
+  "basis": "Phosphorus, potassium and protein portions depend on labs and dietitian advice."
+ },
+ {
+  "id": "egg",
+  "name": "Egg",
+  "category": "Protein",
+  "synonyms": [
+   "eggs"
+  ],
+  "purine": "low",
+  "fructose": "low",
+  "sodium": "low",
+  "potassium": "low",
+  "phosphorus": "low",
+  "protein": "moderate",
+  "portion": "1 large egg",
+  "basis": "Fit protein and phosphorus to your individual plan."
+ },
+ {
+  "id": "chicken",
+  "name": "Chicken, unprocessed",
+  "category": "Meat",
+  "synonyms": [
+   "poultry"
+  ],
+  "purine": "moderate",
+  "fructose": "low",
+  "sodium": "low",
+  "potassium": "unknown",
+  "phosphorus": "unknown",
+  "protein": "high",
+  "portion": "3 oz cooked",
+  "basis": "CKD protein needs are individualized; added phosphate and sodium vary by processing."
+ },
+ {
+  "id": "ramen",
+  "name": "Instant noodles / ramen",
+  "category": "Packaged",
+  "synonyms": [
+   "instant noodles"
+  ],
+  "purine": "low",
+  "fructose": "low",
+  "sodium": "high",
+  "potassium": "unknown",
+  "phosphorus": "unknown",
+  "protein": "moderate",
+  "portion": "1 package",
+  "basis": "Packaged foods may be high in sodium or contain phosphate additives; check the label."
+ },
+ {
+  "id": "protein-powder",
+  "name": "Protein powder / high-protein supplement",
+  "category": "Supplements",
+  "synonyms": [
+   "protein shake",
+   "whey powder"
+  ],
+  "purine": "moderate",
+  "fructose": "low",
+  "sodium": "unknown",
+  "potassium": "unknown",
+  "phosphorus": "unknown",
+  "protein": "high",
+  "portion": "1 scoop (varies)",
+  "basis": "Avoid high-protein supplements unless your clinician or dietitian advises them."
+ },
+ {
+  "id": "yogurt",
+  "name": "Plain low-fat yogurt",
+  "category": "Dairy",
+  "synonyms": [
+   "plain yogurt"
+  ],
+  "purine": "low",
+  "fructose": "low",
+  "sodium": "moderate",
+  "potassium": "moderate",
+  "phosphorus": "high",
+  "protein": "moderate",
+  "portion": "¾ cup",
+  "basis": "Phosphorus, potassium and protein portions depend on labs and dietitian advice."
+ },
+ {
+  "id": "soup",
+  "name": "Canned soup",
+  "category": "Packaged",
+  "synonyms": [
+   "canned soup"
+  ],
+  "purine": "moderate",
+  "fructose": "low",
+  "sodium": "high",
+  "potassium": "unknown",
+  "phosphorus": "unknown",
+  "protein": "moderate",
+  "portion": "1 cup",
+  "basis": "Canned foods may contain substantial sodium; compare labels and serving size."
+ }
+]

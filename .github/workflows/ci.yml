@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  worker-tests:
+    name: Worker unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Tests use node:test with mocked upstreams; no dependencies needed.
+      - run: npm test
+        working-directory: worker
+
+  lint:
+    name: Lint and data validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site-tests/package-lock.json
+      - run: npm ci
+        working-directory: site-tests
+      - run: npm run lint
+        working-directory: site-tests
+
+  site-e2e:
+    name: Browser, accessibility, regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site-tests/package-lock.json
+      - run: npm ci
+        working-directory: site-tests
+      - run: npx playwright install --with-deps chromium
+        working-directory: site-tests
+      - run: npm test
+        working-directory: site-tests
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-results
+          path: site-tests/test-results
+          retention-days: 7

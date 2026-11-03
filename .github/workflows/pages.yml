@@ -32,7 +32,7 @@ jobs:
       - name: Stage publishable files only
         run: |
           mkdir _site
-          cp index.html manifest.webmanifest icon.svg .nojekyll _site/
+          cp index.html manifest.webmanifest icon.svg apple-touch-icon.png .nojekyll _site/
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:

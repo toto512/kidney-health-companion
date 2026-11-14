@@ -1,6 +1,6 @@
 import { Link } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView } from 'react-native';
+import { Platform, ScrollView } from 'react-native';
 import { BigButton, Body, Field, H1, Screen } from '@/components/ui';
 import { Captcha, captchaEnabled, resetCaptcha } from '@/components/Captcha';
 import { supabase } from '@/lib/supabase';
@@ -17,10 +17,14 @@ export default function ResetPassword() {
 
   async function send() {
     setBusy(true); setMsg('');
-    await supabase.auth.resetPasswordForEmail(email.trim(), { captchaToken: captchaToken ?? undefined });
+    await supabase.auth.resetPasswordForEmail(email.trim(), {
+      captchaToken: captchaToken ?? undefined,
+      // Link flow (works with Supabase's default template): the link returns here and starts a recovery session.
+      redirectTo: Platform.OS === 'web' ? window.location.origin : undefined,
+    });
     setCaptchaToken(null); resetCaptcha();
     // Same message whether or not the address exists, so the form cannot be used to find accounts.
-    setSent(true); setMsg('If that email has an account, we sent a message with a 6-digit code.');
+    setSent(true); setMsg('If that email has an account, we sent a message. Open the link in it, or type the 6-digit code if it has one.');
     setBusy(false);
   }
 

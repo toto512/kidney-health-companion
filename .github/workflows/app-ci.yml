@@ -1,0 +1,37 @@
+name: App CI
+
+# No third-party actions: the repo only allows actions owned by toto512. Node comes from the runner image.
+on:
+  pull_request:
+    paths: ['app/**', 'supabase/**', '.github/workflows/app-ci.yml']
+  push:
+    branches: [main]
+    paths: ['app/**', 'supabase/**']
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init -q src
+          git -C src fetch -q --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$GITHUB_SHA"
+          git -C src checkout -q FETCH_HEAD
+      - name: Install
+        working-directory: src/app
+        run: npm ci
+      - name: Typecheck
+        working-directory: src/app
+        run: npm run typecheck
+      - name: Unit tests
+        working-directory: src/app
+        run: npm test
+      - name: Web export
+        working-directory: src/app
+        run: npm run export:web

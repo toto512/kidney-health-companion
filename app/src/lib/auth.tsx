@@ -4,8 +4,8 @@ import { isExpired } from './inactivity';
 import { supabase } from './supabase';
 
 type Aal = 'aal1' | 'aal2' | null;
-type Ctx = { session: Session | null; loading: boolean; aal: Aal; needsMfa: boolean; refreshAal: () => Promise<void>; touch: () => void };
-const AuthCtx = createContext<Ctx>({ session: null, loading: true, aal: null, needsMfa: false, refreshAal: async () => {}, touch: () => {} });
+type Ctx = { session: Session | null; loading: boolean; aal: Aal; needsMfa: boolean; recovery: boolean; clearRecovery: () => void; refreshAal: () => Promise<void>; touch: () => void };
+const AuthCtx = createContext<Ctx>({ session: null, loading: true, aal: null, needsMfa: false, recovery: false, clearRecovery: () => {}, refreshAal: async () => {}, touch: () => {} });
 export const useAuth = () => useContext(AuthCtx);
 
 const INACTIVITY_MINUTES = 15;
@@ -15,6 +15,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [aal, setAal] = useState<{ current: Aal; next: Aal }>({ current: null, next: null });
   const last = useRef(Date.now());
+  const [recovery, setRecovery] = useState(false);
 
   const refreshAal = async () => {
     const { data } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
@@ -27,7 +28,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (data.session) await refreshAal();
       setLoading(false);
     });
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, sess) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, sess) => {
+      if (event === 'PASSWORD_RECOVERY') setRecovery(true);
       setSession(sess);
       if (sess) void refreshAal();
       else setAal({ current: null, next: null });
@@ -46,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Force TOTP enrolment too: a user with no verified factor is aal1/aal1 and must not skip MFA.
   const needsMfa = !!session && aal.current !== 'aal2';
   return (
-    <AuthCtx.Provider value={{ session, loading, aal: aal.current, needsMfa, refreshAal, touch: () => { last.current = Date.now(); } }}>
+    <AuthCtx.Provider value={{ session, loading, aal: aal.current, needsMfa, recovery, clearRecovery: () => setRecovery(false), refreshAal, touch: () => { last.current = Date.now(); } }}>
       {children}
     </AuthCtx.Provider>
   );

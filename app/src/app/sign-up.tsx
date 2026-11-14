@@ -1,6 +1,7 @@
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView } from 'react-native';
+import { Captcha, captchaEnabled, resetCaptcha } from '@/components/Captcha';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Screen } from '@/components/ui';
 import { supabase } from '@/lib/supabase';
 
@@ -10,11 +11,12 @@ export default function SignUp() {
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
   const [busy, setBusy] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   async function submit() {
     setBusy(true); setMsg('');
-    // TODO(phase 2): pass options.captchaToken from the CAPTCHA widget once the provider is chosen.
-    const { error } = await supabase.auth.signUp({ email: email.trim(), password });
+    const { error } = await supabase.auth.signUp({ email: email.trim(), password, options: { captchaToken: captchaToken ?? undefined } });
+    setCaptchaToken(null); resetCaptcha();
     setMsg(error ? 'Could not create the account. Try a longer password or a different email.' : 'Check your email to confirm your account, then sign in.');
     setBusy(false);
   }
@@ -26,8 +28,9 @@ export default function SignUp() {
         <Body>This app gives information only. It is not medical advice. Talk to your doctor, nurse, or pharmacist about your health.</Body>
         <Field label="Email" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" autoComplete="email" />
         <Field label="Password (at least 12 characters)" value={password} onChangeText={setPassword} secureTextEntry autoComplete="new-password" />
+        <Captcha onToken={setCaptchaToken} />
         {msg ? <Body>{msg}</Body> : null}
-        <BigButton label={busy ? 'Creating...' : 'Create account'} onPress={submit} disabled={busy || !email || password.length < 12} />
+        <BigButton label={busy ? 'Creating...' : 'Create account'} onPress={submit} disabled={busy || !email || password.length < 12 || (captchaEnabled && !captchaToken)} />
         <Link href="/sign-in"><Body>Already have an account? Sign in</Body></Link>
       </Screen>
     </ScrollView>

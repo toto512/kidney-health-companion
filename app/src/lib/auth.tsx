@@ -43,7 +43,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(id);
   }, [session]);
 
-  const needsMfa = !!session && aal.next === 'aal2' && aal.current !== 'aal2';
+  // Force TOTP enrolment too: a user with no verified factor is aal1/aal1 and must not skip MFA.
+  const needsMfa = !!session && aal.current !== 'aal2';
   return (
     <AuthCtx.Provider value={{ session, loading, aal: aal.current, needsMfa, refreshAal, touch: () => { last.current = Date.now(); } }}>
       {children}

@@ -10,6 +10,8 @@ import { color, font } from '@/theme/tokens';
 // Whole numbers from the lowest to the highest value the app accepts (input limits only), nothing pre-selected.
 const range = ({ min, max }: { min: number; max: number }) => Array.from({ length: max - min + 1 }, (_, i) => ({ value: String(min + i), label: String(min + i) }));
 
+const SMALL = 140;
+
 type Row = { id: string; systolic: number; diastolic: number; pulse: number | null; taken_at: string };
 
 // Stores and lists readings only. No Low/Medium/High labels until a sourced reference range is supplied.
@@ -56,9 +58,12 @@ export default function BloodPressure() {
       <Screen>
         <H1>Blood pressure</H1>
         <Body>Choose the numbers from your blood pressure monitor.</Body>
-        <Select label="Top number (systolic)" value={sys} options={sysOptions} onChange={setSys} placeholder="Choose" searchLabel="Type a number" />
-        <Select label="Bottom number (diastolic)" value={dia} options={diaOptions} onChange={setDia} placeholder="Choose" searchLabel="Type a number" />
-        <Select label="Pulse (optional)" value={pulse} options={pulseOptions} onChange={setPulse} placeholder="Choose" searchLabel="Type a number" />
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
+          <Select label="Top (SYS)" value={sys} options={sysOptions} onChange={setSys} placeholder="--" searchLabel="Number" width={SMALL} valueSize={24} />
+          <Text accessible={false} style={{ fontSize: 32, fontWeight: '700', color: color.text, marginTop: 34, lineHeight: 56 }}>/</Text>
+          <Select label="Bottom (DIA)" value={dia} options={diaOptions} onChange={setDia} placeholder="--" searchLabel="Number" width={SMALL} valueSize={24} />
+        </View>
+        <Select label="Pulse (optional)" value={pulse} options={pulseOptions} onChange={setPulse} placeholder="--" searchLabel="Number" width={SMALL} valueSize={24} />
         {err ? <Body tone="danger">{err}</Body> : null}
         <BigButton label={busy ? 'Saving...' : 'Save reading'} onPress={save} disabled={busy || !sys || !dia} />
         <H1>My readings</H1>

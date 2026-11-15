@@ -6,8 +6,8 @@ const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCa
 
 // Dropdown that opens directly under its field, with a search box and a scrollable list.
 // Built from core components so it behaves the same on web, iOS and Android.
-export function Select<T extends string>({ label, value, options, onChange, placeholder = 'Choose', searchLabel = 'Type to search', searchable = true }: {
-  label: string; value: T | ''; options: { value: T; label: string }[]; onChange: (v: T) => void; placeholder?: string; searchLabel?: string; searchable?: boolean;
+export function Select<T extends string>({ label, value, options, onChange, placeholder = 'Choose', searchLabel = 'Type to search', searchable = true, width, valueSize = font.label }: {
+  label: string; value: T | ''; options: { value: T; label: string }[]; onChange: (v: T) => void; placeholder?: string; searchLabel?: string; searchable?: boolean; width?: number; valueSize?: number;
 }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
@@ -15,11 +15,11 @@ export function Select<T extends string>({ label, value, options, onChange, plac
   const shown = useMemo(() => { const f = fold(q.trim()); return f ? options.filter((o) => fold(o.label).includes(f)) : options; }, [q, options]);
   const close = () => { setOpen(false); setQ(''); };
   return (
-    <View style={{ gap: 8 }}>
+    <View style={{ gap: 8, width }}>
       <Text style={{ fontSize: font.label, fontWeight: '600', color: color.text }}>{label}</Text>
       <Pressable accessibilityRole="combobox" accessibilityLabel={`${label}: ${current ?? placeholder}`} accessibilityState={{ expanded: open }} onPress={() => (open ? close() : setOpen(true))}
         style={{ minHeight: MIN_TOUCH, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, borderWidth: 2, borderColor: color.text, borderRadius: 12 }}>
-        <Text style={{ fontSize: font.label, color: current ? color.text : '#6B7280' }}>{current ?? placeholder}</Text>
+        <Text style={{ fontSize: valueSize, color: current ? color.text : '#6B7280' }}>{current ?? placeholder}</Text>
         <Text accessible={false} style={{ fontSize: font.label, color: color.text }}>{open ? '▴' : '▾'}</Text>
       </Pressable>
       {open ? (

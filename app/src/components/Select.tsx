@@ -6,8 +6,8 @@ const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCa
 
 // Dropdown that opens directly under its field, with a search box and a scrollable list.
 // Built from core components so it behaves the same on web, iOS and Android.
-export function Select<T extends string>({ label, value, options, onChange, placeholder = 'Choose', searchLabel = 'Type to search' }: {
-  label: string; value: T | ''; options: { value: T; label: string }[]; onChange: (v: T) => void; placeholder?: string; searchLabel?: string;
+export function Select<T extends string>({ label, value, options, onChange, placeholder = 'Choose', searchLabel = 'Type to search', searchable = true }: {
+  label: string; value: T | ''; options: { value: T; label: string }[]; onChange: (v: T) => void; placeholder?: string; searchLabel?: string; searchable?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
@@ -24,8 +24,8 @@ export function Select<T extends string>({ label, value, options, onChange, plac
       </Pressable>
       {open ? (
         <View style={{ borderWidth: 2, borderColor: color.text, borderRadius: 12, backgroundColor: '#FFFFFF', overflow: 'hidden' }}>
-          <TextInput accessibilityLabel={searchLabel} placeholder={searchLabel} placeholderTextColor="#6B7280" value={q} onChangeText={setQ} autoFocus autoCorrect={false} autoCapitalize="none"
-            style={{ fontSize: font.label, minHeight: MIN_TOUCH, paddingHorizontal: 16, color: color.text, borderBottomWidth: 1, borderColor: '#D1D5DB' }} />
+          {searchable ? <TextInput accessibilityLabel={searchLabel} placeholder={searchLabel} placeholderTextColor="#6B7280" value={q} onChangeText={setQ} autoFocus autoCorrect={false} autoCapitalize="none"
+            style={{ fontSize: font.label, minHeight: MIN_TOUCH, paddingHorizontal: 16, color: color.text, borderBottomWidth: 1, borderColor: '#D1D5DB' }} /> : null}
           <ScrollView nestedScrollEnabled keyboardShouldPersistTaps="handled" style={{ maxHeight: 320 }}>
             {shown.length === 0 ? <Text style={{ fontSize: font.body, padding: 16, color: color.text }}>No match. Check the spelling.</Text> : null}
             {shown.map((o, i) => (

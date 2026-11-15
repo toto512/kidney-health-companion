@@ -6,6 +6,7 @@ import { color } from '@/theme/tokens';
 
 // Labels here are UI only. No health facts are shown until content is sourced and verified (see plan section 3).
 const TILES = [
+  { id: 'profile', label: 'My profile', icon: '👤' },
   { id: 'medications', label: 'My medicines', icon: '💊' },
   { id: 'blood-pressure', label: 'Blood pressure', icon: '❤️' },
   { id: 'blood-results', label: 'Blood results', icon: '🩸' },

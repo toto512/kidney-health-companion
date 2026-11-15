@@ -14,10 +14,19 @@ export default function MfaVerify() {
   const [uri, setUri] = useState('');
   const [code, setCode] = useState('');
   const [err, setErr] = useState('');
+  const [busy, setBusy] = useState(false);
 
   // The real service error is shown only in development builds; it never contains health data.
   const fail = (msg: string, e?: { message?: string; code?: string } | null) =>
     setErr(__DEV__ && e ? `${msg} (${e.code ?? ''} ${e.message ?? ''})` : msg);
+
+  // Dev only: report the gap between this computer's clock and the server's, since TOTP depends on both clocks.
+  useEffect(() => {
+    if (!__DEV__) return;
+    fetch(`${process.env.EXPO_PUBLIC_SUPABASE_URL}/auth/v1/health`, { headers: { apikey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '' } })
+      .then((r) => { const d = r.headers.get('date'); if (d) console.log(`[mfa] clock skew vs server: ${Math.round((Date.now() - new Date(d).getTime()) / 1000)}s`); })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     let live = true; // guards against a double mount enrolling twice and mixing up factor and QR
@@ -38,11 +47,26 @@ export default function MfaVerify() {
     return () => { live = false; };
   }, []);
 
+  // Challenge is created at submit time (a challenge is short-lived), timed, and capped so the screen never hangs silently.
   async function verify() {
-    setErr('');
-    const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId, code: code.trim() });
-    if (error) { setErr('That code did not work. Try the newest code from your authenticator app.'); return; }
-    await refreshAal();
+    setErr(''); setBusy(true);
+    const t0 = Date.now();
+    const withTimeout = <T,>(p: Promise<T>) =>
+      Promise.race([p, new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout after 15s')), 15000))]);
+    try {
+      const ch = await withTimeout(supabase.auth.mfa.challenge({ factorId }));
+      const t1 = Date.now();
+      if (ch.error || !ch.data) { fail('Could not check the code.', ch.error); return; }
+      const v = await withTimeout(supabase.auth.mfa.verify({ factorId, challengeId: ch.data.id, code: code.trim() }));
+      const t2 = Date.now();
+      if (__DEV__) console.log(`[mfa] challenge ${t1 - t0}ms, verify ${t2 - t1}ms, error=${v.error?.code ?? 'none'} ${v.error?.message ?? ''}`);
+      if (v.error) { fail('That code did not work. Try the newest code from your authenticator app.', v.error); return; }
+      await refreshAal();
+    } catch (e) {
+      fail('The check took too long. Check your connection and try again.', e as Error);
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -61,7 +85,7 @@ export default function MfaVerify() {
         ) : null}
         <Field label="6-digit code" value={code} onChangeText={setCode} keyboardType="number-pad" maxLength={6} />
         {err ? <Body tone="danger">{err}</Body> : null}
-        <BigButton label="Continue" onPress={verify} disabled={code.length !== 6 || !factorId} />
+        <BigButton label={busy ? 'Checking...' : 'Continue'} onPress={verify} disabled={busy || code.length !== 6 || !factorId} />
         {/* TODO(phase 2): email one-time code as backup factor; recovery flow. */}
       </Screen>
     </ScrollView>

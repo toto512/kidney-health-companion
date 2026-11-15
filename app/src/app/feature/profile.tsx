@@ -52,6 +52,7 @@ export default function Profile() {
         {err ? <Body tone="danger">{err}</Body> : null}
         {msg ? <Body>{msg}</Body> : null}
         <BigButton label={busy ? 'Saving...' : 'Save profile'} onPress={save} disabled={busy} />
+        <BigButton label="Two-step sign-in" onPress={() => router.push('/feature/two-step')} />
         <BigButton label="Back to my health" onPress={() => router.replace('/')} />
         <DisclaimerFooter />
       </Screen>

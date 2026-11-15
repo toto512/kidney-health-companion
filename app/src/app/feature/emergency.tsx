@@ -25,7 +25,7 @@ export default function Emergency() {
           const e = EMERGENCY[c];
           return (
             <View key={c} style={{ gap: 6, paddingVertical: 12, borderTopWidth: 1, borderColor: color.text }}>
-              <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{COUNTRIES.find((x) => x.code === c)?.label}: {e.number}</Text>
+              <Text style={{ fontSize: font.h2, fontWeight: '700', color: color.danger }}>{COUNTRIES.find((x) => x.code === c)?.label}: call {e.number}</Text>
               <Body>{'“'}{e.quote}{'”'}</Body>
               <Pressable accessibilityRole="link" onPress={() => Linking.openURL(e.url)}>
                 <Text style={{ fontSize: font.body, color: color.text, textDecorationLine: 'underline' }}>

@@ -1,7 +1,6 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
-import { EmergencyBanner } from '@/components/EmergencyBanner';
 import { BigButton, Body, DisclaimerFooter, H1, Screen } from '@/components/ui';
 import { CONDITIONS, EXTRAS, sourceReviewOverdue } from '@/content/conditions';
 import { countryName, isSupported } from '@/lib/profile';
@@ -20,7 +19,6 @@ export default function Conditions() {
     <ScrollView>
       <Screen>
         <H1>My conditions</H1>
-        <EmergencyBanner />
         {country === undefined ? <Body>Loading...</Body> : null}
         {country === null ? (
           <>

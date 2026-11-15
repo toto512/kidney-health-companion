@@ -4,7 +4,6 @@ import { ScrollView } from 'react-native';
 import { Select } from '@/components/Select';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Screen } from '@/components/ui';
 import { WORLD_COUNTRIES } from '@/content/countries';
-import { EmergencyBanner } from '@/components/EmergencyBanner';
 import { useAuth } from '@/lib/auth';
 import { countryName, isSupported, parseProfile, SEX_OPTIONS } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
@@ -53,7 +52,6 @@ export default function Profile() {
       <Screen>
         <H1>My profile</H1>
         {profileComplete === false ? <Body>Please fill in every field except name. The app uses them for your age, sex and body measurements.</Body> : null}
-        <EmergencyBanner />
         <Select label="Country" value={country} options={WORLD_COUNTRIES.map((c) => ({ value: c.code, label: c.name }))} onChange={setCountry} placeholder="Choose your country" searchLabel="Type a country name" />
         {country && !isSupported(country) ? <Body>Health information for {countryName(country)} is not available in this app yet. You can still save your profile and use blood pressure tracking.</Body> : null}
         <Field label="Name (optional)" value={name} onChangeText={setName} maxLength={80} />

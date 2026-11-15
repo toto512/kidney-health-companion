@@ -1,11 +1,11 @@
 import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
-import { EmergencyBanner } from '@/components/EmergencyBanner';
 import { BigButton, DisclaimerFooter, H1, Screen, Tile } from '@/components/ui';
 import { supabase } from '@/lib/supabase';
 
 // Labels here are UI only. No health facts are shown until content is sourced and verified (see plan section 3).
 const TILES = [
+  { id: 'emergency', label: 'Emergency', icon: '🚨' },
   { id: 'profile', label: 'My profile', icon: '👤' },
   { id: 'conditions', label: 'My conditions', icon: '🩺' },
   { id: 'medications', label: 'My medicines', icon: '💊' },
@@ -23,7 +23,6 @@ export default function Dashboard() {
     <ScrollView>
       <Screen>
         <H1>My health</H1>
-        <EmergencyBanner />
         <View style={{ gap: 12 }}>
           {TILES.map((t) => (
             <Tile key={t.id} label={t.label} icon={t.icon}

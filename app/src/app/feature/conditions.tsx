@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { BigButton, Body, DisclaimerFooter, H1, Screen } from '@/components/ui';
-import { CONDITIONS, sourceReviewOverdue } from '@/content/conditions';
+import { CONDITIONS, EXTRAS, sourceReviewOverdue } from '@/content/conditions';
 import { COUNTRIES, Country } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
 import { color, font } from '@/theme/tokens';
@@ -36,6 +36,8 @@ export default function Conditions() {
                 <View key={c.id} style={{ gap: 8, paddingVertical: 14, borderTopWidth: 1, borderColor: color.text }}>
                   <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{c.label}</Text>
                   <Body>{'“'}{f.quote}{'”'}</Body>
+                  {EXTRAS[`${c.id}.${country}`]?.symptoms ? <Body>Symptoms, from the same page: {'\u201C'}{EXTRAS[`${c.id}.${country}`].symptoms}{'\u201D'}</Body> : null}
+                  {EXTRAS[`${c.id}.${country}`]?.getHelp ? <Body>Getting help, from the same page: {'\u201C'}{EXTRAS[`${c.id}.${country}`].getHelp}{'\u201D'}</Body> : null}
                   <Body>Source: {f.source}{f.sourceType === 'charity' ? ' (charity, not government)' : ''}</Body>
                   <Body>Page says last reviewed: {f.pageReviewed ?? 'no date shown'}. We checked it on {f.checkedOn}.</Body>
                   {sourceReviewOverdue(f, today) ? <Body tone="danger">The source{"'"}s own review date has passed. Check the page for newer information.</Body> : null}

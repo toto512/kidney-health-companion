@@ -19,3 +19,13 @@ describe('condition content', () => {
     expect(sourceReviewOverdue(CONDITIONS[0].facts.US, new Date('2026-11-15'))).toBe(false);
   });
 });
+
+import { EXTRAS } from './conditions';
+describe('extras', () => {
+  it('only keys real condition and country pairs', () => {
+    for (const k of Object.keys(EXTRAS)) {
+      const [id, cc] = k.split('.');
+      expect(CONDITIONS.find((c) => c.id === id)?.facts[cc as 'CA']).toBeTruthy();
+    }
+  });
+});

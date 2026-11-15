@@ -60,3 +60,15 @@ export const CONDITIONS: Condition[] = [
 ];
 
 export const sourceReviewOverdue = (f: ConditionFact, today: Date) => !!f.nextReviewDue && new Date(f.nextReviewDue).getTime() < today.getTime();
+
+// Symptom and get-help quotes, verbatim, from the same page as the fact above (same source, link and check date).
+// Only complete sentences are included. Where a page's text was a partial list or lacked its lead-in, nothing is shown.
+export type ConditionExtra = { symptoms?: string; getHelp?: string };
+export const EXTRAS: Record<string, ConditionExtra> = {
+  'ckd.GB': { getHelp: 'See a GP if you have persistent or worrying symptoms that you think could be caused by kidney disease.' },
+  'gout.GB': { symptoms: 'sudden severe pain in a joint \u2013 usually your big toe, but it can be in other joints in your feet, ankles, hands, wrists, elbows or knees' },
+  'hbp.GB': { symptoms: 'High blood pressure does not usually cause any symptoms.' },
+  'gout.US': { symptoms: 'Symptoms of gout may come and go.' },
+  'hbp.US': { symptoms: 'High blood pressure usually has no signs or symptoms, so many people do not know they have it.' },
+  'heart.US': { symptoms: 'Sometimes heart disease may be "silent" and not diagnosed until a person experiences signs or symptoms of a heart attack, heart failure, or an arrhythmia.' },
+};

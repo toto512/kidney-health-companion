@@ -15,15 +15,27 @@ export default function MfaVerify() {
   const [code, setCode] = useState('');
   const [err, setErr] = useState('');
 
+  // The real service error is shown only in development builds; it never contains health data.
+  const fail = (msg: string, e?: { message?: string; code?: string } | null) =>
+    setErr(__DEV__ && e ? `${msg} (${e.code ?? ''} ${e.message ?? ''})` : msg);
+
   useEffect(() => {
+    let live = true; // guards against a double mount enrolling twice and mixing up factor and QR
     (async () => {
-      const { data: list } = await supabase.auth.mfa.listFactors();
-      const verified = list?.totp?.[0];
+      const { data: list, error: listErr } = await supabase.auth.mfa.listFactors();
+      if (!live) return;
+      if (listErr || !list) { fail('Could not read your authenticator settings.', listErr); return; }
+      const verified = list.totp?.[0];
       if (verified) { setFactorId(verified.id); return; }
-      const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp' });
-      if (error || !data) { setErr('Could not start authenticator setup.'); return; }
+      // Leftover unverified factors from earlier attempts can block a new enrolment, so clear them first.
+      for (const f of list.all.filter((x) => x.status === 'unverified')) await supabase.auth.mfa.unenroll({ factorId: f.id });
+      if (!live) return;
+      const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: `Authenticator ${Date.now()}` });
+      if (!live) return;
+      if (error || !data) { fail('Could not start authenticator setup.', error); return; }
       setFactorId(data.id); setQr(normalizeSvgDataUri(data.totp.qr_code)); setSecret(data.totp.secret); setUri(data.totp.uri);
     })();
+    return () => { live = false; };
   }, []);
 
   async function verify() {

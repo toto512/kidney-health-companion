@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Image, ScrollView } from 'react-native';
+import { Image, Linking, Pressable, ScrollView } from 'react-native';
 import { BigButton, Body, Field, H1, Screen } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
+import { normalizeSvgDataUri } from '@/lib/qr';
 import { supabase } from '@/lib/supabase';
 
 // Enrols a TOTP factor if none is verified yet, otherwise challenges the existing one.
@@ -10,6 +11,7 @@ export default function MfaVerify() {
   const [factorId, setFactorId] = useState('');
   const [qr, setQr] = useState('');
   const [secret, setSecret] = useState('');
+  const [uri, setUri] = useState('');
   const [code, setCode] = useState('');
   const [err, setErr] = useState('');
 
@@ -20,7 +22,7 @@ export default function MfaVerify() {
       if (verified) { setFactorId(verified.id); return; }
       const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp' });
       if (error || !data) { setErr('Could not start authenticator setup.'); return; }
-      setFactorId(data.id); setQr(data.totp.qr_code); setSecret(data.totp.secret);
+      setFactorId(data.id); setQr(normalizeSvgDataUri(data.totp.qr_code)); setSecret(data.totp.secret); setUri(data.totp.uri);
     })();
   }, []);
 
@@ -37,9 +39,12 @@ export default function MfaVerify() {
         <H1>Enter your 6-digit code</H1>
         {qr ? (
           <>
-            <Body>Scan this with an authenticator app, then type the code it shows.</Body>
+            <Body>Set up an authenticator app, then type the 6-digit code it shows. Any one of the three ways below works.</Body>
             <Image accessibilityLabel="Authenticator QR code" source={{ uri: qr }} style={{ width: 220, height: 220 }} />
-            <Body>Or type this key into the app: {secret}</Body>
+            <Pressable accessibilityRole="link" onPress={() => Linking.openURL(uri)}>
+              <Body>On this phone? Tap here to open your authenticator app.</Body>
+            </Pressable>
+            <Body>Or type this key into the app: {secret.match(/.{1,4}/g)?.join(' ')}</Body>
           </>
         ) : null}
         <Field label="6-digit code" value={code} onChangeText={setCode} keyboardType="number-pad" maxLength={6} />

@@ -15,7 +15,15 @@ export default function SignIn() {
   async function submit() {
     setBusy(true); setErr('');
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password, options: { captchaToken: captchaToken ?? undefined } });
-    if (error) { setErr('Sign-in failed. Check your email and password, then try again.'); setCaptchaToken(null); resetCaptcha(); }
+    if (error) {
+      const m = error.message || '';
+      if (error.status === 429 || /rate limit/i.test(m)) setErr('Too many tries. Wait a few minutes, then try again.');
+      else if (/email not confirmed/i.test(m)) setErr('Your email is not confirmed yet. Open the confirmation email first.');
+      else if (error.status === 0 || /fetch|network/i.test(m)) setErr('Cannot reach the server. Check your internet connection.');
+      else setErr('Sign-in failed. Check your email and password, then try again.');
+      if (__DEV__) console.log('[signin]', error.status, m);
+      setCaptchaToken(null); resetCaptcha();
+    }
     setBusy(false);
   }
 

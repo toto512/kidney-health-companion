@@ -1,8 +1,6 @@
-import { Link } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView } from 'react-native';
 import { Captcha, captchaEnabled, resetCaptcha } from '@/components/Captcha';
-import { BigButton, Body, DisclaimerFooter, Field, H1, Screen } from '@/components/ui';
+import { AuthScreen, BigButton, Body, Field, TextLink } from '@/components/ui';
 import { supabase } from '@/lib/supabase';
 
 // One question per screen is the target design; this first version collects only the minimum (email, password).
@@ -22,17 +20,13 @@ export default function SignUp() {
   }
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <Screen>
-        <H1>Create your account</H1>
-        <Body>This app gives information only. It is not medical advice. Talk to your doctor, nurse, or pharmacist about your health.</Body>
+    <AuthScreen title="Create your account" disclaimer>
         <Field label="Email" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" autoComplete="email" />
         <Field label="Password (at least 12 characters)" value={password} onChangeText={setPassword} secureTextEntry autoComplete="new-password" />
         <Captcha onToken={setCaptchaToken} />
         {msg ? <Body>{msg}</Body> : null}
         <BigButton label={busy ? 'Creating...' : 'Create account'} onPress={submit} disabled={busy || !email || password.length < 12 || (captchaEnabled && !captchaToken)} />
-        <Link href="/sign-in"><Body>Already have an account? Sign in</Body></Link>
-      </Screen>
-    </ScrollView>
+        <TextLink href="/sign-in" label="Already have an account? Sign in" />
+    </AuthScreen>
   );
 }

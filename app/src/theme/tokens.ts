@@ -1,6 +1,10 @@
 // Minimum body text 18, headings larger. Contrast pairs chosen for WCAG AA on white (to be verified by the Phase 2 accessibility check).
 export const color = {
-  bg: '#FFFFFF',
+  bg: '#F2F6F5',
+  surface: '#FFFFFF',
+  border: '#C9D5D1',
+  muted: '#3F4B47',
+  primaryTint: '#E2F0EC',
   text: '#111827',
   primary: '#0B5F4E',
   primaryText: '#FFFFFF',

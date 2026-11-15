@@ -1,7 +1,6 @@
-import { Link } from 'expo-router';
 import { useState } from 'react';
-import { Platform, ScrollView } from 'react-native';
-import { BigButton, Body, Field, H1, Screen } from '@/components/ui';
+import { Platform } from 'react-native';
+import { AuthScreen, BigButton, Body, Field, TextLink } from '@/components/ui';
 import { Captcha, captchaEnabled, resetCaptcha } from '@/components/Captcha';
 import { supabase } from '@/lib/supabase';
 
@@ -37,9 +36,7 @@ export default function ResetPassword() {
   }
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <Screen>
-        <H1>Reset your password</H1>
+    <AuthScreen title="Reset your password">
         <Field label="Email" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" autoComplete="email" editable={!sent} />
         {!sent && <Captcha onToken={setCaptchaToken} />}
         {sent && <Field label="6-digit code from the email" value={code} onChangeText={setCode} keyboardType="number-pad" maxLength={6} />}
@@ -47,8 +44,7 @@ export default function ResetPassword() {
         {!sent
           ? <BigButton label={busy ? 'Sending...' : 'Send code'} onPress={send} disabled={busy || !email || (captchaEnabled && !captchaToken)} />
           : <BigButton label="Continue" onPress={verify} disabled={busy || code.length !== 6} />}
-        <Link href="/sign-in"><Body>Back to sign in</Body></Link>
-      </Screen>
-    </ScrollView>
+        <TextLink href="/sign-in" label="Back to sign in" />
+    </AuthScreen>
   );
 }

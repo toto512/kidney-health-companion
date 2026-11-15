@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Image, Linking, Pressable, ScrollView } from 'react-native';
-import { BigButton, Body, Field, H1, Screen } from '@/components/ui';
+import { Image, Linking, Pressable } from 'react-native';
+import { AuthScreen, BigButton, Body, Field } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { normalizeSvgDataUri } from '@/lib/qr';
 import { supabase } from '@/lib/supabase';
@@ -79,9 +79,7 @@ export default function MfaVerify() {
   }
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <Screen>
-        <H1>Enter your 6-digit code</H1>
+    <AuthScreen title="Enter your 6-digit code">
         {qr ? (
           <>
             <Body>Set up an authenticator app, then type the 6-digit code it shows. Any one of the three ways below works.</Body>
@@ -96,7 +94,6 @@ export default function MfaVerify() {
         {err ? <Body tone="danger">{err}</Body> : null}
         <BigButton label={busy ? 'Checking...' : 'Continue'} onPress={verify} disabled={busy || code.length !== 6 || !factorId} />
         {/* TODO(phase 2): email one-time code as backup factor; recovery flow. */}
-      </Screen>
-    </ScrollView>
+    </AuthScreen>
   );
 }

@@ -1,13 +1,15 @@
 import { Session } from '@supabase/supabase-js';
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { isExpired } from './inactivity';
+import { mfaReady as isMfaReady, needsMfaCode } from './mfa';
 import { isProfileComplete } from './profile';
 import { isUnverifiedSocialUser } from './social';
+import { wasOffered } from './twoStepOffer';
 import { supabase } from './supabase';
 
 type Aal = 'aal1' | 'aal2' | null;
-type Ctx = { session: Session | null; loading: boolean; aal: Aal; needsMfa: boolean; profileComplete: boolean | null; refreshProfile: () => Promise<boolean | null>; recovery: boolean; clearRecovery: () => void; refreshAal: () => Promise<void>; touch: () => void };
-const AuthCtx = createContext<Ctx>({ session: null, loading: true, aal: null, needsMfa: false, profileComplete: null, refreshProfile: async () => null, recovery: false, clearRecovery: () => {}, refreshAal: async () => {}, touch: () => {} });
+type Ctx = { session: Session | null; loading: boolean; aal: Aal; needsMfa: boolean; profileComplete: boolean | null; refreshProfile: () => Promise<boolean | null>; offered: boolean | null; setOffered: (v: boolean) => void; recovery: boolean; clearRecovery: () => void; refreshAal: () => Promise<void>; touch: () => void };
+const AuthCtx = createContext<Ctx>({ session: null, loading: true, aal: null, needsMfa: false, profileComplete: null, refreshProfile: async () => null, offered: null, setOffered: () => {}, recovery: false, clearRecovery: () => {}, refreshAal: async () => {}, touch: () => {} });
 export const useAuth = () => useContext(AuthCtx);
 
 const INACTIVITY_MINUTES = 15;
@@ -32,9 +34,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfileComplete(v);
     return v;
   };
+  // Whether the one-time two-step offer was already shown to this account on this device. null while unknown.
+  const [offered, setOffered] = useState<boolean | null>(null);
   useEffect(() => {
-    if (session && aal.current === 'aal2') void refreshProfile(); else setProfileComplete(null);
-  }, [session?.user.id, aal.current]);
+    if (!session) { setOffered(null); return; }
+    let alive = true;
+    wasOffered(session.user.id).then((v) => { if (alive) setOffered(v); });
+    return () => { alive = false; };
+  }, [session?.user.id]);
+
+  // Ready once the session is aal2, or when the user has no verified authenticator (two-step sign-in is optional).
+  const mfaReady = isMfaReady(!!session, aal.current, aal.next);
+  useEffect(() => {
+    if (mfaReady) void refreshProfile(); else setProfileComplete(null);
+  }, [session?.user.id, aal.current, aal.next]);
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
@@ -76,10 +89,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(id);
   }, [session]);
 
-  // Force TOTP enrolment too: a user with no verified factor is aal1/aal1 and must not skip MFA.
-  const needsMfa = !!session && aal.current !== 'aal2';
+  // Two-step sign-in is optional: a code is needed only when the user has a verified authenticator (next level aal2)
+  // and this session has not passed it yet. Until the level is known the user waits on the loading state.
+  const needsMfa = needsMfaCode(!!session, aal.current, aal.next);
   return (
-    <AuthCtx.Provider value={{ session, loading, aal: aal.current, needsMfa, profileComplete, refreshProfile, recovery, clearRecovery: () => setRecovery(false), refreshAal, touch: () => { last.current = Date.now(); } }}>
+    <AuthCtx.Provider value={{ session, loading, aal: aal.current, needsMfa, profileComplete, refreshProfile, offered, setOffered, recovery, clearRecovery: () => setRecovery(false), refreshAal, touch: () => { last.current = Date.now(); } }}>
       {children}
     </AuthCtx.Provider>
   );

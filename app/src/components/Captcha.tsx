@@ -25,7 +25,12 @@ export function resetCaptcha() {
  */
 export function currentCaptchaToken(fallback: string | null): string | undefined {
   const t = (Platform.OS === 'web' && window.turnstile ? window.turnstile.getResponse(widgetId) : undefined) || fallback || undefined;
-  if (__DEV__) console.log(`[captcha] sending token: length=${t ? t.length : 0}, widget=${widgetId ?? 'none'}`); // length only, never the token
+  if (__DEV__) {
+    // Length and a short checksum only, never the token. A different checksum per attempt proves a fresh token each time.
+    let h = 5381;
+    for (const ch of t ?? '') h = ((h << 5) + h + ch.charCodeAt(0)) >>> 0;
+    console.log(`[captcha] sending token: length=${t ? t.length : 0}, checksum=${t ? h.toString(16) : 'none'}, widget=${widgetId ?? 'none'}, sitekey=${CAPTCHA_SITEKEY.slice(0, 6)}`);
+  }
   return t;
 }
 
@@ -39,6 +44,7 @@ export function Captcha({ onToken }: { onToken: (t: string | null) => void }) {
     const mount = () => {
       const el = document.getElementById('captcha-slot');
       if (!el || !window.turnstile || el.childElementCount > 0) return;
+      if (__DEV__) console.log(`[captcha] rendering widget with site key starting "${CAPTCHA_SITEKEY.slice(0, 6)}" (1x0000 = Cloudflare test key, 0x4AAA = real key)`);
       widgetId = window.turnstile.render(el, {
         sitekey: CAPTCHA_SITEKEY,
         callback: (t: string) => onToken(t),

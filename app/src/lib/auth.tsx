@@ -2,6 +2,7 @@ import { Session } from '@supabase/supabase-js';
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { isExpired } from './inactivity';
 import { isProfileComplete } from './profile';
+import { isUnverifiedSocialUser } from './social';
 import { supabase } from './supabase';
 
 type Aal = 'aal1' | 'aal2' | null;
@@ -47,12 +48,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return;
         }
       }
+      if (data.session && isUnverifiedSocialUser(data.session.user)) {
+        await supabase.auth.signOut({ scope: 'local' });
+        setSession(null);
+        setLoading(false);
+        return;
+      }
       setSession(data.session);
       if (data.session) await refreshAal();
       setLoading(false);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((event, sess) => {
       if (event === 'PASSWORD_RECOVERY') setRecovery(true);
+      if (sess && isUnverifiedSocialUser(sess.user)) { void supabase.auth.signOut({ scope: 'local' }); return; }
       setSession(sess);
       if (sess) void refreshAal();
       else setAal({ current: null, next: null });

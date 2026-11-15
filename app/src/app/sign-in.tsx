@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { SocialButtons } from '@/components/SocialButtons';
 import { Captcha, captchaEnabled, resetCaptcha } from '@/components/Captcha';
 import { AuthScreen, BigButton, Body, Field, TextLink } from '@/components/ui';
 import { isBackendConfigured, supabase } from '@/lib/supabase';
@@ -33,6 +34,7 @@ export default function SignIn() {
         <Captcha onToken={setCaptchaToken} />
         {err ? <Body tone="danger">{err}</Body> : null}
         <BigButton label={busy ? 'Signing in...' : 'Sign in'} onPress={submit} disabled={busy || !email || !password || (captchaEnabled && !captchaToken)} />
+        <SocialButtons verb="Sign in" />
         <TextLink href="/sign-up" label="New here? Create an account" />
         <TextLink href="/reset-password" label="Forgot your password?" />
     </AuthScreen>

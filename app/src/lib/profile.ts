@@ -1,11 +1,16 @@
+import { WORLD_COUNTRIES } from '../content/countries';
+
+// Health content and emergency numbers are verified only for these three. Every other country can be saved but gets no health content.
 export type Country = 'CA' | 'US' | 'GB';
 export const COUNTRIES: { code: Country; label: string }[] = [
   { code: 'CA', label: 'Canada' },
   { code: 'US', label: 'United States' },
   { code: 'GB', label: 'United Kingdom' },
 ];
+export const isSupported = (code: string | null | undefined): code is Country => code === 'CA' || code === 'US' || code === 'GB';
+export const countryName = (code: string | null | undefined) => WORLD_COUNTRIES.find((c) => c.code === code)?.name ?? code ?? '';
 
-export type ProfileInput = { name: string | null; dob: string | null; height_cm: number | null; weight_kg: number | null; country_code: Country };
+export type ProfileInput = { name: string | null; dob: string | null; height_cm: number | null; weight_kg: number | null; country_code: string };
 export type ProfileResult = { ok: true; value: ProfileInput } | { ok: false; error: string };
 
 const optNum = (s: string, min: number, max: number): number | null | 'bad' => {
@@ -17,8 +22,8 @@ const optNum = (s: string, min: number, max: number): number | null | 'bad' => {
 };
 
 // `today` is injected so the check is testable. Format is YYYY-MM-DD.
-export function parseProfile(f: { name: string; dob: string; height: string; weight: string; country: Country | '' }, today: Date): ProfileResult {
-  if (!f.country) return { ok: false, error: 'Choose your country.' };
+export function parseProfile(f: { name: string; dob: string; height: string; weight: string; country: string }, today: Date): ProfileResult {
+  if (!f.country || !WORLD_COUNTRIES.some((c) => c.code === f.country)) return { ok: false, error: 'Choose your country.' };
   const name = f.name.trim();
   if (name.length > 80) return { ok: false, error: 'Name is too long.' };
   let dob: string | null = null;

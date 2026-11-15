@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { Select } from '@/components/Select';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Screen } from '@/components/ui';
-import { COUNTRIES, Country, parseProfile } from '@/lib/profile';
+import { WORLD_COUNTRIES } from '@/content/countries';
+import { countryName, isSupported, parseProfile } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
 
 // Country decides which approved medicine list and official sources the app will use later.
@@ -12,7 +13,7 @@ export default function Profile() {
   const [dob, setDob] = useState('');
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
-  const [country, setCountry] = useState<Country | ''>('');
+  const [country, setCountry] = useState('');
   const [err, setErr] = useState('');
   const [msg, setMsg] = useState('');
   const [busy, setBusy] = useState(false);
@@ -22,7 +23,7 @@ export default function Profile() {
       const { data, error } = await supabase.from('profiles').select('name,dob,height_cm,weight_kg,country_code').maybeSingle();
       if (error) { setErr('Could not load your profile. Try again.'); return; }
       if (data) {
-        setName(data.name ?? ''); setDob(data.dob ?? ''); setCountry((data.country_code as Country) ?? '');
+        setName(data.name ?? ''); setDob(data.dob ?? ''); setCountry(data.country_code ?? '');
         setHeight(data.height_cm != null ? String(data.height_cm) : ''); setWeight(data.weight_kg != null ? String(data.weight_kg) : '');
       }
     })();
@@ -44,7 +45,8 @@ export default function Profile() {
     <ScrollView>
       <Screen>
         <H1>My profile</H1>
-        <Select label="Country" value={country} options={COUNTRIES.map((c) => ({ value: c.code, label: c.label }))} onChange={setCountry} placeholder="Choose your country" />
+        <Select label="Country" value={country} options={WORLD_COUNTRIES.map((c) => ({ value: c.code, label: c.name }))} onChange={setCountry} placeholder="Choose your country" searchLabel="Type a country name" />
+        {country && !isSupported(country) ? <Body>Health information for {countryName(country)} is not available in this app yet. You can still save your profile and use blood pressure tracking.</Body> : null}
         <Field label="Name (optional)" value={name} onChangeText={setName} maxLength={80} />
         <Field label="Date of birth, year-month-day (optional)" value={dob} onChangeText={setDob} placeholder="1950-03-27" maxLength={10} />
         <Field label="Height in cm (optional)" value={height} onChangeText={setHeight} keyboardType="decimal-pad" maxLength={5} />

@@ -4,18 +4,17 @@ import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { EmergencyBanner } from '@/components/EmergencyBanner';
 import { BigButton, Body, DisclaimerFooter, H1, Screen } from '@/components/ui';
 import { CONDITIONS, EXTRAS, sourceReviewOverdue } from '@/content/conditions';
-import { COUNTRIES, Country } from '@/lib/profile';
+import { countryName, isSupported } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
 import { color, font } from '@/theme/tokens';
 
 // Shows only verbatim official quotes with link and check date. No advice, no numbers of ours.
 export default function Conditions() {
-  const [country, setCountry] = useState<Country | null | undefined>(undefined);
+  const [country, setCountry] = useState<string | null | undefined>(undefined);
   useEffect(() => {
-    supabase.from('profiles').select('country_code').maybeSingle().then(({ data }) => setCountry((data?.country_code as Country) ?? null));
+    supabase.from('profiles').select('country_code').maybeSingle().then(({ data }) => setCountry(data?.country_code ?? null));
   }, []);
   const today = new Date();
-  const label = COUNTRIES.find((c) => c.code === country)?.label;
 
   return (
     <ScrollView>
@@ -29,9 +28,10 @@ export default function Conditions() {
             <BigButton label="Open my profile" onPress={() => router.push('/feature/profile')} />
           </>
         ) : null}
-        {country ? (
+        {country && !isSupported(country) ? <Body>Health information for {countryName(country)} is not available in this app yet. We only show text that is copied from official sources, and we have not checked any for your country.</Body> : null}
+        {isSupported(country) ? (
           <>
-            <Body>Official sources for {label}. The text below is copied word for word from each page.</Body>
+            <Body>Official sources for {countryName(country)}. The text below is copied word for word from each page.</Body>
             {CONDITIONS.map((c) => {
               const f = c.facts[country];
               return (

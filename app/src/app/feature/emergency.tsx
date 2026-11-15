@@ -5,10 +5,11 @@ import { BigButton, Body, DisclaimerFooter, H1, Screen } from '@/components/ui';
 import { EMERGENCY } from '@/content/emergency';
 import { COUNTRIES, Country, countryName, isSupported } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
-import { color, font } from '@/theme/tokens';
+import { font, useColors } from '@/theme/tokens';
 
 // Sources for the emergency number: verbatim official quote, link, review date and our check date.
 export default function Emergency() {
+  const color = useColors();
   const [country, setCountry] = useState<string | null | undefined>(undefined);
   useEffect(() => {
     supabase.from('profiles').select('country_code').maybeSingle().then(({ data }) => setCountry(data?.country_code ?? null));

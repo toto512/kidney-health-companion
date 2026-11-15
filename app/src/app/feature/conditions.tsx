@@ -5,10 +5,11 @@ import { BigButton, Body, DisclaimerFooter, H1, Screen } from '@/components/ui';
 import { CONDITIONS, EXTRAS, sourceReviewOverdue } from '@/content/conditions';
 import { countryName, isSupported } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
-import { color, font } from '@/theme/tokens';
+import { font, useColors } from '@/theme/tokens';
 
 // Shows only verbatim official quotes with link and check date. No advice, no numbers of ours.
 export default function Conditions() {
+  const color = useColors();
   const [country, setCountry] = useState<string | null | undefined>(undefined);
   useEffect(() => {
     supabase.from('profiles').select('country_code').maybeSingle().then(({ data }) => setCountry(data?.country_code ?? null));

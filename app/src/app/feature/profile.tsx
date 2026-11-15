@@ -7,12 +7,13 @@ import { BigButton, Body, DisclaimerFooter, Field, H1, Screen } from '@/componen
 import { WORLD_COUNTRIES } from '@/content/countries';
 import { useAuth } from '@/lib/auth';
 import { cmToFeetInches, countryName, HeightUnit, isSupported, kgToLb, parseHeightCm, parseProfile, parseWeightKg, SEX_OPTIONS, WeightUnit } from '@/lib/profile';
-import { color, font } from '@/theme/tokens';
+import { font, useColors } from '@/theme/tokens';
 import { supabase } from '@/lib/supabase';
 
 const UNITS_KEY = 'profile.units';
 
 function UnitToggle<T extends string>({ label, value, options, onChange }: { label: string; value: T; options: { value: T; label: string }[]; onChange: (v: T) => void }) {
+  const color = useColors();
   return (
     <View style={{ flexDirection: 'row', gap: 8 }} accessibilityRole="radiogroup" accessibilityLabel={label}>
       {options.map((o) => (

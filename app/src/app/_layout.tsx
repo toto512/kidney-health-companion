@@ -2,9 +2,10 @@ import { Redirect, Slot, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
 import { AuthProvider, useAuth } from '@/lib/auth';
-import { color } from '@/theme/tokens';
+import { useColors } from '@/theme/tokens';
 
 function Guard() {
+  const color = useColors();
   const { session, loading, needsMfa, profileComplete, recovery, touch } = useAuth();
   const path = usePathname();
   if (loading) return null;
@@ -24,7 +25,7 @@ function Guard() {
 export default function Root() {
   return (
     <AuthProvider>
-      <StatusBar style="dark" />
+      <StatusBar style="auto" />
       <Guard />
     </AuthProvider>
   );

@@ -3,12 +3,13 @@ import { Platform, Text, View } from 'react-native';
 import { BigButton, Body } from '@/components/ui';
 import { enabledProviders, SOCIAL_LABELS, SocialProvider } from '@/lib/social';
 import { supabase } from '@/lib/supabase';
-import { color, font } from '@/theme/tokens';
+import { font, useColors } from '@/theme/tokens';
 
 const PROVIDERS = enabledProviders(process.env.EXPO_PUBLIC_SOCIAL_PROVIDERS);
 
 // Web only for now. Native phone apps need deep-link handling (Phase 5), so no buttons are shown there.
 export function SocialButtons({ verb }: { verb: 'Sign in' | 'Sign up' }) {
+  const color = useColors();
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
   if (Platform.OS !== 'web' || PROVIDERS.length === 0) return null;

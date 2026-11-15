@@ -1,7 +1,8 @@
 import { router } from 'expo-router';
+import { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { DisclaimerFooter, H1, Screen } from '@/components/ui';
-import { color, font } from '@/theme/tokens';
+import { font, Palette, useColors } from '@/theme/tokens';
 
 // Labels are UI only. No health facts are shown until content is sourced and verified.
 const CATEGORIES = [
@@ -16,6 +17,8 @@ const CATEGORIES = [
 ] as const;
 
 export default function Browse() {
+  const color = useColors();
+  const s = useMemo(() => makeStyles(color), [color]);
   return (
     <ScrollView>
       <Screen>
@@ -35,7 +38,7 @@ export default function Browse() {
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (color: Palette) => StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 16 },
   cell: { flexGrow: 1, flexBasis: '45%', minHeight: 120, borderRadius: 20, borderWidth: 1, borderColor: color.border, backgroundColor: color.surface, padding: 16, justifyContent: 'center', gap: 8 },
   icon: { fontSize: 36 },

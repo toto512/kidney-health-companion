@@ -5,7 +5,7 @@ import { Select } from '@/components/Select';
 import { BigButton, Body, DisclaimerFooter, H1, Screen } from '@/components/ui';
 import { BP_LIMITS, parseReading } from '@/lib/bp';
 import { supabase } from '@/lib/supabase';
-import { color, font } from '@/theme/tokens';
+import { font, useColors } from '@/theme/tokens';
 
 // Whole numbers from the lowest to the highest value the app accepts (input limits only), nothing pre-selected.
 const range = ({ min, max }: { min: number; max: number }) => Array.from({ length: max - min + 1 }, (_, i) => ({ value: String(min + i), label: String(min + i) }));
@@ -16,6 +16,7 @@ type Row = { id: string; systolic: number; diastolic: number; pulse: number | nu
 
 // Stores and lists readings only. No Low/Medium/High labels until a sourced reference range is supplied.
 export default function BloodPressure() {
+  const color = useColors();
   const [rows, setRows] = useState<Row[]>([]);
   const [sys, setSys] = useState('');
   const [dia, setDia] = useState('');

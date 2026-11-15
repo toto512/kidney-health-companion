@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
+import { EmergencyBanner } from '@/components/EmergencyBanner';
 import { BigButton, DisclaimerFooter, H1, Screen, Tile } from '@/components/ui';
 import { supabase } from '@/lib/supabase';
 import { color } from '@/theme/tokens';
@@ -23,6 +24,7 @@ export default function Dashboard() {
     <ScrollView>
       <Screen>
         <H1>My health</H1>
+        <EmergencyBanner />
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 16 }}>
           {TILES.map((t, i) => (
             <Tile key={t.id} label={t.label} icon={t.icon} bg={color.tiles[i % color.tiles.length]}

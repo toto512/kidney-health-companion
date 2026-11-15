@@ -64,7 +64,12 @@ export default function MfaVerify() {
       const v = await withTimeout(supabase.auth.mfa.verify({ factorId, challengeId: ch.data.id, code: code.trim() }));
       const t2 = Date.now();
       if (__DEV__) console.log(`[mfa] challenge ${t1 - t0}ms, verify ${t2 - t1}ms, error=${v.error?.code ?? 'none'} ${v.error?.message ?? ''}`);
-      if (v.error) { fail('That code did not work. Try the newest code from your authenticator app.', v.error); return; }
+      if (v.error) {
+        // A repeat press after a successful verify returns 422; if the session is already aal2, just move on.
+        const { data: lvl } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+        if (lvl?.currentLevel === 'aal2') { await refreshAal(); return; }
+        fail('That code did not work. Try the newest code from your authenticator app.', v.error); return;
+      }
       await refreshAal();
     } catch (e) {
       fail('The check took too long. Check your connection and try again.', e as Error);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Image, Linking, Pressable } from 'react-native';
-import { AuthScreen, BigButton, Body, Field } from '@/components/ui';
+import { AuthScreen, BigButton, Body, Field, TextLink } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { normalizeSvgDataUri } from '@/lib/qr';
 import { supabase } from '@/lib/supabase';
@@ -93,7 +93,7 @@ export default function MfaVerify() {
         <Field label="6-digit code" value={code} onChangeText={setCode} keyboardType="number-pad" maxLength={6} />
         {err ? <Body tone="danger">{err}</Body> : null}
         <BigButton label={busy ? 'Checking...' : 'Continue'} onPress={verify} disabled={busy || code.length !== 6 || !factorId} />
-        {/* TODO(phase 2): email one-time code as backup factor; recovery flow. */}
+        {!qr ? <TextLink href="/recover" label="Lost your phone or app? Use a recovery code" /> : null}
     </AuthScreen>
   );
 }

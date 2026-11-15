@@ -46,9 +46,11 @@ export default function TwoStep() {
     const v = await supabase.auth.mfa.verify({ factorId: adding.id, challengeId: ch.data.id, code: code.trim() });
     setBusy(false);
     if (v.error) { setErr('That code did not work. Use the newest code from the new app.'); return; }
-    setAdding(null); setCode(''); setName(''); setMsg(factors.length === 0 ? 'Two-step sign-in is turned on.' : 'New authenticator added.');
+    const first = factors.length === 0;
+    setAdding(null); setCode(''); setName(''); setMsg(first ? 'Two-step sign-in is turned on.' : 'New authenticator added.');
     await load();
     await refreshAal();
+    if (first) router.replace('/feature/recovery-codes'); // make recovery codes right away, before a phone is ever lost
   }
 
   async function remove(id: string) {
@@ -96,6 +98,7 @@ export default function TwoStep() {
         )}
         {err ? <Body tone="danger">{err}</Body> : null}
         {msg ? <Body>{msg}</Body> : null}
+        {factors.length > 0 ? <BigButton label="Recovery codes" onPress={() => router.replace('/feature/recovery-codes')} /> : null}
         <BigButton label="Back to my profile" onPress={() => router.replace('/feature/profile')} />
         <DisclaimerFooter />
       </Screen>

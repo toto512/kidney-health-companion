@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isProfileComplete, isSupported, parseProfile } from './profile';
+import { cmToFeetInches, feetInchesToCm, isProfileComplete, isSupported, kgToLb, lbToKg, parseHeightCm, parseProfile, parseWeightKg } from './profile';
 
 const today = new Date('2026-11-15T00:00:00Z');
 const base = { name: 'Test User', dob: '1950-03-27', sex: 'female', height: '170', weight: '70.5', country: 'CA' };
@@ -48,5 +48,51 @@ describe('isSupported', () => {
     expect(isSupported('CA') && isSupported('US') && isSupported('GB')).toBe(true);
     expect(isSupported('FR')).toBe(false);
     expect(isSupported(null)).toBe(false);
+  });
+});
+
+describe('unit conversion', () => {
+  it('converts feet and inches to cm with 1 decimal', () => {
+    expect(feetInchesToCm(5, 10)).toBe(177.8);
+    expect(feetInchesToCm(6, 0)).toBe(182.9);
+    expect(feetInchesToCm(5, 0)).toBe(152.4);
+  });
+  it('converts cm to feet and inches, rounding to the nearest inch', () => {
+    expect(cmToFeetInches(178)).toEqual({ ft: 5, inch: 10 });
+    expect(cmToFeetInches(152.4)).toEqual({ ft: 5, inch: 0 });
+    expect(cmToFeetInches(182.9)).toEqual({ ft: 6, inch: 0 });
+    expect(cmToFeetInches(182.0)).toEqual({ ft: 6, inch: 0 });
+  });
+  it('converts lb and kg with 1 decimal', () => {
+    expect(lbToKg(200)).toBe(90.7);
+    expect(lbToKg(150)).toBe(68);
+    expect(kgToLb(92)).toBe(202.8);
+    expect(kgToLb(lbToKg(200))).toBe(200);
+  });
+  it('parses height in either unit and checks range after conversion', () => {
+    expect(parseHeightCm('cm', '178', '', '')).toBe(178);
+    expect(parseHeightCm('ft', '', '5', '10')).toBe(177.8);
+    expect(parseHeightCm('ft', '', '5', '')).toBe(152.4);
+    expect(parseHeightCm('ft', '', '5', '12')).toBe(null);
+    expect(parseHeightCm('ft', '', '', '10')).toBe(null);
+    expect(parseHeightCm('ft', '', '1', '0')).toBe(null);
+    expect(parseHeightCm('ft', '', '9', '0')).toBe(null);
+    expect(parseHeightCm('cm', '5.10', '', '')).toBe(null);
+  });
+  it('parses weight in either unit and checks range after conversion', () => {
+    expect(parseWeightKg('kg', '92')).toBe(92);
+    expect(parseWeightKg('kg', '70,5')).toBe(70.5);
+    expect(parseWeightKg('lb', '200')).toBe(90.7);
+    expect(parseWeightKg('lb', '40')).toBe(null);
+    expect(parseWeightKg('lb', '900')).toBe(null);
+    expect(parseWeightKg('kg', '')).toBe(null);
+  });
+  it('stores canonical cm and kg when entered in feet and pounds', () => {
+    const r = parseProfile({ ...base, height: '', heightFt: '5', heightIn: '10', heightUnit: 'ft', weight: '200', weightUnit: 'lb' }, today);
+    expect(r.ok && [r.value.height_cm, r.value.weight_kg]).toEqual([177.8, 90.7]);
+  });
+  it('accepts the values from the reported screenshot (178 cm, 92 kg)', () => {
+    const r = parseProfile({ ...base, sex: 'male', dob: '1980-07-21', height: '178', weight: '92' }, today);
+    expect(r.ok).toBe(true);
   });
 });

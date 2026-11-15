@@ -70,7 +70,7 @@ export default function RecoveryCodes() {
             {confirm ? <Body tone="danger">Making new codes cancels the old ones. Tap again to continue.</Body> : null}
             {twoStepOn !== false ? <BigButton label={busy ? 'Making codes...' : remaining ? 'Make new codes' : 'Make recovery codes'} onPress={make} disabled={busy || twoStepOn === null} /> : null}
             {err ? <Body tone="danger">{err}</Body> : null}
-            <BigButton label="Back to two-step sign-in" onPress={() => router.replace('/feature/two-step')} />
+            <BigButton variant="secondary" label="Back to two-step sign-in" onPress={() => router.replace('/feature/two-step')} />
           </>
         )}
         <DisclaimerFooter />

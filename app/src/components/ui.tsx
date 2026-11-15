@@ -34,6 +34,17 @@ export function BigButton({ label, onPress, disabled, variant }: { label: string
   );
 }
 
+// A rounded block that groups related content (one condition, one reading, one section of a form).
+export function Panel({ children, tone }: { children: ReactNode; tone?: 'danger' }) {
+  const s = useStyles(); const color = useColors();
+  return <View style={[s.panel, tone === 'danger' && { borderColor: color.danger, borderWidth: 2 }]}>{children}</View>;
+}
+
+export function H2({ children }: { children: ReactNode }) {
+  const s = useStyles();
+  return <Text accessibilityRole="header" style={s.h2}>{children}</Text>;
+}
+
 export function Field(props: TextInputProps & { label: string }) {
   const s = useStyles(); const color = useColors();
   const { label, ...rest } = props;
@@ -142,10 +153,12 @@ const makeStyles = (color: Palette) => StyleSheet.create({
   btn: { minHeight: MIN_TOUCH, backgroundColor: color.primary, borderRadius: 28, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.l },
   btnSecondary: { backgroundColor: color.surface, borderWidth: 2, borderColor: color.primary },
   btnText: { color: color.primaryText, fontSize: font.label, fontWeight: '700' },
-  tile: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: space.m, paddingHorizontal: space.m, borderRadius: 20, borderWidth: 1, borderColor: color.border, backgroundColor: color.surface },
+  tile: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: space.m, paddingHorizontal: space.m, borderRadius: 20, borderWidth: 1, borderColor: color.outline, backgroundColor: color.surface },
   tileIcon: { fontSize: 28 },
   tileLabel: { color: color.text, fontSize: font.label, fontWeight: '600' },
-  card: { borderRadius: 20, shadowColor: color.shadow, shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 2, borderWidth: 1, borderColor: color.border, backgroundColor: color.surface, padding: space.m, gap: space.s, minHeight: 96 },
+  card: { borderRadius: 20, shadowColor: color.shadow, shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 2, borderWidth: 1, borderColor: color.outline, backgroundColor: color.surface, padding: space.m, gap: space.s, minHeight: 96 },
+  panel: { borderRadius: 20, borderWidth: 1, borderColor: color.border, backgroundColor: color.surface, padding: space.m, gap: space.m },
+  h2: { fontSize: font.h2, fontWeight: '700', color: color.text },
   cardHead: { flexDirection: 'row', alignItems: 'center', gap: space.s },
   cardIcon: { fontSize: 24 },
   cardTitle: { flex: 1, color: color.text, fontSize: font.label, fontWeight: '700' },

@@ -88,7 +88,7 @@ export default function TwoStep() {
             <Body>Or type this key into the app: {adding.secret.match(/.{1,4}/g)?.join(' ')}</Body>
             <Field label="6-digit code" value={code} onChangeText={setCode} keyboardType="number-pad" maxLength={6} />
             <BigButton label={busy ? 'Checking...' : 'Confirm new authenticator'} onPress={confirmAdd} disabled={busy || code.length !== 6} />
-            <BigButton label="Cancel" onPress={() => { setAdding(null); setCode(''); }} disabled={busy} />
+            <BigButton variant="secondary" label="Cancel" onPress={() => { setAdding(null); setCode(''); }} disabled={busy} />
           </>
         ) : (
           <>
@@ -98,8 +98,8 @@ export default function TwoStep() {
         )}
         {err ? <Body tone="danger">{err}</Body> : null}
         {msg ? <Body>{msg}</Body> : null}
-        {factors.length > 0 ? <BigButton label="Recovery codes" onPress={() => router.replace('/feature/recovery-codes')} /> : null}
-        <BigButton label="Back to my profile" onPress={() => router.replace('/feature/profile')} />
+        {factors.length > 0 ? <BigButton variant="secondary" label="Recovery codes" onPress={() => router.replace('/feature/recovery-codes')} /> : null}
+        <BigButton variant="secondary" label="Back to my profile" onPress={() => router.replace('/feature/profile')} />
         <DisclaimerFooter />
       </Screen>
     </ScrollView>

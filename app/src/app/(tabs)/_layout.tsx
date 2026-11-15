@@ -11,8 +11,8 @@ export default function TabsLayout() {
       headerShown: false,
       tabBarActiveTintColor: color.primary,
       tabBarInactiveTintColor: color.muted,
-      tabBarLabelStyle: { fontSize: 16, fontWeight: '700' },
-      tabBarStyle: { backgroundColor: color.surface, borderTopColor: color.border, height: 76, paddingTop: 6, paddingBottom: 8 },
+      tabBarLabelStyle: { fontSize: 18, fontWeight: '700' },
+      tabBarStyle: { backgroundColor: color.surface, borderTopColor: color.border, height: 84, paddingTop: 6, paddingBottom: 8 },
       tabBarItemStyle: { minHeight: 56 },
     }}>
       <Tabs.Screen name="index" options={{ title: 'Today', tabBarIcon: icon('🏠'), tabBarAccessibilityLabel: 'Today' }} />

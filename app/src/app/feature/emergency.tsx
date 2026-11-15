@@ -1,15 +1,33 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
-import { BigButton, Body, DisclaimerFooter, H1, Screen } from '@/components/ui';
+import { Linking, Pressable, ScrollView, Text } from 'react-native';
+import { BigButton, Body, DisclaimerFooter, H1, Panel, Screen } from '@/components/ui';
 import { EMERGENCY, emergencyView, LISTED_EMERGENCY } from '@/content/emergency';
 import { COUNTRIES, Country, countryName } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
 
+type EntryProps = { place: string; number: string; quote: string; lang?: string; source: string; url: string; reviewed: string; checked: string };
+
+// One country's number as a large line, then the exact official quote and where it came from.
+function Entry({ place, number, quote, lang, source, url, reviewed, checked }: EntryProps) {
+  const color = useColors();
+  return (
+    <Panel tone="danger">
+      <Text style={{ fontSize: font.body, fontWeight: '600', color: color.muted }}>{place}</Text>
+      <Text accessibilityRole="header" style={{ fontSize: 34, lineHeight: 42, fontWeight: '800', color: color.danger }}>Call {number}</Text>
+      <Body>{'\u201C'}{quote}{'\u201D'}{lang ? ` (quoted in ${lang})` : ''}</Body>
+      <Pressable accessibilityRole="link" onPress={() => Linking.openURL(url)} style={{ minHeight: 56, justifyContent: 'center' }}>
+        <Text style={{ fontSize: font.body, color: color.primary, textDecorationLine: 'underline', lineHeight: font.body * 1.4 }}>
+          {source}. Page {reviewed}. Checked {checked}.
+        </Text>
+      </Pressable>
+    </Panel>
+  );
+}
+
 // Sources for the emergency number: verbatim official quote, link, review date and our check date.
 export default function Emergency() {
-  const color = useColors();
   const [country, setCountry] = useState<string | null | undefined>(undefined);
   // Reads the saved country every time the screen comes into view, so a country changed in the profile shows at once.
   useFocusEffect(useCallback(() => {
@@ -25,37 +43,17 @@ export default function Emergency() {
         <H1>Emergency numbers</H1>
         {country === undefined ? <Body>Loading.</Body> : null}
         {view.kind === 'none' ? (
-          <Body>We have no checked emergency number for {countryName(country)} in this app yet. Find your local emergency number now and keep it where you can see it.</Body>
+          <Panel><Body>We have no checked emergency number for {countryName(country)} in this app yet. Find your local emergency number now and keep it where you can see it.</Body></Panel>
         ) : null}
         {view.kind === 'listed' && country !== undefined ? (() => {
           const e = LISTED_EMERGENCY[view.code];
-          return (
-            <View style={{ gap: 6, paddingVertical: 12, borderTopWidth: 1, borderColor: color.text }}>
-              <Text style={{ fontSize: font.h2, fontWeight: '700', color: color.danger }}>{countryName(view.code)}: call {e.number}</Text>
-              <Body>{'“'}{e.quote}{'”'}{e.lang ? ` (quoted in ${e.lang})` : ''}</Body>
-              <Pressable accessibilityRole="link" onPress={() => Linking.openURL(e.url)}>
-                <Text style={{ fontSize: font.body, color: color.text, textDecorationLine: 'underline' }}>
-                  {e.source}, page {e.pageReviewed ?? 'review date not shown'}, checked {e.checkedOn}
-                </Text>
-              </Pressable>
-            </View>
-          );
+          return <Entry place={countryName(view.code)} number={e.number} quote={e.quote} lang={e.lang} source={e.source} url={e.url} reviewed={e.pageReviewed ?? 'review date not shown'} checked={e.checkedOn} />;
         })() : null}
         {shown.map((c) => {
           const e = EMERGENCY[c];
-          return (
-            <View key={c} style={{ gap: 6, paddingVertical: 12, borderTopWidth: 1, borderColor: color.text }}>
-              <Text style={{ fontSize: font.h2, fontWeight: '700', color: color.danger }}>{COUNTRIES.find((x) => x.code === c)?.label}: call {e.number}</Text>
-              <Body>{'“'}{e.quote}{'”'}</Body>
-              <Pressable accessibilityRole="link" onPress={() => Linking.openURL(e.url)}>
-                <Text style={{ fontSize: font.body, color: color.text, textDecorationLine: 'underline' }}>
-                  {e.source}, page reviewed {e.pageReviewed ?? 'date not shown'}, checked {e.checkedOn}
-                </Text>
-              </Pressable>
-            </View>
-          );
+          return <Entry key={c} place={COUNTRIES.find((x) => x.code === c)?.label ?? c} number={e.number} quote={e.quote} source={e.source} url={e.url} reviewed={e.pageReviewed ? `reviewed ${e.pageReviewed}` : 'review date not shown'} checked={e.checkedOn} />;
         })}
-        <BigButton label="Back" onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} />
+        <BigButton variant="secondary" label="Back" onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} />
         <DisclaimerFooter />
       </Screen>
     </ScrollView>

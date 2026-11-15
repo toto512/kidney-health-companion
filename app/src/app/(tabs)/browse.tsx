@@ -40,7 +40,7 @@ export default function Browse() {
 
 const makeStyles = (color: Palette) => StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 16 },
-  cell: { flexGrow: 1, flexBasis: '45%', minHeight: 120, borderRadius: 20, borderWidth: 1, borderColor: color.border, backgroundColor: color.surface, padding: 16, justifyContent: 'center', gap: 8 },
+  cell: { flexGrow: 1, flexBasis: '45%', minHeight: 120, borderRadius: 20, borderWidth: 1, borderColor: color.outline, backgroundColor: color.surface, padding: 16, justifyContent: 'center', gap: 8 },
   icon: { fontSize: 36 },
   label: { color: color.text, fontSize: font.label, fontWeight: '700' },
 });

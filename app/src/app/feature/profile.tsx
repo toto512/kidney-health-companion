@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Select } from '@/components/Select';
-import { BigButton, Body, DisclaimerFooter, Field, H1, Screen } from '@/components/ui';
+import { BigButton, Body, DisclaimerFooter, Field, H1, H2, Panel, Screen } from '@/components/ui';
 import { WORLD_COUNTRIES } from '@/content/countries';
 import { useAuth } from '@/lib/auth';
 import { cmToFeetInches, countryName, HeightUnit, isSupported, kgToLb, parseHeightCm, parseProfile, parseWeightKg, SEX_OPTIONS, WeightUnit } from '@/lib/profile';
@@ -106,11 +106,16 @@ export default function Profile() {
       <Screen>
         <H1>My profile</H1>
         {profileComplete === false ? <Body>Please fill in every field except name. The app uses them for your age, sex and body measurements.</Body> : null}
+        <Panel>
+          <H2>About you</H2>
         <Select label="Country" value={country} options={WORLD_COUNTRIES.map((c) => ({ value: c.code, label: c.name }))} onChange={edit(setCountry)} placeholder="Choose your country" searchLabel="Type a country name" />
         {country && !isSupported(country) ? <Body>Health information for {countryName(country)} is not available in this app yet. You can still save your profile and use blood pressure tracking.</Body> : null}
         <Field label="Name (optional)" value={name} onChangeText={edit(setName)} maxLength={80} />
         <Select label="Sex at birth" value={sex} options={SEX_OPTIONS} onChange={edit(setSex)} placeholder="Choose" searchable={false} />
         <Field label="Date of birth, year-month-day" value={dob} onChangeText={edit(setDob)} placeholder="1950-03-27" maxLength={10} />
+        </Panel>
+        <Panel>
+          <H2>Body measurements</H2>
         <UnitToggle label="Height unit" value={hUnit} options={[{ value: 'cm', label: 'cm' }, { value: 'ft', label: 'feet and inches' }]} onChange={(v) => { const cur = parseHeightCm(hUnit, height, heightFt, heightIn); if (cur !== null) setCmDb(cur); else { setHeight(''); setHeightFt(''); setHeightIn(''); } setHUnit(v); pickUnits(v, wUnit); }} />
         {hUnit === 'cm'
           ? <Field label="Height in cm" value={height} onChangeText={edit(setHeight)} keyboardType="decimal-pad" maxLength={5} />
@@ -120,11 +125,12 @@ export default function Profile() {
             </>}
         <UnitToggle label="Weight unit" value={wUnit} options={[{ value: 'kg', label: 'kg' }, { value: 'lb', label: 'lb' }]} onChange={(v) => { const cur = parseWeightKg(wUnit, weight); if (cur !== null) setKgDb(cur); else setWeight(''); setWUnit(v); pickUnits(hUnit, v); }} />
         <Field label={wUnit === 'kg' ? 'Weight in kg' : 'Weight in lb'} value={weight} onChangeText={edit(setWeight)} keyboardType="decimal-pad" maxLength={5} />
+        </Panel>
         {err ? <Body tone="danger">{err}</Body> : null}
         {msg ? <Body>{msg}</Body> : null}
         <BigButton label={busy ? 'Saving...' : 'Save profile'} onPress={save} disabled={busy} />
-        <BigButton label="Two-step sign-in" onPress={() => router.push('/feature/two-step')} />
-        <BigButton label="Back to my health" onPress={() => router.replace('/')} />
+        <BigButton variant="secondary" label="Two-step sign-in" onPress={() => router.push('/feature/two-step')} />
+        <BigButton variant="secondary" label="Back to my health" onPress={() => router.replace('/')} />
         <DisclaimerFooter />
       </Screen>
     </ScrollView>

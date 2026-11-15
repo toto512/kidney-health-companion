@@ -1,8 +1,9 @@
 import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
-import { BigButton, Body, DisclaimerFooter, Field, H1, Screen } from '@/components/ui';
-import { parseReading } from '@/lib/bp';
+import { NumberField } from '@/components/NumberField';
+import { BigButton, Body, DisclaimerFooter, H1, Screen } from '@/components/ui';
+import { BP_LIMITS, parseReading } from '@/lib/bp';
 import { supabase } from '@/lib/supabase';
 import { color, font } from '@/theme/tokens';
 
@@ -47,10 +48,10 @@ export default function BloodPressure() {
     <ScrollView>
       <Screen>
         <H1>Blood pressure</H1>
-        <Body>Type the numbers from your blood pressure monitor.</Body>
-        <Field label="Top number (systolic)" value={sys} onChangeText={setSys} keyboardType="number-pad" maxLength={3} />
-        <Field label="Bottom number (diastolic)" value={dia} onChangeText={setDia} keyboardType="number-pad" maxLength={3} />
-        <Field label="Pulse (optional)" value={pulse} onChangeText={setPulse} keyboardType="number-pad" maxLength={3} />
+        <Body>Type the numbers from your blood pressure monitor, or choose them from a list.</Body>
+        <NumberField label="Top number (systolic)" value={sys} onChange={setSys} {...BP_LIMITS.systolic} jumpStep={20} />
+        <NumberField label="Bottom number (diastolic)" value={dia} onChange={setDia} {...BP_LIMITS.diastolic} jumpStep={20} />
+        <NumberField label="Pulse (optional)" value={pulse} onChange={setPulse} {...BP_LIMITS.pulse} jumpStep={20} />
         {err ? <Body tone="danger">{err}</Body> : null}
         <BigButton label={busy ? 'Saving...' : 'Save reading'} onPress={save} disabled={busy || !sys || !dia} />
         <H1>My readings</H1>

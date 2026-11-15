@@ -20,3 +20,14 @@ describe('parseReading', () => {
     expect(parseReading('70', '90', '').ok).toBe(false);
   });
 });
+
+import { BP_LIMITS } from './bp';
+describe('BP_LIMITS', () => {
+  it('matches what parseReading accepts at both ends', () => {
+    expect(parseReading(String(BP_LIMITS.systolic.max), String(BP_LIMITS.diastolic.min), String(BP_LIMITS.pulse.min)).ok).toBe(true);
+    expect(parseReading(String(BP_LIMITS.systolic.min + 1), String(BP_LIMITS.diastolic.min), String(BP_LIMITS.pulse.max)).ok).toBe(true);
+    expect(parseReading(String(BP_LIMITS.systolic.max + 1), '80', '').ok).toBe(false);
+    expect(parseReading('120', String(BP_LIMITS.diastolic.min - 1), '').ok).toBe(false);
+    expect(parseReading('120', '80', String(BP_LIMITS.pulse.max + 1)).ok).toBe(false);
+  });
+});

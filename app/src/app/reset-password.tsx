@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Platform } from 'react-native';
 import { AuthScreen, BigButton, Body, Field, TextLink } from '@/components/ui';
 import { Captcha, captchaEnabled, currentCaptchaToken, resetCaptcha } from '@/components/Captcha';
+import { siteUrl } from '@/lib/siteUrl';
 import { supabase } from '@/lib/supabase';
 
 // Step 1: email a reset message. Step 2: enter the 6-digit code from that email (never a password by email).
@@ -19,7 +19,7 @@ export default function ResetPassword() {
     await supabase.auth.resetPasswordForEmail(email.trim(), {
       captchaToken: currentCaptchaToken(captchaToken),
       // Link flow (works with Supabase's default template): the link returns here and starts a recovery session.
-      redirectTo: Platform.OS === 'web' ? window.location.origin : undefined,
+      redirectTo: siteUrl(),
     });
     setCaptchaToken(null); resetCaptcha();
     // Same message whether or not the address exists, so the form cannot be used to find accounts.

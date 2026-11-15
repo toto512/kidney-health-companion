@@ -2,9 +2,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
+import { hashIsRecovery } from './siteUrlLogic';
 
 const url = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+// Captured before createClient: supabase-js removes the URL hash after reading the reset-link tokens, and can announce
+// PASSWORD_RECOVERY before our listener exists. This flag keeps the app on the new-password step either way.
+export const openedFromRecoveryLink = Platform.OS === 'web' && typeof window !== 'undefined' && hashIsRecovery(window.location.hash);
 
 export const isBackendConfigured = url.length > 0 && anonKey.length > 0;
 

@@ -5,7 +5,7 @@ import { mfaReady as isMfaReady, needsMfaCode } from './mfa';
 import { isProfileComplete } from './profile';
 import { isUnverifiedSocialUser } from './social';
 import { wasOffered } from './twoStepOffer';
-import { supabase } from './supabase';
+import { openedFromRecoveryLink, supabase } from './supabase';
 
 type Aal = 'aal1' | 'aal2' | null;
 type Ctx = { session: Session | null; loading: boolean; aal: Aal; needsMfa: boolean; profileComplete: boolean | null; refreshProfile: () => Promise<boolean | null>; offered: boolean | null; setOffered: (v: boolean) => void; recovery: boolean; clearRecovery: () => void; refreshAal: () => Promise<void>; touch: () => void };
@@ -19,7 +19,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [aal, setAal] = useState<{ current: Aal; next: Aal }>({ current: null, next: null });
   const last = useRef(Date.now());
-  const [recovery, setRecovery] = useState(false);
+  const [recovery, setRecovery] = useState(openedFromRecoveryLink);
   const [profileComplete, setProfileComplete] = useState<boolean | null>(null);
 
   const refreshAal = async () => {
@@ -69,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       setSession(data.session);
       if (data.session) await refreshAal();
+      else setRecovery(false); // an expired or already-used reset link gives no session, so do not keep waiting on the new-password step
       setLoading(false);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((event, sess) => {

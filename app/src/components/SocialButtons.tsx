@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Platform, Text, View } from 'react-native';
 import { BigButton, Body } from '@/components/ui';
 import { enabledProviders, SOCIAL_LABELS, SocialProvider } from '@/lib/social';
+import { siteUrl } from '@/lib/siteUrl';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
 
@@ -18,7 +19,7 @@ export function SocialButtons({ verb }: { verb: 'Sign in' | 'Sign up' }) {
     setErr(''); setBusy(true);
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: window.location.origin, scopes: provider === 'azure' ? 'email' : undefined },
+      options: { redirectTo: siteUrl(), scopes: provider === 'azure' ? 'email' : undefined },
     });
     if (error) { setErr(`Could not start ${SOCIAL_LABELS[provider]} sign-in. Try again, or use your email and password.`); setBusy(false); }
   }

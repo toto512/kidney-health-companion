@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { SocialButtons } from '@/components/SocialButtons';
 import { Captcha, captchaEnabled, currentCaptchaToken, resetCaptcha } from '@/components/Captcha';
 import { AuthScreen, BigButton, Body, Field, TextLink } from '@/components/ui';
+import { siteUrl } from '@/lib/siteUrl';
 import { supabase } from '@/lib/supabase';
 
 // One question per screen is the target design; this first version collects only the minimum (email, password).
@@ -14,7 +15,7 @@ export default function SignUp() {
 
   async function submit() {
     setBusy(true); setMsg('');
-    const { error } = await supabase.auth.signUp({ email: email.trim(), password, options: { captchaToken: currentCaptchaToken(captchaToken) } });
+    const { error } = await supabase.auth.signUp({ email: email.trim(), password, options: { captchaToken: currentCaptchaToken(captchaToken), emailRedirectTo: siteUrl() } });
     setCaptchaToken(null); resetCaptcha();
     setMsg(error ? 'Could not create the account. Try a longer password or a different email.' : 'Check your email to confirm your account, then sign in.');
     setBusy(false);

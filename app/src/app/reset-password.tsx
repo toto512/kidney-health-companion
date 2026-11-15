@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Platform } from 'react-native';
 import { AuthScreen, BigButton, Body, Field, TextLink } from '@/components/ui';
-import { Captcha, captchaEnabled, resetCaptcha } from '@/components/Captcha';
+import { Captcha, captchaEnabled, currentCaptchaToken, resetCaptcha } from '@/components/Captcha';
 import { supabase } from '@/lib/supabase';
 
 // Step 1: email a reset message. Step 2: enter the 6-digit code from that email (never a password by email).
@@ -17,7 +17,7 @@ export default function ResetPassword() {
   async function send() {
     setBusy(true); setMsg('');
     await supabase.auth.resetPasswordForEmail(email.trim(), {
-      captchaToken: captchaToken ?? undefined,
+      captchaToken: currentCaptchaToken(captchaToken),
       // Link flow (works with Supabase's default template): the link returns here and starts a recovery session.
       redirectTo: Platform.OS === 'web' ? window.location.origin : undefined,
     });

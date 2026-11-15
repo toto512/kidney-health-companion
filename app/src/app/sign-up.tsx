@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { SocialButtons } from '@/components/SocialButtons';
-import { Captcha, captchaEnabled, resetCaptcha } from '@/components/Captcha';
+import { Captcha, captchaEnabled, currentCaptchaToken, resetCaptcha } from '@/components/Captcha';
 import { AuthScreen, BigButton, Body, Field, TextLink } from '@/components/ui';
 import { supabase } from '@/lib/supabase';
 
@@ -14,7 +14,7 @@ export default function SignUp() {
 
   async function submit() {
     setBusy(true); setMsg('');
-    const { error } = await supabase.auth.signUp({ email: email.trim(), password, options: { captchaToken: captchaToken ?? undefined } });
+    const { error } = await supabase.auth.signUp({ email: email.trim(), password, options: { captchaToken: currentCaptchaToken(captchaToken) } });
     setCaptchaToken(null); resetCaptcha();
     setMsg(error ? 'Could not create the account. Try a longer password or a different email.' : 'Check your email to confirm your account, then sign in.');
     setBusy(false);

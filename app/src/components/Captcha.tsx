@@ -7,7 +7,7 @@ export const captchaEnabled = CAPTCHA_SITEKEY.length > 0;
 
 declare global {
   interface Window {
-    turnstile?: { render: (el: HTMLElement, o: Record<string, unknown>) => string; reset: (id?: string) => void };
+    turnstile?: { render: (el: HTMLElement, o: Record<string, unknown>) => string; reset: (id?: string) => void; remove: (id?: string) => void; getResponse: (id?: string) => string | undefined };
   }
 }
 
@@ -17,6 +17,16 @@ let widgetId: string | undefined;
 /** Resets the widget after a failed or used attempt (tokens are single use). */
 export function resetCaptcha() {
   if (Platform.OS === 'web' && window.turnstile) window.turnstile.reset(widgetId);
+}
+
+/**
+ * The token the widget holds right now. Read at submit time so a stale copy in React state is never sent.
+ * Falls back to the given value (the state copy) if the widget reports none.
+ */
+export function currentCaptchaToken(fallback: string | null): string | undefined {
+  const t = (Platform.OS === 'web' && window.turnstile ? window.turnstile.getResponse(widgetId) : undefined) || fallback || undefined;
+  if (__DEV__) console.log(`[captcha] sending token: length=${t ? t.length : 0}, widget=${widgetId ?? 'none'}`); // length only, never the token
+  return t;
 }
 
 /**
@@ -36,10 +46,22 @@ export function Captcha({ onToken }: { onToken: (t: string | null) => void }) {
         'error-callback': () => onToken(null),
       });
     };
-    if (window.turnstile) { mount(); return; }
-    const s = document.createElement('script');
-    s.src = SCRIPT; s.async = true; s.onload = mount;
-    document.head.appendChild(s);
+    // One script tag only; a second mount before it loads waits on the same tag.
+    let tag = document.querySelector<HTMLScriptElement>(`script[src="${SCRIPT}"]`);
+    if (window.turnstile) mount();
+    else if (tag) tag.addEventListener('load', mount);
+    else {
+      tag = document.createElement('script');
+      tag.src = SCRIPT; tag.async = true; tag.onload = mount;
+      document.head.appendChild(tag);
+    }
+    // Remove the widget when the screen goes away so an old widget never leaves a stale token behind.
+    return () => {
+      tag?.removeEventListener('load', mount);
+      if (window.turnstile && widgetId) { try { window.turnstile.remove(widgetId); } catch { /* already gone */ } }
+      widgetId = undefined;
+      onToken(null);
+    };
   }, [onToken]);
 
   if (!captchaEnabled) return null;

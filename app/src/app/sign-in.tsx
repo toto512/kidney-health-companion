@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { SocialButtons } from '@/components/SocialButtons';
-import { Captcha, captchaEnabled, resetCaptcha } from '@/components/Captcha';
+import { Captcha, captchaEnabled, currentCaptchaToken, resetCaptcha } from '@/components/Captcha';
 import { AuthScreen, BigButton, Body, Field, TextLink } from '@/components/ui';
 import { isBackendConfigured, supabase } from '@/lib/supabase';
 
@@ -13,7 +13,7 @@ export default function SignIn() {
 
   async function submit() {
     setBusy(true); setErr('');
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password, options: { captchaToken: captchaToken ?? undefined } });
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password, options: { captchaToken: currentCaptchaToken(captchaToken) } });
     if (error) {
       const m = error.message || '';
       if (error.status === 429 || /rate limit/i.test(m)) setErr('Too many tries. Wait a few minutes, then try again.');

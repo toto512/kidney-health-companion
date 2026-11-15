@@ -24,3 +24,15 @@ export function redeemResult(data: unknown, error: { message?: string } | null):
   }
   return data === true ? 'ok' : 'wrong';
 }
+
+export type GenerateError = 'missing' | 'off' | 'aal2' | 'signedOut' | 'other';
+
+// Maps the error from generate_recovery_codes. PGRST202 / "Could not find the function" means migration 0006 was not run.
+export function generateError(error: { message?: string; code?: string; status?: number } | null): GenerateError {
+  const m = `${error?.code ?? ''} ${error?.message ?? ''}`;
+  if (/PGRST202|Could not find the function|schema cache/i.test(m) || error?.status === 404) return 'missing';
+  if (/two_step_off/.test(m)) return 'off';
+  if (/aal2_required/.test(m)) return 'aal2';
+  if (/not_signed_in/.test(m) || error?.status === 401) return 'signedOut';
+  return 'other';
+}

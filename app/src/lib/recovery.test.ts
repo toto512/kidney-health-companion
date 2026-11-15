@@ -27,3 +27,15 @@ describe('redeemResult', () => {
     expect(redeemResult(null, { message: 'boom' })).toBe('error');
   });
 });
+
+import { generateError } from './recovery';
+describe('generateError', () => {
+  it('tells a missing migration from the other cases', () => {
+    expect(generateError({ code: 'PGRST202', message: 'Could not find the function public.generate_recovery_codes without parameters in the schema cache' })).toBe('missing');
+    expect(generateError({ message: 'two_step_off' })).toBe('off');
+    expect(generateError({ message: 'aal2_required' })).toBe('aal2');
+    expect(generateError({ message: 'not_signed_in' })).toBe('signedOut');
+    expect(generateError({ message: 'boom' })).toBe('other');
+    expect(generateError(null)).toBe('other');
+  });
+});

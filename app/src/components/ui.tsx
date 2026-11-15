@@ -1,7 +1,7 @@
 import { Link, Href } from 'expo-router';
 import { ReactNode, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
-import { font, MIN_TOUCH, Palette, space, useColors } from '@/theme/tokens';
+import { AccentName, font, mix, MIN_TOUCH, Palette, space, useColors } from '@/theme/tokens';
 import { DISCLAIMER } from '@/lib/disclaimer';
 
 export function Screen({ children }: { children: ReactNode }) {
@@ -67,13 +67,24 @@ export function Tile({ label, icon, onPress }: { label: string; icon: string; bg
   );
 }
 
-export function Card({ title, icon, onPress, tone, children }: { title: string; icon: string; onPress: () => void; tone?: 'danger'; children?: ReactNode }) {
+// Icon on a soft rounded square in the category colour.
+export function CategoryBadge({ icon, accent, size = 48 }: { icon: string; accent: AccentName; size?: number }) {
+  const color = useColors();
+  return (
+    <View accessible={false} style={{ width: size, height: size, borderRadius: size * 0.3, alignItems: 'center', justifyContent: 'center', backgroundColor: mix(color.accent[accent], color.surface, 0.16) }}>
+      <Text style={{ fontSize: size * 0.5 }}>{icon}</Text>
+    </View>
+  );
+}
+
+export function Card({ title, icon, onPress, tone, accent, children }: { title: string; icon: string; onPress: () => void; tone?: 'danger'; accent?: AccentName; children?: ReactNode }) {
   const s = useStyles(); const color = useColors();
+  const titleColor = tone === 'danger' ? color.danger : accent ? color.accent[accent] : color.text;
   return (
     <Pressable accessibilityRole="button" accessibilityLabel={title} onPress={onPress} style={[s.card, tone === 'danger' && { borderColor: color.danger, borderWidth: 2 }]}>
       <View style={s.cardHead}>
-        <Text style={s.cardIcon} accessible={false}>{icon}</Text>
-        <Text style={[s.cardTitle, tone === 'danger' && { color: color.danger }]}>{title}</Text>
+        {accent || tone === 'danger' ? <CategoryBadge icon={icon} accent={accent ?? 'red'} size={44} /> : <Text style={s.cardIcon} accessible={false}>{icon}</Text>}
+        <Text style={[s.cardTitle, { color: titleColor }]}>{title}</Text>
         <Text style={s.chev} accessible={false}>›</Text>
       </View>
       {children}
@@ -81,9 +92,35 @@ export function Card({ title, icon, onPress, tone, children }: { title: string; 
   );
 }
 
-export function CardValue({ children }: { children: ReactNode }) {
+// A big number in the category colour, with a small unit beside it.
+export function CardValue({ children, accent, unit }: { children: ReactNode; accent?: AccentName; unit?: string }) {
   const s = useStyles(); const color = useColors();
-  return <Text style={s.cardValue}>{children}</Text>;
+  return (
+    <Text style={[s.cardValue, accent && { color: color.accent[accent] }]}>
+      {children}{unit ? <Text style={s.cardUnit}> {unit}</Text> : null}
+    </Text>
+  );
+}
+
+// A dismissible tip card. The close button is a full-size tap target.
+export function Suggestion({ label, title, body, action, onAction, onDismiss }: { label: string; title: string; body: string; action: string; onAction: () => void; onDismiss: () => void }) {
+  const s = useStyles(); const color = useColors();
+  return (
+    <View style={s.card}>
+      <View style={s.cardHead}>
+        <Text style={[s.cardTitle, { fontSize: font.body, color: color.muted, textTransform: 'uppercase', letterSpacing: 0.5 }]}>{label}</Text>
+        <Pressable accessibilityRole="button" accessibilityLabel={`Dismiss: ${title}`} onPress={onDismiss} hitSlop={8}
+          style={{ width: MIN_TOUCH, height: MIN_TOUCH, borderRadius: MIN_TOUCH / 2, alignItems: 'center', justifyContent: 'center', marginRight: -8, marginTop: -8 }}>
+          <Text style={{ fontSize: 26, color: color.muted }} accessible={false}>✕</Text>
+        </Pressable>
+      </View>
+      <Text style={[s.cardTitle, { flex: 0 }]}>{title}</Text>
+      <Text style={s.cardNote}>{body}</Text>
+      <Pressable accessibilityRole="button" accessibilityLabel={action} onPress={onAction} style={{ minHeight: MIN_TOUCH, justifyContent: 'center' }}>
+        <Text style={{ fontSize: font.label, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>{action}</Text>
+      </Pressable>
+    </View>
+  );
 }
 
 export function CardNote({ children }: { children: ReactNode }) {
@@ -145,7 +182,7 @@ function useStyles() {
 
 const makeStyles = (color: Palette) => StyleSheet.create({
   screen: { flex: 1, backgroundColor: color.bg, padding: space.l, gap: space.m, width: '100%', maxWidth: 640, alignSelf: 'center' },
-  h1: { fontSize: font.h1, fontWeight: '700', color: color.text },
+  h1: { fontSize: 36, lineHeight: 42, fontWeight: '800', color: color.text },
   body: { fontSize: font.body, color: color.text, lineHeight: font.body * 1.4 },
   label: { fontSize: font.label, fontWeight: '600', color: color.text },
   input: { fontSize: font.label, minHeight: MIN_TOUCH, borderWidth: 2, borderColor: color.inputBorder, backgroundColor: color.surface, borderRadius: 14, paddingHorizontal: space.m, color: color.text },
@@ -163,7 +200,8 @@ const makeStyles = (color: Palette) => StyleSheet.create({
   cardIcon: { fontSize: 24 },
   cardTitle: { flex: 1, color: color.text, fontSize: font.label, fontWeight: '700' },
   chev: { fontSize: 28, color: color.muted },
-  cardValue: { color: color.text, fontSize: 34, fontWeight: '700' },
+  cardValue: { color: color.text, fontSize: 40, lineHeight: 48, fontWeight: '800' },
+  cardUnit: { color: color.muted, fontSize: font.label, fontWeight: '600' },
   cardNote: { color: color.muted, fontSize: font.body, lineHeight: font.body * 1.4 },
   brand: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12 },
   mark: { width: 48, height: 48, borderRadius: 14, backgroundColor: color.primary, alignItems: 'center', justifyContent: 'center' },

@@ -13,8 +13,9 @@ export default function Me() {
           <Tile label="Two-step sign-in" icon="🔐" onPress={() => router.push('/feature/two-step')} />
           <Tile label="Settings" icon="⚙️" onPress={() => router.push({ pathname: '/feature/[id]', params: { id: 'settings' } })} />
         </View>
-        <BigButton label="Sign out" onPress={() => supabase.auth.signOut()} />
+        <BigButton variant="secondary" label="Sign out" onPress={() => supabase.auth.signOut()} />
         <DisclaimerFooter />
+        <View style={{ height: 110 }} />
       </Screen>
     </ScrollView>
   );

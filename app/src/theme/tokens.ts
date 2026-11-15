@@ -1,8 +1,8 @@
 import { useColorScheme } from 'react-native';
 import { dark, light, Palette } from './palette';
 
-export type { Palette };
-export { palettes } from './palette';
+export type { AccentName, Palette } from './palette';
+export { mix, palettes } from './palette';
 
 // Follows the device setting (light or dark).
 export function useColors(): Palette {

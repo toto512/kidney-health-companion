@@ -14,10 +14,11 @@ export const light = {
   danger: '#B42318',
   warn: '#8A4B00',
   shadow: '#0F2A24',
+  accent: { red: '#C1272D', orange: '#B45309', green: '#15803D', teal: '#0F766E', blue: '#1D4ED8', indigo: '#4338CA', purple: '#7E22CE' },
 };
 export const dark: Palette = {
-  bg: '#0E1513',
-  surface: '#18231F',
+  bg: '#000000',
+  surface: '#1A1C1B',
   border: '#34443F',
   outline: '#6C817A',
   inputBorder: '#9BB0AA',
@@ -29,6 +30,15 @@ export const dark: Palette = {
   danger: '#FF8A7A',
   warn: '#F5B66B',
   shadow: '#000000',
+  accent: { red: '#FF6B6B', orange: '#FFA040', green: '#4ADE80', teal: '#2DD4BF', blue: '#6CA8FF', indigo: '#9DA8FF', purple: '#C792FF' },
 };
 export type Palette = typeof light;
+export type AccentName = keyof typeof light.accent;
+
+// Blends colour a over colour b (alpha 0 to 1). Used for the soft background behind a category icon.
+export function mix(a: string, b: string, alpha: number): string {
+  const ch = (h: string, i: number) => parseInt(h.slice(1 + i * 2, 3 + i * 2), 16);
+  const out = [0, 1, 2].map((i) => Math.round(ch(a, i) * alpha + ch(b, i) * (1 - alpha)).toString(16).padStart(2, '0'));
+  return `#${out.join('')}`;
+}
 export const palettes = { light, dark };

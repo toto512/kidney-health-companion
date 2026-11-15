@@ -1,14 +1,29 @@
 import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Card, CardNote, CardValue, DisclaimerFooter, H1, Screen } from '@/components/ui';
+import { takeFlash } from '@/lib/flash';
 import { supabase } from '@/lib/supabase';
+import { font, space, useColors } from '@/theme/tokens';
 
 type Latest = { systolic: number; diastolic: number; taken_at: string } | null | 'error';
 
 export default function Today() {
   const [bp, setBp] = useState<Latest>(null);
   const [loaded, setLoaded] = useState(false);
+  const color = useColors();
+  const [flash, setFlashMsg] = useState<string | null>(null);
+
+  // A confirmation from the screen the person just came from (for example "Profile saved."), shown for 6 seconds.
+  useFocusEffect(useCallback(() => {
+    const m = takeFlash();
+    if (m) setFlashMsg(m);
+  }, []));
+  useEffect(() => {
+    if (!flash) return;
+    const t = setTimeout(() => setFlashMsg(null), 6000);
+    return () => clearTimeout(t);
+  }, [flash]);
 
   useFocusEffect(useCallback(() => {
     let alive = true;
@@ -25,6 +40,12 @@ export default function Today() {
     <ScrollView>
       <Screen>
         <H1>Today</H1>
+        {flash ? (
+          <Pressable accessibilityRole="alert" accessibilityLiveRegion="polite" accessibilityLabel={`${flash} Tap to dismiss.`} onPress={() => setFlashMsg(null)}
+            style={{ backgroundColor: color.primaryTint, borderColor: color.primary, borderWidth: 2, borderRadius: 16, padding: space.m, minHeight: 56, justifyContent: 'center' }}>
+            <Text style={{ fontSize: font.label, color: color.text, fontWeight: '600' }}>{flash}</Text>
+          </Pressable>
+        ) : null}
         <View style={{ gap: 16 }}>
           <Card title="Emergency" icon="🚨" tone="danger" onPress={() => router.push('/feature/emergency')}>
             <CardNote>See the number to call and where it comes from.</CardNote>

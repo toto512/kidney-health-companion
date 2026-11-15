@@ -1,4 +1,5 @@
 import { router } from 'expo-router';
+import { setFlash } from '@/lib/flash';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
@@ -95,10 +96,9 @@ export default function Profile() {
     setBusy(false);
     if (error) { setErr('Could not save. Try again.'); return; }
     setCmDb(r.value.height_cm); setKgDb(r.value.weight_kg);
-    const wasForced = profileComplete === false;
-    const ok = await refreshProfile();
-    setMsg('Saved.');
-    if (wasForced && ok) router.replace('/');
+    await refreshProfile();
+    setFlash('Profile saved.'); // the dashboard shows this for a few seconds so it is clear the save worked
+    router.replace('/');
   }
 
   return (

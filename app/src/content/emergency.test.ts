@@ -25,7 +25,7 @@ describe('emergencyView follows the saved profile country', () => {
     expect(EMERGENCY[(emergencyView('CA') as { country: 'CA' }).country].number).toBe('9-1-1');
   });
   it('gives no number for other countries and all three when no country is saved', () => {
-    expect(emergencyView('JP')).toEqual({ kind: 'none', code: 'JP' });
+    expect(emergencyView('KR')).toEqual({ kind: 'none', code: 'KR' });
     expect(emergencyView(null)).toEqual({ kind: 'all' });
     expect(emergencyView(undefined)).toEqual({ kind: 'all' });
     expect(emergencyView('ca')).toEqual({ kind: 'none', code: 'ca' });
@@ -44,7 +44,7 @@ describe('listed countries (official government pages)', () => {
     });
   }
   it('has a government host for every link', () => {
-    for (const e of Object.values(LISTED_EMERGENCY)) expect(new URL(e.url).hostname).toMatch(/(^|\.)(gov\.[a-z]{2}|gob\.mx|gov|service-public\.fr)$/);
+    for (const e of Object.values(LISTED_EMERGENCY)) expect(new URL(e.url).hostname).toMatch(/(^|\.)(gov\.[a-z]{2}|govt\.nz|go\.jp|gob\.mx|gov|service-public\.fr)$/);
   });
 });
 

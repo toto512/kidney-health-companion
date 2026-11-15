@@ -1,6 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { font, MIN_TOUCH, useColors } from '@/theme/tokens';
+
+// Only one dropdown is open at a time: opening one closes any other (accordion behaviour).
+let openId: string | null = null;
+const listeners = new Set<() => void>();
+const setOpenId = (id: string | null) => { openId = id; listeners.forEach((l) => l()); };
 
 const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
@@ -10,10 +15,18 @@ export function Select<T extends string>({ label, value, options, onChange, plac
   label: string; value: T | ''; options: { value: T; label: string }[]; onChange: (v: T) => void; placeholder?: string; searchLabel?: string; searchable?: boolean; width?: number; valueSize?: number;
 }) {
   const color = useColors();
-  const [open, setOpen] = useState(false);
+  const id = useId();
+  const [open, setOpenState] = useState(false);
+  useEffect(() => {
+    const l = () => setOpenState(openId === id);
+    listeners.add(l);
+    return () => { listeners.delete(l); if (openId === id) openId = null; };
+  }, [id]);
+  const setOpen = (o: boolean) => setOpenId(o ? id : openId === id ? null : openId);
   const [q, setQ] = useState('');
   const current = options.find((o) => o.value === value)?.label;
   const shown = useMemo(() => { const f = fold(q.trim()); return f ? options.filter((o) => fold(o.label).includes(f)) : options; }, [q, options]);
+  useEffect(() => { if (!open) setQ(''); }, [open]);
   const close = () => { setOpen(false); setQ(''); };
   return (
     <View style={{ gap: 8, width }}>

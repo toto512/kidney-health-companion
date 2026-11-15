@@ -39,9 +39,9 @@ export function Field(props: TextInputProps & { label: string }) {
   );
 }
 
-export function Tile({ label, icon, bg, onPress }: { label: string; icon: string; bg: string; onPress: () => void }) {
+export function Tile({ label, icon, onPress }: { label: string; icon: string; bg?: string; onPress: () => void }) {
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={[s.tile, { backgroundColor: bg }]}>
+    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={s.tile}>
       <Text style={s.tileIcon} accessible={false}>{icon}</Text>
       <Text style={s.tileLabel}>{label}</Text>
     </Pressable>
@@ -60,8 +60,8 @@ const s = StyleSheet.create({
   input: { fontSize: font.label, minHeight: MIN_TOUCH, borderWidth: 2, borderColor: color.text, borderRadius: 12, paddingHorizontal: space.m, color: color.text },
   btn: { minHeight: MIN_TOUCH, backgroundColor: color.primary, borderRadius: 12, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.l },
   btnText: { color: color.primaryText, fontSize: font.label, fontWeight: '700' },
-  tile: { flexBasis: '47%', flexGrow: 1, minHeight: 140, borderRadius: 16, alignItems: 'center', justifyContent: 'center', gap: space.s, padding: space.m },
-  tileIcon: { fontSize: 48 },
-  tileLabel: { color: '#FFFFFF', fontSize: font.label, fontWeight: '700', textAlign: 'center' },
+  tile: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: space.m, paddingHorizontal: space.m, borderRadius: 12, borderWidth: 1, borderColor: '#D1D5DB', backgroundColor: '#F9FAFB' },
+  tileIcon: { fontSize: 28 },
+  tileLabel: { color: color.text, fontSize: font.label, fontWeight: '600' },
   footer: { fontSize: font.body, color: color.text, textAlign: 'center', paddingTop: space.m },
 });

@@ -1,10 +1,10 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { ScrollView } from 'react-native';
+import { Select } from '@/components/Select';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Screen } from '@/components/ui';
 import { COUNTRIES, Country, parseProfile } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
-import { color, font, MIN_TOUCH } from '@/theme/tokens';
 
 // Country decides which approved medicine list and official sources the app will use later.
 export default function Profile() {
@@ -44,15 +44,7 @@ export default function Profile() {
     <ScrollView>
       <Screen>
         <H1>My profile</H1>
-        <Text style={{ fontSize: font.label, fontWeight: '600', color: color.text }}>Country</Text>
-        <View style={{ gap: 12 }}>
-          {COUNTRIES.map((c) => (
-            <Pressable key={c.code} accessibilityRole="radio" accessibilityState={{ selected: country === c.code }} onPress={() => setCountry(c.code)}
-              style={{ minHeight: MIN_TOUCH, justifyContent: 'center', paddingHorizontal: 16, borderRadius: 12, borderWidth: 3, borderColor: color.text, backgroundColor: country === c.code ? color.text : 'transparent' }}>
-              <Text style={{ fontSize: font.body, fontWeight: '700', color: country === c.code ? '#FFFFFF' : color.text }}>{c.label}</Text>
-            </Pressable>
-          ))}
-        </View>
+        <Select label="Country" value={country} options={COUNTRIES.map((c) => ({ value: c.code, label: c.label }))} onChange={setCountry} placeholder="Choose your country" />
         <Field label="Name (optional)" value={name} onChangeText={setName} maxLength={80} />
         <Field label="Date of birth, year-month-day (optional)" value={dob} onChangeText={setDob} placeholder="1950-03-27" maxLength={10} />
         <Field label="Height in cm (optional)" value={height} onChangeText={setHeight} keyboardType="decimal-pad" maxLength={5} />

@@ -3,7 +3,6 @@ import { ScrollView, View } from 'react-native';
 import { EmergencyBanner } from '@/components/EmergencyBanner';
 import { BigButton, DisclaimerFooter, H1, Screen, Tile } from '@/components/ui';
 import { supabase } from '@/lib/supabase';
-import { color } from '@/theme/tokens';
 
 // Labels here are UI only. No health facts are shown until content is sourced and verified (see plan section 3).
 const TILES = [
@@ -25,9 +24,9 @@ export default function Dashboard() {
       <Screen>
         <H1>My health</H1>
         <EmergencyBanner />
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 16 }}>
-          {TILES.map((t, i) => (
-            <Tile key={t.id} label={t.label} icon={t.icon} bg={color.tiles[i % color.tiles.length]}
+        <View style={{ gap: 12 }}>
+          {TILES.map((t) => (
+            <Tile key={t.id} label={t.label} icon={t.icon}
               onPress={() => router.push({ pathname: '/feature/[id]', params: { id: t.id } })} />
           ))}
         </View>

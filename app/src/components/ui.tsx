@@ -48,6 +48,27 @@ export function Tile({ label, icon, onPress }: { label: string; icon: string; bg
   );
 }
 
+export function Card({ title, icon, onPress, tone, children }: { title: string; icon: string; onPress: () => void; tone?: 'danger'; children?: ReactNode }) {
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel={title} onPress={onPress} style={[s.card, tone === 'danger' && { borderColor: color.danger, borderWidth: 2 }]}>
+      <View style={s.cardHead}>
+        <Text style={s.cardIcon} accessible={false}>{icon}</Text>
+        <Text style={[s.cardTitle, tone === 'danger' && { color: color.danger }]}>{title}</Text>
+        <Text style={s.chev} accessible={false}>›</Text>
+      </View>
+      {children}
+    </Pressable>
+  );
+}
+
+export function CardValue({ children }: { children: ReactNode }) {
+  return <Text style={s.cardValue}>{children}</Text>;
+}
+
+export function CardNote({ children }: { children: ReactNode }) {
+  return <Text style={s.cardNote}>{children}</Text>;
+}
+
 export function DisclaimerFooter() {
   return <Text style={s.footer}>{DISCLAIMER}</Text>;
 }
@@ -63,5 +84,12 @@ const s = StyleSheet.create({
   tile: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: space.m, paddingHorizontal: space.m, borderRadius: 12, borderWidth: 1, borderColor: '#D1D5DB', backgroundColor: '#F9FAFB' },
   tileIcon: { fontSize: 28 },
   tileLabel: { color: color.text, fontSize: font.label, fontWeight: '600' },
+  card: { borderRadius: 16, borderWidth: 1, borderColor: '#D1D5DB', backgroundColor: '#F9FAFB', padding: space.m, gap: space.s, minHeight: 96 },
+  cardHead: { flexDirection: 'row', alignItems: 'center', gap: space.s },
+  cardIcon: { fontSize: 24 },
+  cardTitle: { flex: 1, color: color.text, fontSize: font.label, fontWeight: '700' },
+  chev: { fontSize: 28, color: '#4B5563' },
+  cardValue: { color: color.text, fontSize: 34, fontWeight: '700' },
+  cardNote: { color: '#374151', fontSize: font.body, lineHeight: font.body * 1.4 },
   footer: { fontSize: font.body, color: color.text, textAlign: 'center', paddingTop: space.m },
 });

@@ -1,11 +1,14 @@
 import { router } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
-import { NumberField } from '@/components/NumberField';
+import { Select } from '@/components/Select';
 import { BigButton, Body, DisclaimerFooter, H1, Screen } from '@/components/ui';
 import { BP_LIMITS, parseReading } from '@/lib/bp';
 import { supabase } from '@/lib/supabase';
 import { color, font } from '@/theme/tokens';
+
+// Whole numbers from the lowest to the highest value the app accepts (input limits only), nothing pre-selected.
+const range = ({ min, max }: { min: number; max: number }) => Array.from({ length: max - min + 1 }, (_, i) => ({ value: String(min + i), label: String(min + i) }));
 
 type Row = { id: string; systolic: number; diastolic: number; pulse: number | null; taken_at: string };
 
@@ -17,6 +20,10 @@ export default function BloodPressure() {
   const [pulse, setPulse] = useState('');
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
+
+  const sysOptions = useMemo(() => range(BP_LIMITS.systolic), []);
+  const diaOptions = useMemo(() => range(BP_LIMITS.diastolic), []);
+  const pulseOptions = useMemo(() => range(BP_LIMITS.pulse), []);
 
   const load = useCallback(async () => {
     const { data, error } = await supabase.from('bp_readings').select('id,systolic,diastolic,pulse,taken_at').order('taken_at', { ascending: false }).limit(60);
@@ -48,10 +55,10 @@ export default function BloodPressure() {
     <ScrollView>
       <Screen>
         <H1>Blood pressure</H1>
-        <Body>Type the numbers from your blood pressure monitor, or choose them from a list.</Body>
-        <NumberField label="Top number (systolic)" value={sys} onChange={setSys} {...BP_LIMITS.systolic} jumpStep={20} />
-        <NumberField label="Bottom number (diastolic)" value={dia} onChange={setDia} {...BP_LIMITS.diastolic} jumpStep={20} />
-        <NumberField label="Pulse (optional)" value={pulse} onChange={setPulse} {...BP_LIMITS.pulse} jumpStep={20} />
+        <Body>Choose the numbers from your blood pressure monitor.</Body>
+        <Select label="Top number (systolic)" value={sys} options={sysOptions} onChange={setSys} placeholder="Choose" searchLabel="Type a number" />
+        <Select label="Bottom number (diastolic)" value={dia} options={diaOptions} onChange={setDia} placeholder="Choose" searchLabel="Type a number" />
+        <Select label="Pulse (optional)" value={pulse} options={pulseOptions} onChange={setPulse} placeholder="Choose" searchLabel="Type a number" />
         {err ? <Body tone="danger">{err}</Body> : null}
         <BigButton label={busy ? 'Saving...' : 'Save reading'} onPress={save} disabled={busy || !sys || !dia} />
         <H1>My readings</H1>

@@ -1,7 +1,7 @@
 import type { Country } from '../lib/profile';
 
 // Number and wording come from the linked official page. The quote is verbatim.
-export type EmergencyInfo = { number: string; quote: string; source: string; url: string; pageReviewed: string | null; checkedOn: string };
+export type EmergencyInfo = { number: string; quote: string; source: string; url: string; pageReviewed: string | null; checkedOn: string; lang?: string };
 
 export const EMERGENCY: Record<Country, EmergencyInfo> = {
   GB: { number: '999', quote: '999 is for life-threatening emergencies like serious road traffic accidents, strokes and heart attacks.', source: 'NHS', url: 'https://www.nhs.uk/nhs-services/urgent-and-emergency-care-services/when-to-call-999/', pageReviewed: '3 February 2023', checkedOn: '2026-11-15' },
@@ -9,11 +9,24 @@ export const EMERGENCY: Record<Country, EmergencyInfo> = {
   CA: { number: '9-1-1', quote: 'If you or anyone you know has any of the warning signs, call 9-1-1 or your emergency number right away.', source: 'Public Health Agency of Canada (stroke page)', url: 'https://www.canada.ca/en/public-health/services/diseases/heart-health/stroke.html', pageReviewed: null, checkedOn: '2026-11-15' },
 };
 
-// Which emergency entries to show for a saved profile country.
+// Other countries with a number taken from an official government page. `tokens` are the numbers that must appear in the quote.
+// The quote is verbatim in the page's own language (`lang`). No number is added without a page that states it.
+export type ListedEmergency = EmergencyInfo & { tokens: string[] };
+// Kept in A to Z order by country name (a test checks this).
+export const LISTED_EMERGENCY: Record<string, ListedEmergency> = {
+  BR: { number: '192 ambulance (medical emergencies)', tokens: ['192'], quote: 'O serviço é gratuito, acessado pelo número 192, funciona 24 horas por dia e 07 dias por semana', lang: 'Portuguese', source: 'Ministério da Saúde do Brasil (gov.br), SAMU 192', url: 'https://www.gov.br/saude/pt-br/composicao/saes/samu-192', pageReviewed: null, checkedOn: '2026-11-15' },
+  FR: { number: '15 ambulance, 18 fire, 17 police, or 112', tokens: ['15', '18', '17', '112'], quote: 'Malaise, accident de la route, incendie, personne blessée : 15, 18 ou 112 (ou urgence 114) / Infraction (violences, agression, vol, cambriolages) : 17 ou le 112 (ou urgence 114)', lang: 'French', source: 'Service-Public.fr (French administration), Urgence : qui appeler ?', url: 'https://www.service-public.fr/particuliers/vosdroits/F33954', pageReviewed: null, checkedOn: '2026-11-15' },
+  IE: { number: '112 or 999', tokens: ['112', '999'], quote: 'In an emergency dial 112 or 999.', source: 'Government of Ireland (gov.ie), Be Emergency Ready', url: 'https://assets.gov.ie/static/documents/749e8ee7/JAV16262_OEP_Preparedness_Campaign_Accessible_EN_V4_Web.pdf', pageReviewed: null, checkedOn: '2026-11-15' },
+  IL: { number: '101 ambulance, 100 police, 102 fire', tokens: ['100', '101', '102'], quote: 'Police: Dial 100. First Aid: Dial 101. Fire: Dial 102.', source: 'Government of Israel (gov.il), Emergency Information', url: 'https://www.gov.il/en/pages/emergency_inforamation', pageReviewed: 'updated 19 January 2026', checkedOn: '2026-11-15' },
+  MX: { number: '9-1-1', tokens: ['9-1-1'], quote: 'El 9-1-1 es el número único de llamadas de emergencia.', lang: 'Spanish', source: 'Gobierno de México (gob.mx), 9-1-1', url: 'https://www.gob.mx/911/articulos/que-es-9-1-1-conoce-mas-de-911emergencias?idiom=es', pageReviewed: 'published 13 January 2017', checkedOn: '2026-11-15' },
+};
+
+// Which entries to show for a saved profile country.
 // supported: the one country's checked entry. none: a country without a checked number (show the "find your local number" message).
 // all: no country saved yet, so show all three checked entries.
-export type EmergencyView = { kind: 'supported'; country: Country } | { kind: 'none'; code: string } | { kind: 'all' };
+export type EmergencyView = { kind: 'supported'; country: Country } | { kind: 'listed'; code: string } | { kind: 'none'; code: string } | { kind: 'all' };
 export function emergencyView(country: string | null | undefined): EmergencyView {
   if (country === 'CA' || country === 'US' || country === 'GB') return { kind: 'supported', country };
+  if (country && Object.prototype.hasOwnProperty.call(LISTED_EMERGENCY, country)) return { kind: 'listed', code: country };
   return country ? { kind: 'none', code: country } : { kind: 'all' };
 }

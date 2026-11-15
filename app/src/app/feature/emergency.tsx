@@ -2,7 +2,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { BigButton, Body, DisclaimerFooter, H1, Screen } from '@/components/ui';
-import { EMERGENCY, emergencyView } from '@/content/emergency';
+import { EMERGENCY, emergencyView, LISTED_EMERGENCY } from '@/content/emergency';
 import { COUNTRIES, Country, countryName } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
@@ -18,7 +18,7 @@ export default function Emergency() {
     return () => { alive = false; };
   }, []));
   const view = emergencyView(country);
-  const shown: Country[] = country === undefined ? [] : view.kind === 'supported' ? [view.country] : view.kind === 'all' ? COUNTRIES.map((c) => c.code) : [];
+  const shown: Country[] = country === undefined ? [] : view.kind === 'supported' ? [view.country] : view.kind === 'all' ? [...COUNTRIES].sort((a, b) => a.label.localeCompare(b.label)).map((c) => c.code) : [];
   return (
     <ScrollView>
       <Screen>
@@ -27,6 +27,20 @@ export default function Emergency() {
         {view.kind === 'none' ? (
           <Body>We have no checked emergency number for {countryName(country)} in this app yet. Find your local emergency number now and keep it where you can see it.</Body>
         ) : null}
+        {view.kind === 'listed' && country !== undefined ? (() => {
+          const e = LISTED_EMERGENCY[view.code];
+          return (
+            <View style={{ gap: 6, paddingVertical: 12, borderTopWidth: 1, borderColor: color.text }}>
+              <Text style={{ fontSize: font.h2, fontWeight: '700', color: color.danger }}>{countryName(view.code)}: call {e.number}</Text>
+              <Body>{'“'}{e.quote}{'”'}{e.lang ? ` (quoted in ${e.lang})` : ''}</Body>
+              <Pressable accessibilityRole="link" onPress={() => Linking.openURL(e.url)}>
+                <Text style={{ fontSize: font.body, color: color.text, textDecorationLine: 'underline' }}>
+                  {e.source}, page {e.pageReviewed ?? 'review date not shown'}, checked {e.checkedOn}
+                </Text>
+              </Pressable>
+            </View>
+          );
+        })() : null}
         {shown.map((c) => {
           const e = EMERGENCY[c];
           return (

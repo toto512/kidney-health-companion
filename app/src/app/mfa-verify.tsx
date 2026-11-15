@@ -33,6 +33,10 @@ export default function MfaVerify() {
     (async () => {
       const { data: list, error: listErr } = await supabase.auth.mfa.listFactors();
       if (!live) return;
+      if (listErr && (listErr.status === 401 || listErr.status === 403 || /user_not_found/i.test(`${(listErr as { code?: string }).code ?? ''} ${listErr.message}`))) {
+        await supabase.auth.signOut({ scope: 'local' });
+        return;
+      }
       if (listErr || !list) { fail('Could not read your authenticator settings.', listErr); return; }
       const verified = list.totp?.[0];
       if (verified) { setFactorId(verified.id); return; }

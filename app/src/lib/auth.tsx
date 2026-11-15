@@ -24,6 +24,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
+      if (data.session) {
+        // Server check: a deleted user or revoked session must not stay signed in locally.
+        const { error } = await supabase.auth.getUser();
+        if (error && (error.status === 401 || error.status === 403 || error.status === 404 || /user_not_found|jwt|session/i.test(`${(error as { code?: string }).code ?? ''} ${error.message}`))) {
+          await supabase.auth.signOut({ scope: 'local' });
+          setSession(null);
+          setLoading(false);
+          return;
+        }
+      }
       setSession(data.session);
       if (data.session) await refreshAal();
       setLoading(false);

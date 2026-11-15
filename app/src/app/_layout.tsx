@@ -11,7 +11,7 @@ function Guard() {
   if (!session && !isAuthRoute) return <Redirect href="/sign-in" />;
   if (session && needsMfa && path !== '/mfa-verify') return <Redirect href="/mfa-verify" />;
   if (session && !needsMfa && recovery && path !== '/new-password') return <Redirect href="/new-password" />;
-  if (session && !needsMfa && !recovery && profileComplete === false && path !== '/feature/profile' && path !== '/feature/two-step') return <Redirect href="/feature/profile" />;
+  if (session && !needsMfa && !recovery && profileComplete === false && path !== '/feature/profile' && path !== '/feature/two-step' && path !== '/feature/emergency') return <Redirect href="/feature/profile" />;
   if (session && !needsMfa && !recovery && (isAuthRoute || path === '/mfa-verify')) return <Redirect href="/" />;
   return (
     <View style={{ flex: 1 }} onStartShouldSetResponderCapture={() => { touch(); return false; }}>

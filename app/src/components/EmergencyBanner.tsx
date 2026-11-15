@@ -1,48 +1,30 @@
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Linking, Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { EMERGENCY } from '@/content/emergency';
-import { COUNTRIES, Country, isSupported } from '@/lib/profile';
+import { isSupported } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
 import { color, font } from '@/theme/tokens';
 
-// One large line that is always visible. Quotes and source links sit behind "Sources" so the page stays calm.
+// Always one compact strip. Quotes and source links live on their own screen, so this never pushes a form down.
 export function EmergencyBanner() {
   const [country, setCountry] = useState<string | null>(null);
-  const [open, setOpen] = useState(false);
   useEffect(() => {
     supabase.from('profiles').select('country_code').maybeSingle().then(({ data }) => setCountry(data?.country_code ?? null));
   }, []);
   const known = isSupported(country) ? country : null;
   const other = !!country && !known;
-  const shown = known ? [known] : (COUNTRIES.map((c) => c.code) as Country[]);
   const headline = other
     ? 'Emergency: call your local emergency number'
     : known
     ? `Emergency: call ${EMERGENCY[known].number}`
     : `Emergency: call ${EMERGENCY.GB.number} (UK) or ${EMERGENCY.US.number} (US, Canada)`;
   return (
-    <View accessibilityRole="alert" style={{ borderLeftWidth: 6, borderColor: color.danger, backgroundColor: '#FEF3F2', borderRadius: 8, padding: 14, gap: 8 }}>
+    <View accessibilityRole="alert" style={{ borderLeftWidth: 6, borderColor: color.danger, backgroundColor: '#FEF3F2', borderRadius: 8, paddingVertical: 10, paddingHorizontal: 14, gap: 4 }}>
       <Text style={{ fontSize: font.label, fontWeight: '700', color: color.danger }}>{headline}</Text>
-      {other ? <Text style={{ fontSize: font.body, color: color.text }}>We have no checked emergency number for your country in this app yet. Find your local number now and keep it where you can see it.</Text> : null}
-      {!other ? (
-        <Pressable accessibilityRole="button" accessibilityState={{ expanded: open }} onPress={() => setOpen(!open)} style={{ minHeight: 44, justifyContent: 'center' }}>
-          <Text style={{ fontSize: font.body, color: color.text, textDecorationLine: 'underline' }}>{open ? 'Hide sources' : 'Sources'}</Text>
-        </Pressable>
-      ) : null}
-      {open && !other ? shown.map((c) => {
-        const e = EMERGENCY[c];
-        return (
-          <View key={c} style={{ gap: 4 }}>
-            <Text style={{ fontSize: font.body, fontWeight: '700', color: color.text }}>{COUNTRIES.find((x) => x.code === c)?.label}: {e.number}</Text>
-            <Text style={{ fontSize: font.body, color: color.text }}>{'“'}{e.quote}{'”'}</Text>
-            <Pressable accessibilityRole="link" onPress={() => Linking.openURL(e.url)}>
-              <Text style={{ fontSize: font.body, color: color.text, textDecorationLine: 'underline' }}>
-                {e.source}, page reviewed {e.pageReviewed ?? 'date not shown'}, checked {e.checkedOn}
-              </Text>
-            </Pressable>
-          </View>
-        );
-      }) : null}
+      <Pressable accessibilityRole="link" onPress={() => router.push('/feature/emergency')} style={{ minHeight: 44, justifyContent: 'center' }}>
+        <Text style={{ fontSize: font.body, color: color.text, textDecorationLine: 'underline' }}>{other ? 'More' : 'Sources'}</Text>
+      </Pressable>
     </View>
   );
 }

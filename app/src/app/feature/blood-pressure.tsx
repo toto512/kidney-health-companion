@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { Select } from '@/components/Select';
-import { BigButton, Body, DisclaimerFooter, H1, H2, Panel, Screen } from '@/components/ui';
+import { BigButton, Body, DisclaimerFooter, H1, Panel, Screen, SectionHeader } from '@/components/ui';
 import { BP_LIMITS, parseReading } from '@/lib/bp';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
@@ -59,7 +59,7 @@ export default function BloodPressure() {
       <Screen>
         <H1>Blood pressure</H1>
         <Panel>
-          <H2>Add a reading</H2>
+          <SectionHeader icon="❤️" accent="red">Add a reading</SectionHeader>
           <Body>Choose the numbers from your blood pressure monitor.</Body>
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
             <Select label="Top (SYS)" value={sys} options={sysOptions} onChange={setSys} placeholder="--" searchLabel="Number" width={SMALL} valueSize={24} />
@@ -70,11 +70,11 @@ export default function BloodPressure() {
           {err ? <Body tone="danger">{err}</Body> : null}
           <BigButton label={busy ? 'Saving...' : 'Save reading'} onPress={save} disabled={busy || !sys || !dia} />
         </Panel>
-        <H2>My readings</H2>
+        <SectionHeader icon="📈" accent="red">My readings</SectionHeader>
         {rows.length === 0 ? <Body>No readings yet.</Body> : null}
         {rows.map((r) => (
           <Panel key={r.id}>
-            <Text style={{ fontSize: 34, lineHeight: 42, fontWeight: '800', color: color.text }}>{r.systolic} / {r.diastolic}</Text>
+            <Text style={{ fontSize: 40, lineHeight: 48, fontWeight: '800', color: color.accent.red }}>{r.systolic} / {r.diastolic}<Text style={{ fontSize: font.label, fontWeight: '600', color: color.muted }}> mmHg</Text></Text>
             {r.pulse != null ? <Text style={{ fontSize: font.label, fontWeight: '600', color: color.text }}>Pulse {r.pulse}</Text> : null}
             <Text style={{ fontSize: font.body, color: color.muted }}>{new Date(r.taken_at).toLocaleString()}</Text>
             <BigButton variant="secondary" label="Delete this reading" onPress={() => remove(r.id)} />

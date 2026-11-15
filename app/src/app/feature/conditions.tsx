@@ -1,11 +1,14 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Linking, Pressable, ScrollView, Text } from 'react-native';
-import { BigButton, Body, DisclaimerFooter, H1, H2, Panel, Screen } from '@/components/ui';
+import { BigButton, Body, DisclaimerFooter, H1, Panel, Screen, SectionHeader } from '@/components/ui';
 import { CONDITIONS, EXTRAS, sourceReviewOverdue } from '@/content/conditions';
 import { countryName, isSupported } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
-import { font, useColors } from '@/theme/tokens';
+import { AccentName, font, useColors } from '@/theme/tokens';
+
+const ICON: Record<string, string> = { ckd: '🫘', gout: '🦶', hbp: '❤️', diabetes: '🩸', heart: '🫀' };
+const ACCENT: Record<string, AccentName> = { ckd: 'teal', gout: 'orange', hbp: 'red', diabetes: 'purple', heart: 'red' };
 
 // Shows only verbatim official quotes with link and check date. No advice, no numbers of ours.
 export default function Conditions() {
@@ -35,7 +38,7 @@ export default function Conditions() {
               const f = c.facts[country];
               return (
                 <Panel key={c.id}>
-                  <H2>{c.label}</H2>
+                  <SectionHeader icon={ICON[c.id] ?? '🩺'} accent={ACCENT[c.id] ?? 'blue'}>{c.label}</SectionHeader>
                   <Body>{'“'}{f.quote}{'”'}</Body>
                   {EXTRAS[`${c.id}.${country}`]?.symptoms ? <Body>Symptoms, from the same page: {'\u201C'}{EXTRAS[`${c.id}.${country}`].symptoms}{'\u201D'}</Body> : null}
                   {EXTRAS[`${c.id}.${country}`]?.getHelp ? <Body>Getting help, from the same page: {'\u201C'}{EXTRAS[`${c.id}.${country}`].getHelp}{'\u201D'}</Body> : null}

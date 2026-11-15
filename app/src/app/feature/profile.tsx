@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Select } from '@/components/Select';
-import { BigButton, Body, DisclaimerFooter, Field, H1, H2, Panel, Screen } from '@/components/ui';
+import { BigButton, Body, DisclaimerFooter, Field, H1, Panel, Screen, SectionHeader } from '@/components/ui';
 import { WORLD_COUNTRIES } from '@/content/countries';
 import { useAuth } from '@/lib/auth';
 import { cmToFeetInches, countryName, HeightUnit, isSupported, kgToLb, parseHeightCm, parseProfile, parseWeightKg, SEX_OPTIONS, WeightUnit } from '@/lib/profile';
@@ -107,7 +107,7 @@ export default function Profile() {
         <H1>My profile</H1>
         {profileComplete === false ? <Body>Please fill in every field except name. The app uses them for your age, sex and body measurements.</Body> : null}
         <Panel>
-          <H2>About you</H2>
+          <SectionHeader icon="👤" accent="blue">About you</SectionHeader>
         <Select label="Country" value={country} options={WORLD_COUNTRIES.map((c) => ({ value: c.code, label: c.name }))} onChange={edit(setCountry)} placeholder="Choose your country" searchLabel="Type a country name" />
         {country && !isSupported(country) ? <Body>Health information for {countryName(country)} is not available in this app yet. You can still save your profile and use blood pressure tracking.</Body> : null}
         <Field label="Name (optional)" value={name} onChangeText={edit(setName)} maxLength={80} />
@@ -115,7 +115,7 @@ export default function Profile() {
         <Field label="Date of birth, year-month-day" value={dob} onChangeText={edit(setDob)} placeholder="1950-03-27" maxLength={10} />
         </Panel>
         <Panel>
-          <H2>Body measurements</H2>
+          <SectionHeader icon="📏" accent="teal">Body measurements</SectionHeader>
         <UnitToggle label="Height unit" value={hUnit} options={[{ value: 'cm', label: 'cm' }, { value: 'ft', label: 'feet and inches' }]} onChange={(v) => { const cur = parseHeightCm(hUnit, height, heightFt, heightIn); if (cur !== null) setCmDb(cur); else { setHeight(''); setHeightFt(''); setHeightIn(''); } setHUnit(v); pickUnits(v, wUnit); }} />
         {hUnit === 'cm'
           ? <Field label="Height in cm" value={height} onChangeText={edit(setHeight)} keyboardType="decimal-pad" maxLength={5} />

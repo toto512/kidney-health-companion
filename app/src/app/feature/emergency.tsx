@@ -1,7 +1,7 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Linking, Pressable, ScrollView, Text } from 'react-native';
-import { BigButton, Body, DisclaimerFooter, H1, Panel, Screen } from '@/components/ui';
+import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
+import { BigButton, Body, CategoryBadge, DisclaimerFooter, H1, Panel, Screen } from '@/components/ui';
 import { EMERGENCY, emergencyView, LISTED_EMERGENCY } from '@/content/emergency';
 import { COUNTRIES, Country, countryName } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
@@ -14,7 +14,10 @@ function Entry({ place, number, quote, lang, source, url, reviewed, checked }: E
   const color = useColors();
   return (
     <Panel tone="danger">
-      <Text style={{ fontSize: font.body, fontWeight: '600', color: color.muted }}>{place}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+        <CategoryBadge icon="🚨" accent="red" size={44} />
+        <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: color.text }}>{place}</Text>
+      </View>
       <Text accessibilityRole="header" style={{ fontSize: 34, lineHeight: 42, fontWeight: '800', color: color.danger }}>Call {number}</Text>
       <Body>{'\u201C'}{quote}{'\u201D'}{lang ? ` (quoted in ${lang})` : ''}</Body>
       <Pressable accessibilityRole="link" onPress={() => Linking.openURL(url)} style={{ minHeight: 56, justifyContent: 'center' }}>

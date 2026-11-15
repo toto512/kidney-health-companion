@@ -45,6 +45,17 @@ export function H2({ children }: { children: ReactNode }) {
   return <Text accessibilityRole="header" style={s.h2}>{children}</Text>;
 }
 
+// A section heading with a coloured icon badge and the title in the category colour.
+export function SectionHeader({ icon, accent, children }: { icon: string; accent: AccentName; children: ReactNode }) {
+  const color = useColors();
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.m }}>
+      <CategoryBadge icon={icon} accent={accent} size={48} />
+      <Text accessibilityRole="header" style={{ flex: 1, fontSize: font.h2, lineHeight: 32, fontWeight: '800', color: color.accent[accent] }}>{children}</Text>
+    </View>
+  );
+}
+
 export function Field(props: TextInputProps & { label: string }) {
   const s = useStyles(); const color = useColors();
   const { label, ...rest } = props;

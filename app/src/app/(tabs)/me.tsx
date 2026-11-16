@@ -10,6 +10,7 @@ export default function Me() {
         <H1>Profile</H1>
         <View style={{ gap: 12 }}>
           <Tile label="My profile" icon="👤" onPress={() => router.push('/feature/profile')} />
+          <Tile label="Conditions I track" icon="📋" onPress={() => router.push('/feature/choose-conditions')} />
           <Tile label="Two-step sign-in" icon="🔐" onPress={() => router.push('/feature/two-step')} />
           <Tile label="Settings" icon="⚙️" onPress={() => router.push({ pathname: '/feature/[id]', params: { id: 'settings' } })} />
         </View>

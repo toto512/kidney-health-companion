@@ -2,6 +2,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Card, CardNote, CardValue, DisclaimerFooter, H1, H2, Screen, Suggestion } from '@/components/ui';
+import { TrackingSuggestions } from '@/components/TrackingSuggestions';
 import { useAuth } from '@/lib/auth';
 import { dismiss, wasDismissed } from '@/lib/suggestions';
 import { takeFlash } from '@/lib/flash';
@@ -76,6 +77,7 @@ export default function Today() {
             <CardNote>Information from official health sources.</CardNote>
           </Card>
         </View>
+        <TrackingSuggestions />
         <DisclaimerFooter />
         <View style={{ height: 110 }} />
       </Screen>

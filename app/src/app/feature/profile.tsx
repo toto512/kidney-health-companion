@@ -117,6 +117,7 @@ export default function Profile() {
         {err ? <Body tone="danger">{err}</Body> : null}
         {msg ? <Body>{msg}</Body> : null}
         <BigButton label={busy ? 'Saving...' : 'Save profile'} onPress={save} disabled={busy} />
+        <BigButton variant="secondary" label="My people (emergency contacts)" onPress={() => router.push('/feature/my-people')} />
         <BigButton variant="secondary" label="Two-step sign-in" onPress={() => router.push('/feature/two-step')} />
         <BigButton variant="secondary" label="Back to my health" onPress={() => router.replace('/')} />
         <DisclaimerFooter />

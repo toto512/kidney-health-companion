@@ -13,7 +13,7 @@ const CATEGORIES: { id: string; label: string; icon: string; accent: AccentName 
   { id: 'food', label: 'Food', icon: '🍎', accent: 'orange' },
   { id: 'tasks', label: 'Tasks', icon: '✅', accent: 'green' },
   { id: 'appointments', label: 'Appointments', icon: '📅', accent: 'indigo' },
-  { id: 'contacts', label: 'Call someone', icon: '📞', accent: 'blue' },
+  { id: 'my-people', label: 'My people', icon: '📞', accent: 'blue' },
 ];
 
 export default function Browse() {

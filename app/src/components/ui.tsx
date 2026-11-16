@@ -2,7 +2,7 @@ import { Link, Href } from 'expo-router';
 import { ReactNode, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
 import { AccentName, font, mix, MIN_TOUCH, Palette, space, useColors } from '@/theme/tokens';
-import { DISCLAIMER } from '@/lib/disclaimer';
+import { useI18n } from '@/i18n/I18nProvider';
 
 export function Screen({ children }: { children: ReactNode }) {
   const s = useStyles(); const color = useColors();
@@ -182,8 +182,8 @@ export function TextLink({ href, label }: { href: Href; label: string }) {
 }
 
 export function DisclaimerFooter() {
-  const s = useStyles(); const color = useColors();
-  return <Text style={s.footer}>{DISCLAIMER}</Text>;
+  const s = useStyles(); const { t } = useI18n();
+  return <Text style={s.footer}>{t('disclaimer.text')}</Text>;
 }
 
 function useStyles() {

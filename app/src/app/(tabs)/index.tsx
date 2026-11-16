@@ -13,6 +13,7 @@ import { displayPhone, relationshipLabel } from '@/lib/contactLogic';
 import { Contact, loadContactsOrCopy } from '@/lib/emergencyContacts';
 import { emergencyView, EMERGENCY, LISTED_EMERGENCY } from '@/content/emergency';
 import { emergencyDialFor } from '@/content/emergencyDial';
+import { dialText } from '@/i18n/dialText';
 import { font, space, useColors } from '@/theme/tokens';
 
 type Latest = { systolic: number; diastolic: number; taken_at: string } | null | 'error';
@@ -81,8 +82,8 @@ export default function Today() {
           <Card title={t('today.emergencyTitle')} icon="🚨" tone="danger" onPress={() => router.push('/feature/emergency')}>
             <CardNote>{emergencyNote}</CardNote>
           </Card>
-          {emergencyDialFor(country).slice(0, 2).map((t) => (
-            <BigButton key={t.tel} label={t.text} onPress={() => { Linking.openURL(t.tel).catch(() => {}); }} />
+          {emergencyDialFor(country).slice(0, 2).map((d) => (
+            <BigButton key={d.tel} label={dialText(t, d)} onPress={() => { Linking.openURL(d.tel).catch(() => {}); }} />
           ))}
           <Card title={t('today.peopleTitle')} icon="👥" accent="teal" onPress={() => router.push('/feature/my-people')}>
             <CardNote>{people && people.length ? t('today.peopleNoteSome') : t('today.peopleNoteNone')}</CardNote>

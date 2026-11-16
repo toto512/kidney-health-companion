@@ -42,3 +42,8 @@ export function mix(a: string, b: string, alpha: number): string {
   return `#${out.join('')}`;
 }
 export const palettes = { light, dark };
+
+// Ordered single-hue ramp for the share chart: lightest to darkest by range, so order carries meaning and every slice also has a text label.
+export function ramp(p: Palette, n: number): string[] {
+  return Array.from({ length: n }, (_, i) => mix(p.accent.blue, p.surface, n === 1 ? 1 : 1 - (i / (n - 1)) * 0.35));
+}

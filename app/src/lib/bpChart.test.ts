@@ -46,3 +46,24 @@ describe('summary', () => {
     expect(summary([], 90)).toBe('Last 90 days: no readings.');
   });
 });
+
+import { bins, spreadSummary, weeklyAverages } from './bpChart';
+describe('weekly and spread', () => {
+  const NOW = Date.parse('2026-11-15T12:00:00Z');
+  const mk = (id: string, daysAgo: number, s: number, d: number): ChartRow => ({ id, systolic: s, diastolic: d, pulse: null, taken_at: new Date(NOW - daysAgo * 86_400_000).toISOString() });
+  const rows = [mk('a', 1, 120, 80), mk('b', 2, 130, 90), mk('c', 9, 150, 95), mk('d', 40, 100, 60)];
+  it('averages per 7-day block and skips empty blocks', () => {
+    const w = weeklyAverages(rows, 30, NOW);
+    expect(w.map((x) => [x.n, x.sys, x.dia])).toEqual([[1, 150, 95], [2, 125, 85]]);
+  });
+  it('bins by 10 with percentages summing near 100', () => {
+    const b = bins(rows.slice(0, 3), 'systolic');
+    expect(b.map((x) => [x.from, x.count])).toEqual([[120, 1], [130, 1], [140, 0], [150, 1]]);
+    expect(b.reduce((s, x) => s + x.count, 0)).toBe(3);
+  });
+  it('summary lists only ranges with readings and has no judgement words', () => {
+    const t = spreadSummary(bins(rows.slice(0, 3), 'systolic'), 'Top', 30);
+    expect(t).toContain('120 to 129: 1 (33%)');
+    expect(t).not.toMatch(/normal|high|low|good|bad/i);
+  });
+});

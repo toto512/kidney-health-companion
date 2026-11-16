@@ -44,3 +44,10 @@ describe.each([['light', light], ['dark', dark]] as const)('%s accent colours', 
     expect(ratio(p.accent[a], mix(p.accent[a], p.surface, 0.16))).toBeGreaterThanOrEqual(3);
   });
 });
+
+import { ramp } from './palette';
+describe.each([['light', light], ['dark', dark]] as const)('%s chart ramp', (_n, p) => {
+  it.each([1, 3, 8, 25])('every one of %s slices is at least 3:1 on the card (graphics)', (n) => {
+    for (const c of ramp(p, n)) expect(ratio(c, p.surface)).toBeGreaterThanOrEqual(3);
+  });
+});

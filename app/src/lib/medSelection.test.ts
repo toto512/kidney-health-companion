@@ -18,3 +18,25 @@ describe('medicine selection', () => {
     expect(diffCustom(['Fish oil', 'Zinc'], ['fish oil', 'Iron'])).toEqual({ add: ['Iron'], remove: ['Zinc'] });
   });
 });
+
+import { changedStrengths, customKey, listKey, normalizeStrength } from './medSelection';
+describe('strength', () => {
+  it('accepts the person\'s own text and cleans spaces', () => {
+    expect(normalizeStrength(' 150  mcg ')).toEqual({ value: '150 mcg', error: null });
+    expect(normalizeStrength('5 ml')).toEqual({ value: '5 ml', error: null });
+    expect(normalizeStrength('2.5 mg/5 ml')).toEqual({ value: '2.5 mg/5 ml', error: null });
+    expect(normalizeStrength('150 µg').value).toBe('150 µg');
+  });
+  it('treats empty as no strength', () => { expect(normalizeStrength('   ')).toEqual({ value: null, error: null }); });
+  it('rejects long text and odd characters with a plain message', () => {
+    expect(normalizeStrength('1'.repeat(41)).error).toContain('40 characters');
+    expect(normalizeStrength('<b>5 mg</b>').error).toContain('simple marks');
+    expect(normalizeStrength('5 mg; drop').error).toContain('simple marks');
+  });
+  it('keys list items and own names apart and finds changes', () => {
+    expect(listKey('atorvastatin')).toBe('m:atorvastatin');
+    expect(customKey('My Syrup')).toBe('c:my syrup');
+    expect(changedStrengths({ 'm:a': '5 mg', 'm:b': '' }, { 'm:a': '10 mg', 'm:b': '' }, ['m:a', 'm:b'])).toEqual(['m:a']);
+    expect(changedStrengths({}, { 'm:a': '' }, ['m:a'])).toEqual([]);
+  });
+});

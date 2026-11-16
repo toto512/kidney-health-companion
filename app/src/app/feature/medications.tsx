@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { BigButton, Body, DisclaimerFooter, H1, Panel, Screen, SectionHeader } from '@/components/ui';
 import { medById, medLabel } from '@/content/medList';
+import { customKey, listKey } from '@/lib/medSelection';
 import { loadMyMeds, MyMeds } from '@/lib/userMedications';
 import { font, useColors } from '@/theme/tokens';
 
@@ -31,6 +32,7 @@ export default function Medications() {
             {items.map((x) => x && (
               <View key={x.med_id} style={{ gap: 4, paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: color.border }}>
                 <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{medLabel(x)}</Text>
+                {m.strengths[listKey(x.med_id)] ? <Text style={{ fontSize: font.body, color: color.text }}>Strength: {m.strengths[listKey(x.med_id)]}</Text> : null}
                 {x.official_links[0] ? (
                   <Pressable accessibilityRole="link" onPress={() => Linking.openURL(x.official_links[0].url)} style={{ minHeight: 48, justifyContent: 'center' }}>
                     <Text style={{ fontSize: font.body, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>Official page ({x.official_links[0].publisher})</Text>
@@ -41,13 +43,14 @@ export default function Medications() {
             {m.custom.map((c) => (
               <View key={c} style={{ paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: color.border }}>
                 <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{c}</Text>
+                {m.strengths[customKey(c)] ? <Text style={{ fontSize: font.body, color: color.text }}>Strength: {m.strengths[customKey(c)]}</Text> : null}
                 <Text style={{ fontSize: font.body, color: color.muted }}>Added by you</Text>
               </View>
             ))}
           </Panel>
         ) : null}
         {m ? <BigButton variant="secondary" label={items.length || m.custom.length ? 'Change my medicines' : 'Pick from the list'} onPress={() => router.push('/feature/choose-medicines')} /> : null}
-        <Body>This is a list of names you chose. It does not tell you how to take anything. Ask your doctor, nurse or pharmacist.</Body>
+        <Body>This is a list you made. Any strength is what you typed. As on your label, ask your pharmacist. It does not tell you how to take anything.</Body>
         <BigButton variant="secondary" label="Back to my health" onPress={() => router.replace('/')} />
         <DisclaimerFooter />
       </Screen>

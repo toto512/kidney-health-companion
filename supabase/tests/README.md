@@ -7,3 +7,5 @@ The stub only imitates `auth.uid()`, `auth.jwt()`, `auth.users` and `auth.mfa_fa
 Migration 0007 (user_conditions): after the stub, run `psql -f ../migrations/0007_user_conditions.sql && psql -f 0007_user_conditions.test.sql`. It checks owner-only rows, the id format check, the two-step rule and that anon is blocked.
 
 Migration 0008 (user_medications): after the stub, run `psql -f ../migrations/0008_user_medications.sql && psql -f 0008_user_medications.test.sql`. It checks owner-only rows, one-kind-per-row, name checks, duplicates, the two-step rule and that anon is blocked.
+
+Migration 0009 (medication strength): after the stub and 0008, run `psql -f ../migrations/0009_medication_strength.sql && psql -f 0009_medication_strength.test.sql`. It checks the strength rules, that only strength can be updated, and that other users and enrolled aal1 sessions cannot change rows.

@@ -4,16 +4,26 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Panel, Screen } from '@/components/ui';
 import { groupMeds, medById, medLabel, searchMeds } from '@/content/medList';
 import { toggleId } from '@/lib/conditionSelection';
-import { addCustom } from '@/lib/medSelection';
-import { loadMyMeds, MyMeds, saveMyMeds } from '@/lib/userMedications';
+import { addCustom, customKey, listKey, MAX_STRENGTH, normalizeStrength } from '@/lib/medSelection';
+import { emptyMeds, loadMyMeds, MyMeds, saveMyMeds } from '@/lib/userMedications';
 import { font, mix, useColors } from '@/theme/tokens';
 
-// Optional. Names only: no doses, no schedules, and nothing is suggested from your conditions.
+// Optional strength typed by the person, as on their label. The app never suggests one.
+function StrengthField({ label, value, onChange }: { label: string; value: string; onChange: (t: string) => void }) {
+  return (
+    <View style={{ paddingLeft: 12 }}>
+      <Field label={label} value={value} onChangeText={onChange} placeholder="For example 150 mcg, 300 mg or 5 ml" maxLength={MAX_STRENGTH} autoCapitalize="none" autoCorrect={false} />
+    </View>
+  );
+}
+
+// Optional. No schedules, and nothing is suggested from your conditions or by the app.
 export default function ChooseMedicines() {
   const color = useColors();
   const [saved, setSaved] = useState<MyMeds | null | undefined>(undefined);
   const [ids, setIds] = useState<string[]>([]);
   const [custom, setCustom] = useState<string[]>([]);
+  const [strengths, setStrengths] = useState<Record<string, string>>({});
   const [q, setQ] = useState('');
   const [open, setOpen] = useState<string[]>([]);
   const [own, setOwn] = useState('');
@@ -21,7 +31,7 @@ export default function ChooseMedicines() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
 
-  useEffect(() => { void loadMyMeds().then((m) => { setSaved(m); setIds(m?.ids ?? []); setCustom(m?.custom ?? []); }); }, []);
+  useEffect(() => { void loadMyMeds().then((m) => { setSaved(m); setIds(m?.ids ?? []); setCustom(m?.custom ?? []); setStrengths(m?.strengths ?? {}); }); }, []);
   const groups = useMemo(() => groupMeds(searchMeds(q)), [q]);
   const searching = q.trim() !== '';
   const total = ids.length + custom.length;
@@ -33,8 +43,17 @@ export default function ChooseMedicines() {
   }
 
   async function save() {
-    setBusy(true); setErr('');
-    const ok = await saveMyMeds(saved ?? { ids: [], custom: [] }, { ids, custom });
+    setErr('');
+    // Only keep a strength for a medicine that is still chosen, and check each one before anything is saved.
+    const keys = [...ids.map(listKey), ...custom.map(customKey)];
+    const clean: Record<string, string> = {};
+    for (const k of keys) {
+      const r = normalizeStrength(strengths[k] ?? '');
+      if (r.error) { setErr(`Check the strength you typed: ${r.error}`); return; }
+      if (r.value) clean[k] = r.value;
+    }
+    setBusy(true);
+    const ok = await saveMyMeds(saved ?? emptyMeds(), { ids, custom, strengths: clean });
     setBusy(false);
     if (!ok) { setErr('Could not save. Try again.'); return; }
     router.replace('/feature/medications');
@@ -44,7 +63,7 @@ export default function ChooseMedicines() {
     <ScrollView keyboardShouldPersistTaps="handled">
       <Screen>
         <H1>Medicines I take</H1>
-        <Body>Only you can see this. Pick the medicines you take, or skip for now. We save names only.</Body>
+        <Body>Only you can see this. Pick the medicines you take, or skip for now. You can type the strength for each one, as it is on your label. Ask your pharmacist if you are not sure.</Body>
         {saved === undefined ? <Body>Loading...</Body> : null}
         {saved === null ? <Body tone="danger">Could not load your saved medicines. You can still pick, but Save may not work until this is fixed.</Body> : null}
         <Field label="Search by name" value={q} onChangeText={setQ} placeholder="Generic or brand name" autoCapitalize="none" autoCorrect={false} />
@@ -67,13 +86,16 @@ export default function ChooseMedicines() {
               {isOpen ? g.items.map((m) => {
                 const on = ids.includes(m.med_id);
                 return (
-                  <Pressable key={m.med_id} accessibilityRole="checkbox" accessibilityState={{ checked: on }} accessibilityLabel={medLabel(m)} onPress={() => setIds(toggleId(ids, m.med_id))}
+                  <View key={m.med_id} style={{ gap: 6 }}>
+                  <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: on }} accessibilityLabel={medLabel(m)} onPress={() => setIds(toggleId(ids, m.med_id))}
                     style={{ minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 8, paddingHorizontal: 12, borderRadius: 12, borderWidth: 2, borderColor: on ? color.primary : color.outline, backgroundColor: on ? color.primaryTint : color.surface }}>
                     <View style={{ width: 28, height: 28, borderRadius: 6, borderWidth: 2, borderColor: on ? color.primary : color.inputBorder, backgroundColor: on ? color.primary : 'transparent', alignItems: 'center', justifyContent: 'center' }}>
                       {on ? <Text style={{ color: color.primaryText, fontWeight: '800', fontSize: 20, lineHeight: 24 }}>✓</Text> : null}
                     </View>
                     <Text style={{ flex: 1, fontSize: font.label, color: color.text }}>{medLabel(m)}</Text>
                   </Pressable>
+                  {on ? <StrengthField label={`Strength of ${m.generic} (optional)`} value={strengths[listKey(m.med_id)] ?? ''} onChange={(t) => setStrengths({ ...strengths, [listKey(m.med_id)]: t })} /> : null}
+                  </View>
                 );
               }) : null}
             </View>
@@ -85,12 +107,15 @@ export default function ChooseMedicines() {
           {ownErr ? <Body tone="danger">{ownErr}</Body> : null}
           <BigButton variant="secondary" label="Add this name" onPress={addOwn} disabled={!own.trim()} />
           {custom.map((c) => (
-            <View key={c} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View key={c} style={{ gap: 6 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Text style={{ flex: 1, fontSize: font.label, color: color.text }}>{c}</Text>
               <Pressable accessibilityRole="button" accessibilityLabel={`Remove ${c}`} onPress={() => setCustom(custom.filter((x) => x !== c))}
                 style={{ minHeight: 44, minWidth: 44, paddingHorizontal: 12, borderRadius: 10, borderWidth: 2, borderColor: color.primary, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={{ fontSize: font.body, fontWeight: '700', color: color.primary }}>Remove</Text>
               </Pressable>
+            </View>
+            <StrengthField label={`Strength of ${c} (optional)`} value={strengths[customKey(c)] ?? ''} onChange={(t) => setStrengths({ ...strengths, [customKey(c)]: t })} />
             </View>
           ))}
         </Panel>

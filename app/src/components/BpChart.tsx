@@ -2,17 +2,21 @@ import { useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import Svg, { Circle, G, Line, Path, Polyline, Rect, Text as SvgText } from 'react-native-svg';
 import { BigButton, Body, Segmented } from '@/components/ui';
-import { Bin, binLabel, bins, ChartRow, RANGES, RangeDays, spreadSummary, summary, weeklyAverages, weeklySummary, windowRows, xFraction, yScale } from '@/lib/bpChart';
+import { useI18n } from '@/i18n/I18nProvider';
+import { dateTimeText, dayText, lineSummary, readingsText, spreadText, weeklyText } from '@/i18n/bpText';
+import { localeTag } from '@/i18n/core';
+import { Bin, binLabel, bins, ChartRow, RANGES, RangeDays, weeklyAverages, windowRows, xFraction, yScale } from '@/lib/bpChart';
 import { font, ramp, useColors } from '@/theme/tokens';
 
 const H = 260;
 const PAD = { l: 52, r: 16, t: 14, b: 34 };
 const DAY = 86_400_000;
-const fmtDay = (t: number) => new Date(t).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 
 // Top number: red circles. Bottom number: blue squares. Colour and shape both differ. No target bands, no good or bad colours.
 function LineView({ data, days, now }: { data: ChartRow[]; days: number; now: number }) {
   const color = useColors();
+  const { t, lang } = useI18n();
+  const fmtDay = (v: number) => dayText(v, lang);
   const [w, setW] = useState(0);
   const [sel, setSel] = useState<number | null>(null);
   const from = now - days * DAY;
@@ -21,7 +25,7 @@ function LineView({ data, days, now }: { data: ChartRow[]; days: number; now: nu
   const t0 = Date.parse(data[0].taken_at); const t1 = Date.parse(data[data.length - 1].taken_at);
   const fit = days === 7; const even = fit && new Date(t0).toDateString() === new Date(t1).toDateString();
   const lo = fit ? t0 : from; const hi = fit ? t1 : now; const inset = fit ? 12 : 0;
-  const fmtTime = (t: number) => new Date(t).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  const fmtTime = (t: number) => new Date(t).toLocaleTimeString(localeTag(lang), { hour: 'numeric', minute: '2-digit' });
   const idx = sel !== null && sel < data.length ? sel : null;
   const picked = idx !== null ? data[idx] : null;
   return (
@@ -68,24 +72,24 @@ function LineView({ data, days, now }: { data: ChartRow[]; days: number; now: nu
           })() : <View style={{ height: H }} />}
         </View>
       )}
-      <View style={{ flexDirection: 'row', gap: 24, flexWrap: 'wrap' }} accessible accessibilityLabel="Legend: top number is red circles, bottom number is blue squares">
+      <View style={{ flexDirection: 'row', gap: 24, flexWrap: 'wrap' }} accessible accessibilityLabel={t('chart.legendA11y')}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <View style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: color.accent.red }} />
-          <Text style={{ fontSize: font.body, color: color.text }}>Top (SYS)</Text>
+          <Text style={{ fontSize: font.body, color: color.text }}>{t('bp.top')}</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <View style={{ width: 16, height: 16, backgroundColor: color.accent.blue }} />
-          <Text style={{ fontSize: font.body, color: color.text }}>Bottom (DIA)</Text>
+          <Text style={{ fontSize: font.body, color: color.text }}>{t('bp.bottom')}</Text>
         </View>
       </View>
       {(
         <View style={{ gap: 8 }}>
           <Text accessibilityLiveRegion="polite" style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>
-            {picked ? `${new Date(picked.taken_at).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}: top ${picked.systolic}, bottom ${picked.diastolic}${picked.pulse != null ? `, pulse ${picked.pulse}` : ''}` : 'Tap a point, or use the buttons, to see one reading.'}
+            {picked ? `${t('chart.picked', { when: dateTimeText(picked.taken_at, lang), sys: picked.systolic, dia: picked.diastolic })}${picked.pulse != null ? t('chart.pickedPulse', { n: picked.pulse }) : ''}` : t('chart.tapPoint')}
           </Text>
           <View style={{ flexDirection: 'row', gap: 8 }}>
-            <View style={{ flex: 1 }}><BigButton variant="secondary" label="Earlier" disabled={idx === 0} onPress={() => setSel(idx === null ? data.length - 1 : Math.max(0, idx - 1))} /></View>
-            <View style={{ flex: 1 }}><BigButton variant="secondary" label="Later" disabled={idx === data.length - 1} onPress={() => setSel(idx === null ? data.length - 1 : Math.min(data.length - 1, idx + 1))} /></View>
+            <View style={{ flex: 1 }}><BigButton variant="secondary" label={t('chart.earlier')} disabled={idx === 0} onPress={() => setSel(idx === null ? data.length - 1 : Math.max(0, idx - 1))} /></View>
+            <View style={{ flex: 1 }}><BigButton variant="secondary" label={t('chart.later')} disabled={idx === data.length - 1} onPress={() => setSel(idx === null ? data.length - 1 : Math.min(data.length - 1, idx + 1))} /></View>
           </View>
         </View>
       )}
@@ -98,6 +102,7 @@ const Swatch = ({ c, round }: { c: string; round?: boolean }) => <View style={{ 
 // Average top and bottom per 7-day block. The numbers are printed on the bars.
 function WeeklyView({ weekly }: { weekly: ReturnType<typeof weeklyAverages> }) {
   const color = useColors();
+  const { t, lang } = useI18n();
   const max = Math.max(...weekly.flatMap((x) => [x.sys, x.dia]));
   const Bar = ({ v, c, tag }: { v: number; c: string; tag: string }) => (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -110,9 +115,9 @@ function WeeklyView({ weekly }: { weekly: ReturnType<typeof weeklyAverages> }) {
     <View style={{ gap: 16 }} accessible={false}>
       {weekly.map((x) => (
         <View key={x.end} style={{ gap: 6 }}>
-          <Text style={{ fontSize: font.body, fontWeight: '700', color: color.text }}>Week ending {fmtDay(x.end)} ({x.n} {x.n === 1 ? 'reading' : 'readings'})</Text>
-          <Bar v={x.sys} c={color.accent.red} tag="Top" />
-          <Bar v={x.dia} c={color.accent.blue} tag="Bottom" />
+          <Text style={{ fontSize: font.body, fontWeight: '700', color: color.text }}>{t('chart.weekEnding', { date: dayText(x.end, lang), count: readingsText(t, x.n) })}</Text>
+          <Bar v={x.sys} c={color.accent.red} tag={t('chart.topShort')} />
+          <Bar v={x.dia} c={color.accent.blue} tag={t('chart.bottomShort')} />
         </View>
       ))}
     </View>
@@ -178,6 +183,7 @@ type View4 = 'line' | 'weekly' | 'spread' | 'share';
 // Four views of the same readings, neutral numbers only: no target bands, no normal/high/low labels, no good or bad colours.
 export function BpChart({ rows }: { rows: ChartRow[] }) {
   const color = useColors();
+  const { t, lang } = useI18n();
   const [view, setView] = useState<View4>('line');
   const [days, setDays] = useState<RangeDays>(30);
   const [which, setWhich] = useState<'systolic' | 'diastolic'>('systolic');
@@ -185,25 +191,25 @@ export function BpChart({ rows }: { rows: ChartRow[] }) {
   const data = useMemo(() => windowRows(rows, days, now), [rows, days, now]);
   const weekly = useMemo(() => weeklyAverages(data, days, now), [data, days, now]);
   const b = useMemo(() => bins(data, which), [data, which]);
-  const label = which === 'systolic' ? 'Top' : 'Bottom';
-  const text = view === 'line' ? summary(data, days) : view === 'weekly' ? weeklySummary(weekly, days) : spreadSummary(b, label, days);
+  const label = which === 'systolic' ? t('chart.topShort') : t('chart.bottomShort');
+  const text = view === 'line' ? lineSummary(t, data, days) : view === 'weekly' ? weeklyText(t, lang, weekly, days) : spreadText(t, b, label, days);
   const accent = which === 'systolic' ? 'red' : 'blue';
-  const full = which === 'systolic' ? 'Top number (SYS)' : 'Bottom number (DIA)';
+  const full = which === 'systolic' ? t('chart.topFull') : t('chart.bottomFull');
   const needsToggle = view === 'spread' || view === 'share';
 
   return (
     <View style={{ gap: 12 }}>
-      <Segmented label="Chart type" value={view} options={[{ value: 'line', label: 'Line' }, { value: 'weekly', label: 'Weekly' }, { value: 'spread', label: 'Spread' }, { value: 'share', label: 'Share' }]} onChange={setView} />
-      <Segmented label="Time range" value={days} options={RANGES.map((d) => ({ value: d, label: `${d} days` }))} onChange={setDays} />
-      {needsToggle ? <Segmented label="Which number" value={which} options={[{ value: 'systolic', label: 'Top (SYS)' }, { value: 'diastolic', label: 'Bottom (DIA)' }]} onChange={setWhich} /> : null}
+      <Segmented label={t('chart.type')} value={view} options={[{ value: 'line', label: t('chart.line') }, { value: 'weekly', label: t('chart.weekly') }, { value: 'spread', label: t('chart.spread') }, { value: 'share', label: t('chart.share') }]} onChange={setView} />
+      <Segmented label={t('chart.range')} value={days} options={RANGES.map((d) => ({ value: d, label: t('chart.days', { n: d }) }))} onChange={setDays} />
+      {needsToggle ? <Segmented label={t('chart.which')} value={which} options={[{ value: 'systolic', label: t('bp.top') }, { value: 'diastolic', label: t('bp.bottom') }]} onChange={setWhich} /> : null}
       {needsToggle ? <Text accessibilityRole="header" style={{ fontSize: font.h2, fontWeight: '800', color: accent === 'red' ? color.accent.red : color.accent.blue }}>{full}</Text> : null}
-      <Text accessibilityRole="text" accessibilityLabel={text} style={{ fontSize: font.body, color: color.text }}>{view === 'line' ? text : `Last ${days} days: ${data.length} ${data.length === 1 ? 'reading' : 'readings'}.`}</Text>
-      {data.length < 2 ? <Body>Add at least 2 readings in this time range to see your chart.</Body>
+      <Text accessibilityRole="text" accessibilityLabel={text} style={{ fontSize: font.body, color: color.text }}>{view === 'line' ? text : t('chart.lastCount', { days, count: readingsText(t, data.length) })}</Text>
+      {data.length < 2 ? <Body>{t('chart.needTwo')}</Body>
         : view === 'line' ? <LineView data={data} days={days} now={now} />
         : view === 'weekly' ? <WeeklyView weekly={weekly} />
         : view === 'spread' ? <SpreadView b={b} c={accent === 'red' ? color.accent.red : color.accent.blue} name={label} />
         : <ShareView b={b} total={data.length} name={label} accent={accent} />}
-      <Text style={{ fontSize: font.body, color: color.muted }}>These charts show your numbers only. Your doctor tells you which numbers are right for you.</Text>
+      <Text style={{ fontSize: font.body, color: color.muted }}>{t('chart.disclaimer')}</Text>
     </View>
   );
 }

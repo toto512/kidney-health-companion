@@ -49,7 +49,8 @@ describe('every language is complete', () => {
       expect(Object.keys(d).sort()).toEqual(Object.keys(en).sort());
       for (const k of Object.keys(en)) {
         expect(d[k], `${l.code}.${k}`).toBeTruthy();
-        expect(vars(d[k]), `${l.code}.${k}`).toBe(vars(en[k as keyof typeof en]));
+        // Hebrew says "one reading" without the number, so the singular form may drop {n}.
+        if (!(l.code === 'he' && k === 'chart.one')) expect(vars(d[k]), `${l.code}.${k}`).toBe(vars(en[k as keyof typeof en]));
       }
     });
   }

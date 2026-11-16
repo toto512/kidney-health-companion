@@ -27,9 +27,12 @@ export function resolveLanguage(saved: unknown, deviceTags: readonly string[]): 
 }
 
 // "Hello {name}" with { name: 'Ana' }. A missing variable stays visible as {name} so it is noticed in testing.
+// Phone and emergency numbers are wrapped in a left-to-right isolate (U+2066 ... U+2069) so right-to-left text cannot reorder "9-1-1" or "+1 613 555 0123".
+export const LTR_VARS = ['number', 'phone'];
+export const ltrIsolate = (s: string) => '\u2066' + s + '\u2069';
 export function format(template: string, vars?: Record<string, string | number>): string {
   if (!vars) return template;
-  return template.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
+  return template.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? (LTR_VARS.includes(k) ? ltrIsolate(String(vars[k])) : String(vars[k])) : m));
 }
 
 export type Dict = Record<string, string>;

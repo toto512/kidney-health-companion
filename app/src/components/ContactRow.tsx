@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Animated, Linking, Platform, Pressable, Text, View } from 'react-native';
 import { useI18n } from '@/i18n/I18nProvider';
 import { relLabel } from '@/i18n/labels';
+import { ltrIsolate } from '@/i18n/core';
 import { displayPhone, relationshipLabel, telHref } from '@/lib/contactLogic';
 import type { Contact } from '@/lib/emergencyContacts';
 import { font, useColors } from '@/theme/tokens';
@@ -57,7 +58,7 @@ export function ContactRow({ c }: { c: Contact }) {
           onPress={() => router.push(confirmHref)} style={{ flex: 1, minHeight: 72, justifyContent: 'center', paddingHorizontal: 8 }}>
           <Text style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{c.name}</Text>
           <Text style={{ fontSize: font.body, color: color.muted }}>{relLabel(t, c.relationship, relationshipLabel(c.relationship))}</Text>
-          <Text style={{ fontSize: font.body, fontWeight: '700', color: color.text }}>{displayPhone(c.phone)}</Text>
+          <Text style={{ fontSize: font.body, fontWeight: '700', color: color.text }}>{ltrIsolate(displayPhone(c.phone))}</Text>
         </Pressable>
         <Pressable accessibilityRole="button" accessibilityLabel={`${t('contact.call')} ${c.name}`} accessibilityHint={t('contact.holdA11y')}
           onPressIn={start} onPressOut={stop} onAccessibilityTap={() => router.push(confirmHref)}

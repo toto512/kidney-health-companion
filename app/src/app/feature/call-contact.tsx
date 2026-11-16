@@ -8,6 +8,7 @@ import { Contact, loadContactsOrCopy } from '@/lib/emergencyContacts';
 import { useAuth } from '@/lib/auth';
 import { useI18n } from '@/i18n/I18nProvider';
 import { relLabel } from '@/i18n/labels';
+import { ltrIsolate } from '@/i18n/core';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
 
@@ -49,7 +50,7 @@ export default function CallContact() {
             <Panel>
               <Text accessibilityRole="header" style={{ fontSize: font.h1, lineHeight: font.h1 * 1.2, fontWeight: '800', color: color.text }}>{c.name}</Text>
               <Body>{relLabel(t, c.relationship, relationshipLabel(c.relationship))}</Body>
-              <Text selectable accessibilityLabel={t('call.number', { digits: c.phone.split('').join(' ') })} style={{ fontSize: Math.round(font.h1 * 1.1), lineHeight: Math.round(font.h1 * 1.4), fontWeight: '800', color: color.text }}>{displayPhone(c.phone)}</Text>
+              <Text selectable accessibilityLabel={t('call.number', { digits: c.phone.split('').join(' ') })} style={{ fontSize: Math.round(font.h1 * 1.1), lineHeight: Math.round(font.h1 * 1.4), fontWeight: '800', color: color.text }}>{ltrIsolate(displayPhone(c.phone))}</Text>
             </Panel>
             <BigButton label={t('call.now')} onPress={dial} />
             <BigButton variant="secondary" label={t('people.cancel')} onPress={back} />

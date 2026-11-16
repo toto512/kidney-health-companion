@@ -76,3 +76,23 @@ describe('validation messages are all translatable', () => {
     for (const c of cases) { expect(c.ok).toBe(false); if (!c.ok) expect(trError(t as never, c.error), c.error).toMatch(/^T:err\./); }
   });
 });
+
+describe('phone and emergency numbers in right-to-left text', () => {
+  const strip = (s: string) => s.replace(/[⁦⁩]/g, '');
+  it('every {number} and {phone} placeholder in every language is isolated and keeps its characters', () => {
+    for (const lang of ['en', 'fr', 'es', 'he'] as const) {
+      for (const [key, tpl] of Object.entries(DICTS[lang])) {
+        if (!/\{(number|phone)\}/.test(tpl)) continue;
+        const out = translate(DICTS, lang, key, { number: '9-1-1', phone: '+1 613 555 0123', name: 'X', label: 'L', relationship: 'R' });
+        for (const v of ['9-1-1', '+1 613 555 0123']) {
+          if (out.includes(v)) expect(out, `${lang} ${key}`).toContain('⁦' + v + '⁩');
+        }
+        expect(strip(out), `${lang} ${key}`).not.toMatch(/\{(number|phone)\}/);
+      }
+    }
+  });
+  it('Hebrew emergency call text contains the number unchanged inside an isolate', () => {
+    const out = translate(DICTS, 'he', 'emergency.callNow', { number: '9-1-1' });
+    expect(out).toBe('להתקשר עכשיו אל ⁦9-1-1⁩');
+  });
+});

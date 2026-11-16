@@ -7,6 +7,9 @@ import { useAuth } from '@/lib/auth';
 import { dismiss, wasDismissed } from '@/lib/suggestions';
 import { takeFlash } from '@/lib/flash';
 import { supabase } from '@/lib/supabase';
+import { displayPhone, relationshipLabel } from '@/lib/contactLogic';
+import { Contact, loadContactsOrCopy } from '@/lib/emergencyContacts';
+import { emergencyView, EMERGENCY, LISTED_EMERGENCY } from '@/content/emergency';
 import { font, space, useColors } from '@/theme/tokens';
 
 type Latest = { systolic: number; diastolic: number; taken_at: string } | null | 'error';
@@ -20,6 +23,8 @@ export default function Today() {
   const [tipGone, setTipGone] = useState(true); // hidden until we know it was not dismissed
   useEffect(() => { if (uid) void wasDismissed('two-step', uid).then(setTipGone); }, [uid]);
   const showTip = !tipGone && aal === 'aal1' && !needsMfa;
+  const [people, setPeople] = useState<Contact[] | null>(null);
+  const [country, setCountry] = useState<string | null | undefined>(undefined);
   const [flash, setFlashMsg] = useState<string | null>(null);
 
   // A confirmation from the screen the person just came from (for example "Profile saved."), shown for 6 seconds.
@@ -35,6 +40,13 @@ export default function Today() {
 
   useFocusEffect(useCallback(() => {
     let alive = true;
+    if (uid) void loadContactsOrCopy(uid).then((r) => { if (alive) setPeople(r?.list ?? null); });
+    supabase.from('profiles').select('country_code').maybeSingle().then(({ data }) => { if (alive) setCountry(data?.country_code ?? null); });
+    return () => { alive = false; };
+  }, [uid]));
+
+  useFocusEffect(useCallback(() => {
+    let alive = true;
     supabase.from('bp_readings').select('systolic,diastolic,taken_at').order('taken_at', { ascending: false }).limit(1)
       .then(({ data, error }) => {
         if (!alive) return;
@@ -44,6 +56,8 @@ export default function Today() {
     return () => { alive = false; };
   }, []));
 
+  const ev = emergencyView(country);
+  const emergencyNote = ev.kind === 'supported' ? `Official number: ${EMERGENCY[ev.country].number}. Tap for the source.` : ev.kind === 'listed' ? `Official number: ${LISTED_EMERGENCY[ev.code].number}. Tap for the source.` : 'See the number to call and where it comes from.';
   return (
     <ScrollView>
       <Screen>
@@ -60,9 +74,20 @@ export default function Today() {
         ) : null}
         <H2>Your health</H2>
         <View style={{ gap: 16 }}>
-          <Card title="Emergency" icon="🚨" tone="danger" onPress={() => router.push('/feature/emergency')}>
-            <CardNote>See the number to call and where it comes from.</CardNote>
+          <Card title="Emergency services" icon="🚨" tone="danger" onPress={() => router.push('/feature/emergency')}>
+            <CardNote>{emergencyNote}</CardNote>
           </Card>
+          <Card title="My people" icon="👥" accent="teal" onPress={() => router.push('/feature/my-people')}>
+            <CardNote>{people && people.length ? 'Tap a name below to call. Tap here to add, change or replace people.' : 'Add your doctor, family or a friend, so their number is here when you need it.'}</CardNote>
+          </Card>
+          {people?.map((c) => (
+            <Pressable key={c.id} accessibilityRole="button" accessibilityLabel={`Call ${c.name}, ${relationshipLabel(c.relationship)}, ${displayPhone(c.phone)}. Opens a confirm screen first.`}
+              onPress={() => router.push({ pathname: '/feature/call-contact', params: { id: c.id } })}
+              style={{ minHeight: 72, borderRadius: 18, borderWidth: 2, borderColor: color.accent.teal, backgroundColor: color.surface, paddingHorizontal: 18, paddingVertical: 12, justifyContent: 'center' }}>
+              <Text style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>📞 {c.name}</Text>
+              <Text style={{ fontSize: font.body, color: color.muted }}>{relationshipLabel(c.relationship)}  {displayPhone(c.phone)}</Text>
+            </Pressable>
+          ))}
           <Card title="Blood pressure" icon="❤️" accent="red" onPress={() => router.push('/feature/blood-pressure')}>
             {bp && bp !== 'error' ? (
               <>

@@ -76,6 +76,7 @@ export default function Profile() {
     setErr(''); setMsg('');
     const r = parseProfile({ name, dob, sex, height, heightFt, heightIn, heightUnit: hUnit, weight, weightUnit: wUnit, country }, new Date());
     if (!r.ok) { setErr(r.error); return; }
+    const wasNew = profileComplete === false;
     setBusy(true);
     const { data: u } = await supabase.auth.getUser();
     const { error } = await supabase.from('profiles').upsert({ user_id: u.user?.id, ...r.value });
@@ -83,6 +84,7 @@ export default function Profile() {
     if (error) { setErr('Could not save. Try again.'); return; }
     setCmDb(r.value.height_cm); setKgDb(r.value.weight_kg);
     await refreshProfile();
+    if (wasNew) { router.replace('/feature/my-people?first=1'); return; } // first login: next wizard step
     setFlash('Profile saved.'); // the dashboard shows this for a few seconds so it is clear the save worked
     router.replace('/');
   }

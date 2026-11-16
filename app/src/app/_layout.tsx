@@ -13,8 +13,8 @@ function Guard() {
   if (!session && !isAuthRoute) return <Redirect href="/sign-in" />;
   if (session && needsMfa && path !== '/mfa-verify' && path !== '/recover') return <Redirect href="/mfa-verify" />;
   if (session && !needsMfa && recovery && path !== '/new-password') return <Redirect href="/new-password" />;
-  if (session && !needsMfa && !recovery && profileComplete === false && path !== '/feature/profile' && path !== '/feature/two-step' && path !== '/feature/recovery-codes' && path !== '/feature/emergency') return <Redirect href="/feature/profile" />;
-  if (session && !needsMfa && !recovery && profileComplete === true && offered === false && aal !== 'aal2' && path !== '/offer-two-step' && path !== '/feature/two-step' && path !== '/feature/recovery-codes') return <Redirect href="/offer-two-step" />;
+  if (session && !needsMfa && !recovery && profileComplete === false && path !== '/feature/profile' && path !== '/feature/two-step' && path !== '/feature/recovery-codes' && path !== '/feature/emergency' && path !== '/feature/my-people') return <Redirect href="/feature/profile" />;
+  if (session && !needsMfa && !recovery && profileComplete === true && offered === false && aal !== 'aal2' && path !== '/offer-two-step' && path !== '/feature/two-step' && path !== '/feature/recovery-codes' && path !== '/feature/my-people' && path !== '/feature/call-contact') return <Redirect href="/offer-two-step" />;
   if (session && !needsMfa && !recovery && (isAuthRoute || path === '/mfa-verify')) return <Redirect href="/" />;
   return (
     <View style={{ flex: 1, backgroundColor: color.bg }} onStartShouldSetResponderCapture={() => { touch(); return false; }}>

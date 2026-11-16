@@ -9,3 +9,5 @@ Migration 0007 (user_conditions): after the stub, run `psql -f ../migrations/000
 Migration 0008 (user_medications): after the stub, run `psql -f ../migrations/0008_user_medications.sql && psql -f 0008_user_medications.test.sql`. It checks owner-only rows, one-kind-per-row, name checks, duplicates, the two-step rule and that anon is blocked.
 
 Migration 0009 (medication strength): after the stub and 0008, run `psql -f ../migrations/0009_medication_strength.sql && psql -f 0009_medication_strength.test.sql`. It checks the strength rules, that only strength can be updated, and that other users and enrolled aal1 sessions cannot change rows.
+
+Migration 0010 (emergency_contacts, "My people"): after the stub, run `psql -f ../migrations/0010_emergency_contacts.sql && psql -f 0010_emergency_contacts.test.sql`. It checks owner-only rows, the E.164 phone format, the name and relationship checks, the five-contact limit, that only name, relationship and phone can be updated, the two-step rule and that anon is blocked.

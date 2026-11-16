@@ -2,6 +2,7 @@ import { Redirect, Slot, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
 import { AuthProvider, useAuth } from '@/lib/auth';
+import { TextSizeProvider } from '@/lib/textSize';
 import { useColors } from '@/theme/tokens';
 
 function Guard() {
@@ -26,8 +27,10 @@ function Guard() {
 export default function Root() {
   return (
     <AuthProvider>
-      <StatusBar style="auto" />
-      <Guard />
+      <TextSizeProvider>
+        <StatusBar style="auto" />
+        <Guard />
+      </TextSizeProvider>
     </AuthProvider>
   );
 }

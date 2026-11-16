@@ -10,6 +10,8 @@ import { useAuth } from '@/lib/auth';
 import { cmToFeetInches, countryName, HeightUnit, isSupported, kgToLb, parseHeightCm, parseProfile, parseWeightKg, SEX_OPTIONS, WeightUnit } from '@/lib/profile';
 import { font, useColors } from '@/theme/tokens';
 import { supabase } from '@/lib/supabase';
+import { useTextSize } from '@/lib/textSize';
+import { TEXT_STEPS, TEXT_STEP_LABELS } from '@/theme/textSize';
 
 const UNITS_KEY = 'profile.units';
 
@@ -28,6 +30,7 @@ export default function Profile() {
   const [country, setCountry] = useState('');
   const [sex, setSex] = useState('');
   const { profileComplete, refreshProfile } = useAuth();
+  const { step: textStep, setStep: setTextStep } = useTextSize();
   const [err, setErr] = useState('');
   const [msg, setMsg] = useState('');
   const [busy, setBusy] = useState(false);
@@ -113,6 +116,11 @@ export default function Profile() {
             </>}
         <UnitToggle label="Weight unit" value={wUnit} options={[{ value: 'kg', label: 'kg' }, { value: 'lb', label: 'lb' }]} onChange={(v) => { const cur = parseWeightKg(wUnit, weight); if (cur !== null) setKgDb(cur); else setWeight(''); setWUnit(v); pickUnits(hUnit, v); }} />
         <Field label={wUnit === 'kg' ? 'Weight in kg' : 'Weight in lb'} value={weight} onChangeText={edit(setWeight)} keyboardType="decimal-pad" maxLength={5} />
+        </Panel>
+        <Panel>
+          <SectionHeader icon="🔠" accent="blue">Text size</SectionHeader>
+          <Body>Pick the size that is easiest to read. It changes the whole app on this device.</Body>
+          <UnitToggle label="Text size" value={textStep} options={TEXT_STEPS.map((t) => ({ value: t, label: TEXT_STEP_LABELS[t] }))} onChange={setTextStep} />
         </Panel>
         {err ? <Body tone="danger">{err}</Body> : null}
         {msg ? <Body>{msg}</Body> : null}

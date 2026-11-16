@@ -40,4 +40,11 @@ export const he: Record<Key, string> = {
   'language.intro': 'בחרו את שפת האפליקציה. ציטוטים רשמיים בנושא בריאות נשארים בשפת המקור שלהם, עם קישור למקור.',
   'language.review': 'תרגום טיוטה. דובר שפת אם עדיין לא בדק אותו.',
   'language.saved': 'השפה נשמרה.',
+
+  "contact.call": "התקשר",
+  "contact.keepHolding": "המשיכו ללחוץ",
+  "contact.holdHint": "לחצו והחזיקו כדי להתקשר",
+  "contact.holdA11y": "לחצו והחזיקו שנייה וחצי כדי להתקשר. או פתחו את האדם כדי לאשר קודם.",
+  "contact.failed": "השיחה לא התחילה. חייגו {phone}.",
+  "contact.webNote": "במחשב נדרשת אפליקציית חיוג.",
 };

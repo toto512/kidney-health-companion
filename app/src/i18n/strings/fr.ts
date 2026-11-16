@@ -40,4 +40,11 @@ export const fr: Record<Key, string> = {
   'language.intro': 'Choisissez la langue de l’application. Les citations officielles sur la santé restent dans leur langue d’origine, avec un lien vers la source.',
   'language.review': 'Traduction provisoire. Elle n’a pas encore été révisée par un locuteur natif.',
   'language.saved': 'Langue enregistrée.',
+
+  "contact.call": "Appeler",
+  "contact.keepHolding": "Continuez",
+  "contact.holdHint": "Maintenez pour appeler",
+  "contact.holdA11y": "Maintenez appuyé une seconde et demie pour appeler. Ou ouvrez la personne pour confirmer d’abord.",
+  "contact.failed": "L’appel n’a pas démarré. Composez le {phone}.",
+  "contact.webNote": "Sur un ordinateur, une application d’appel est nécessaire.",
 };

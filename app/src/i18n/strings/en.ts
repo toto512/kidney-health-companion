@@ -39,5 +39,12 @@ export const en = {
   'language.intro': 'Choose the language for the app. Official health quotes stay in their original language, with a link to the source.',
   'language.review': 'Draft translation. A native speaker has not reviewed it yet.',
   'language.saved': 'Language saved.',
+
+  "contact.call": "Call",
+  "contact.keepHolding": "Keep holding",
+  "contact.holdHint": "Hold to call",
+  "contact.holdA11y": "Press and hold for one and a half seconds to call. Or open the person to confirm first.",
+  "contact.failed": "The call did not start. Dial {phone}.",
+  "contact.webNote": "On a computer, this needs a calling app.",
 } as const;
 export type Key = keyof typeof en;

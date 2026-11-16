@@ -1,6 +1,7 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, Switch, Text, View } from 'react-native';
+import { ContactRow } from '@/components/ContactRow';
 import { Select } from '@/components/Select';
 import { BigButton, Body, DisclaimerFooter, Field, H1, H2, Panel, Screen } from '@/components/ui';
 import { canAddMore, displayPhone, MAX_CONTACTS, RELATIONSHIPS, Relationship, relationshipLabel, validateContact } from '@/lib/contactLogic';
@@ -88,8 +89,7 @@ export default function MyPeople() {
 
         {list?.map((c) => (
           <Panel key={c.id}>
-            <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{c.name}</Text>
-            <Body>{relationshipLabel(c.relationship)}  {displayPhone(c.phone)}</Body>
+            <ContactRow c={c} />
             {confirmDel === c.id ? (
               <>
                 <Body tone="danger">Remove {c.name} from your list?</Body>

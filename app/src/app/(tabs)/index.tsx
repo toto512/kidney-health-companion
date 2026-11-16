@@ -2,6 +2,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { BigButton, Card, CardNote, CardValue, DisclaimerFooter, H1, H2, Screen, Suggestion } from '@/components/ui';
+import { ContactRow } from '@/components/ContactRow';
 import { TrackingSuggestions } from '@/components/TrackingSuggestions';
 import { useAuth } from '@/lib/auth';
 import { dismiss, wasDismissed } from '@/lib/suggestions';
@@ -86,14 +87,7 @@ export default function Today() {
           <Card title={t('today.peopleTitle')} icon="👥" accent="teal" onPress={() => router.push('/feature/my-people')}>
             <CardNote>{people && people.length ? t('today.peopleNoteSome') : t('today.peopleNoteNone')}</CardNote>
           </Card>
-          {people?.map((c) => (
-            <Pressable key={c.id} accessibilityRole="button" accessibilityLabel={t('today.callPerson', { name: c.name, relationship: relationshipLabel(c.relationship), phone: displayPhone(c.phone) })}
-              onPress={() => router.push({ pathname: '/feature/call-contact', params: { id: c.id } })}
-              style={{ minHeight: 72, borderRadius: 18, borderWidth: 2, borderColor: color.accent.teal, backgroundColor: color.surface, paddingHorizontal: 18, paddingVertical: 12, justifyContent: 'center' }}>
-              <Text style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>📞 {c.name}</Text>
-              <Text style={{ fontSize: font.body, color: color.muted }}>{relationshipLabel(c.relationship)}  {displayPhone(c.phone)}</Text>
-            </Pressable>
-          ))}
+          {people?.map((c) => <ContactRow key={c.id} c={c} />)}
           <Card title={t('today.bpTitle')} icon="❤️" accent="red" onPress={() => router.push('/feature/blood-pressure')}>
             {bp && bp !== 'error' ? (
               <>

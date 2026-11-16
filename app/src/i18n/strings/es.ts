@@ -40,4 +40,11 @@ export const es: Record<Key, string> = {
   'language.intro': 'Elija el idioma de la aplicación. Las citas oficiales sobre salud se mantienen en su idioma original, con un enlace a la fuente.',
   'language.review': 'Traducción provisional. Aún no la ha revisado un hablante nativo.',
   'language.saved': 'Idioma guardado.',
+
+  "contact.call": "Llamar",
+  "contact.keepHolding": "Siga presionando",
+  "contact.holdHint": "Mantenga presionado para llamar",
+  "contact.holdA11y": "Mantenga presionado un segundo y medio para llamar. O abra la persona para confirmar primero.",
+  "contact.failed": "La llamada no se inició. Marque el {phone}.",
+  "contact.webNote": "En una computadora, se necesita una aplicación de llamadas.",
 };

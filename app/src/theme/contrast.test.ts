@@ -51,3 +51,9 @@ describe.each([['light', light], ['dark', dark]] as const)('%s chart ramp', (_n,
     for (const c of [...ramp(p, n, 'blue'), ...ramp(p, n, 'red')]) expect(ratio(c, p.surface)).toBeGreaterThanOrEqual(3);
   });
 });
+
+describe.each([['light', light], ['dark', dark]] as const)('%s reference toggle', (_n, p) => {
+  it.each(ACCENTS)('%s text is at least 4.5:1 on its own 6% tint', (a) => {
+    expect(ratio(p.accent[a], mix(p.accent[a], p.surface, 0.06))).toBeGreaterThanOrEqual(4.5);
+  });
+});

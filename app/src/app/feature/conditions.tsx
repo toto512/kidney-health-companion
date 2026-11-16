@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Linking, Pressable, ScrollView, Text } from 'react-native';
+import { ReferenceBlock } from '@/components/ReferenceBlock';
 import { BigButton, Body, DisclaimerFooter, H1, Panel, Screen, SectionHeader } from '@/components/ui';
 import { CONDITIONS, EXTRAS, sourceReviewOverdue } from '@/content/conditions';
 import { countryName, isSupported } from '@/lib/profile';
@@ -48,6 +49,7 @@ export default function Conditions() {
                   <Pressable accessibilityRole="link" onPress={() => Linking.openURL(f.url)} style={{ minHeight: 56, justifyContent: 'center' }}>
                     <Text style={{ fontSize: font.label, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>Open the official page</Text>
                   </Pressable>
+                  <ReferenceBlock country={country} condition={c.id} accent={ACCENT[c.id] ?? 'blue'} />
                 </Panel>
               );
             })}

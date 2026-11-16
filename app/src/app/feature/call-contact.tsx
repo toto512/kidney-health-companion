@@ -20,7 +20,7 @@ export default function CallContact() {
     void loadContactsOrCopy(uid).then((r) => setC(r?.list.find((x) => x.id === id) ?? null));
   }, [id, session?.user.id]);
   const href = c ? telHref(c.phone) : null;
-  const canDial = Platform.OS !== 'web';
+  const isWeb = Platform.OS === 'web';
   async function dial() {
     if (!href) return;
     try { await Linking.openURL(href); } catch { setFailed(true); }
@@ -38,7 +38,8 @@ export default function CallContact() {
               <Body>{relationshipLabel(c.relationship)}</Body>
               <Text selectable accessibilityLabel={`Number ${c.phone.split('').join(' ')}`} style={{ fontSize: 34, lineHeight: 42, fontWeight: '800', color: color.text }}>{displayPhone(c.phone)}</Text>
             </Panel>
-            {canDial ? <BigButton label={`Call ${c.name} now`} onPress={dial} /> : <Body>This computer cannot place calls. Dial the number above on your phone.</Body>}
+            <BigButton label={`Call ${c.name} now`} onPress={dial} />
+            {isWeb ? <Body>On a computer, Call works only if it has a calling app, such as Phone Link, Teams or FaceTime. If nothing happens, dial the number above on your phone.</Body> : null}
             {failed ? <Body tone="danger">This device could not start the call. Dial the number above.</Body> : null}
             <Body>This calls from your own phone. The app does not contact emergency services. If it is an emergency, call your local emergency number.</Body>
             <BigButton variant="secondary" label="Cancel" onPress={back} />

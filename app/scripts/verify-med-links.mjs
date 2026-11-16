@@ -45,7 +45,12 @@ async function checkDpd(c) {
   // DPD names many records "BRAND - 10MG". Those pages show a strength, so they are flagged and not shipped without a decision.
   const strengthy = rows.filter((x) => new RegExp(`^${esc}\\s*-\\s*\\d`, 'i').test(String(x.brand_name)));
   const hit = exact.length ? exact : strengthy;
-  if (!hit.length) return { country: 'CA', url: c.ca, ok: false, why: `no brand match in DPD (${rows.length} rows, e.g. ${rows.slice(0, 2).map((x) => x.brand_name).join(' / ')})` };
+  if (!hit.length) {
+    const names = rows.filter((x) => String(x.brand_name).toLowerCase().startsWith(brand));
+    return { country: 'CA', url: c.ca, ok: false, why: names.length
+      ? `HELD: DPD names carry a strength or form, not a plain brand name (e.g. ${names.slice(0, 2).map((x) => x.brand_name).join(' / ')}; ${rows.length} rows)`
+      : `NO RECORD: no DPD name starts with this brand (${rows.length} rows)` };
+  }
   const code = hit[0].drug_code;
   const page = `https://health-products.canada.ca/dpd-bdpp/info?lang=eng&code=${code}`;
   const p = await get(page);

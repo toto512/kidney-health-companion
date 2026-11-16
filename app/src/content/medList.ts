@@ -178,6 +178,10 @@ const VERIFIED: [string, OfficialLink][] = [
   us('tamsulosin', 'a698012', undefined),
   gb('tamsulosin', 'tamsulosin'),
   ca('tamsulosin', 61517, 'Flomax'),
+  us('albuterol-salbutamol', 'a682145', undefined, 'Albuterol oral inhalation'),
+  gb('albuterol-salbutamol', 'salbutamol-inhaler', 'Salbutamol inhaler'),
+  us('acetaminophen-paracetamol', 'a681004'),
+  gb('acetaminophen-paracetamol', 'paracetamol-for-adults', 'Paracetamol for adults'),
 ];
 for (const [id, link] of VERIFIED) MED_LIST.find((x) => x.med_id === id)!.official_links.push(link);
 

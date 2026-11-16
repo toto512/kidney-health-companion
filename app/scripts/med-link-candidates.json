@@ -1,0 +1,385 @@
+[
+ {
+  "n": 1,
+  "med_id": "atorvastatin",
+  "generic": "Atorvastatin",
+  "us": "https://medlineplus.gov/druginfo/meds/a600045.html",
+  "uk": "https://www.nhs.uk/medicines/atorvastatin/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=LIPITOR"
+ },
+ {
+  "n": 2,
+  "med_id": "amlodipine",
+  "generic": "Amlodipine",
+  "us": "https://medlineplus.gov/druginfo/meds/a692044.html",
+  "uk": "https://www.nhs.uk/medicines/amlodipine/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=NORVASC"
+ },
+ {
+  "n": 3,
+  "med_id": "lisinopril",
+  "generic": "Lisinopril",
+  "us": "https://medlineplus.gov/druginfo/meds/a692051.html",
+  "uk": "https://www.nhs.uk/medicines/lisinopril/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=ZESTRIL"
+ },
+ {
+  "n": 4,
+  "med_id": "losartan",
+  "generic": "Losartan",
+  "us": "https://medlineplus.gov/druginfo/meds/a695008.html",
+  "uk": "https://www.nhs.uk/medicines/losartan/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=COZAAR"
+ },
+ {
+  "n": 5,
+  "med_id": "metoprolol",
+  "generic": "Metoprolol",
+  "us": "https://medlineplus.gov/druginfo/meds/a682864.html",
+  "uk": "https://www.nhs.uk/medicines/metoprolol/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=LOPRES"
+ },
+ {
+  "n": 6,
+  "med_id": "rosuvastatin",
+  "generic": "Rosuvastatin",
+  "us": "https://medlineplus.gov/druginfo/meds/a603033.html",
+  "uk": "https://www.nhs.uk/medicines/rosuvastatin/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=CRESTOR"
+ },
+ {
+  "n": 7,
+  "med_id": "hydrochlorothiazide",
+  "generic": "Hydrochlorothiazide",
+  "us": "https://medlineplus.gov/druginfo/meds/a682571.html"
+ },
+ {
+  "n": 8,
+  "med_id": "apixaban",
+  "generic": "Apixaban",
+  "us": "https://medlineplus.gov/druginfo/meds/a613032.html",
+  "uk": "https://www.nhs.uk/medicines/apixaban/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=ELIQUIS"
+ },
+ {
+  "n": 9,
+  "med_id": "simvastatin",
+  "generic": "Simvastatin",
+  "us": "https://medlineplus.gov/druginfo/meds/a692030.html",
+  "uk": "https://www.nhs.uk/medicines/simvastatin/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=ZOCOR"
+ },
+ {
+  "n": 10,
+  "med_id": "furosemide",
+  "generic": "Furosemide",
+  "us": "https://medlineplus.gov/druginfo/meds/a682858.html",
+  "uk": "https://www.nhs.uk/medicines/furosemide/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=LASIX"
+ },
+ {
+  "n": 11,
+  "med_id": "carvedilol",
+  "generic": "Carvedilol",
+  "us": "https://medlineplus.gov/druginfo/meds/a697042.html",
+  "uk": "https://www.nhs.uk/medicines/carvedilol/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=COREG"
+ },
+ {
+  "n": 12,
+  "med_id": "clopidogrel",
+  "generic": "Clopidogrel",
+  "us": "https://medlineplus.gov/druginfo/meds/a601040.html",
+  "uk": "https://www.nhs.uk/medicines/clopidogrel/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=PLAVIX"
+ },
+ {
+  "n": 13,
+  "med_id": "spironolactone",
+  "generic": "Spironolactone",
+  "us": "https://medlineplus.gov/druginfo/meds/a682627.html",
+  "uk": "https://www.nhs.uk/medicines/spironolactone/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=ALDACTONE"
+ },
+ {
+  "n": 14,
+  "med_id": "ramipril",
+  "generic": "Ramipril",
+  "us": "https://medlineplus.gov/druginfo/meds/a692027.html",
+  "uk": "https://www.nhs.uk/medicines/ramipril/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=ALTACE"
+ },
+ {
+  "n": 15,
+  "med_id": "levothyroxine",
+  "generic": "Levothyroxine",
+  "us": "https://medlineplus.gov/druginfo/meds/a682461.html",
+  "uk": "https://www.nhs.uk/medicines/levothyroxine/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=SYNTHROID"
+ },
+ {
+  "n": 16,
+  "med_id": "metformin",
+  "generic": "Metformin",
+  "us": "https://medlineplus.gov/druginfo/meds/a696005.html",
+  "uk": "https://www.nhs.uk/medicines/metformin/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=GLUCOPHAGE"
+ },
+ {
+  "n": 17,
+  "med_id": "semaglutide",
+  "generic": "Semaglutide",
+  "us": "https://medlineplus.gov/druginfo/meds/a618008.html",
+  "uk": "https://www.nhs.uk/medicines/semaglutide/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=OZEMPIC"
+ },
+ {
+  "n": 18,
+  "med_id": "empagliflozin",
+  "generic": "Empagliflozin",
+  "us": "https://medlineplus.gov/druginfo/meds/a614043.html",
+  "uk": "https://www.nhs.uk/medicines/empagliflozin/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=JARDIANCE"
+ },
+ {
+  "n": 19,
+  "med_id": "insulin-glargine",
+  "generic": "Insulin Glargine",
+  "us": "https://medlineplus.gov/druginfo/meds/a600027.html",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=LANTUS"
+ },
+ {
+  "n": 20,
+  "med_id": "dulaglutide",
+  "generic": "Dulaglutide",
+  "us": "https://medlineplus.gov/druginfo/meds/a614047.html",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=TRULICITY"
+ },
+ {
+  "n": 21,
+  "med_id": "glipizide",
+  "generic": "Glipizide",
+  "us": "https://medlineplus.gov/druginfo/meds/a684060.html"
+ },
+ {
+  "n": 22,
+  "med_id": "estradiol",
+  "generic": "Estradiol",
+  "us": "https://medlineplus.gov/druginfo/meds/a682922.html",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=ESTRACE"
+ },
+ {
+  "n": 23,
+  "med_id": "gabapentin",
+  "generic": "Gabapentin",
+  "us": "https://medlineplus.gov/druginfo/meds/a694007.html",
+  "uk": "https://www.nhs.uk/medicines/gabapentin/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=NEURONTIN"
+ },
+ {
+  "n": 24,
+  "med_id": "sertraline",
+  "generic": "Sertraline",
+  "us": "https://medlineplus.gov/druginfo/meds/a697048.html",
+  "uk": "https://www.nhs.uk/medicines/sertraline/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=ZOLOFT"
+ },
+ {
+  "n": 25,
+  "med_id": "escitalopram",
+  "generic": "Escitalopram",
+  "us": "https://medlineplus.gov/druginfo/meds/a603005.html",
+  "uk": "https://www.nhs.uk/medicines/escitalopram/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=CIPRALEX"
+ },
+ {
+  "n": 26,
+  "med_id": "amphetamine-dextroamphetamine",
+  "generic": "Amphetamine / Dextroamphetamine",
+  "us": "https://medlineplus.gov/druginfo/meds/a616004.html",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=ADDERALL"
+ },
+ {
+  "n": 27,
+  "med_id": "bupropion",
+  "generic": "Bupropion",
+  "us": "https://medlineplus.gov/druginfo/meds/a695033.html",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=WELLBUTRIN"
+ },
+ {
+  "n": 28,
+  "med_id": "fluoxetine",
+  "generic": "Fluoxetine",
+  "us": "https://medlineplus.gov/druginfo/meds/a689006.html",
+  "uk": "https://www.nhs.uk/medicines/fluoxetine/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=PROZAC"
+ },
+ {
+  "n": 29,
+  "med_id": "trazodone",
+  "generic": "Trazodone",
+  "us": "https://medlineplus.gov/druginfo/meds/a681038.html",
+  "uk": "https://www.nhs.uk/medicines/trazodone/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=DESYREL"
+ },
+ {
+  "n": 30,
+  "med_id": "duloxetine",
+  "generic": "Duloxetine",
+  "us": "https://medlineplus.gov/druginfo/meds/a604030.html",
+  "uk": "https://www.nhs.uk/medicines/duloxetine/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=CYMBALTA"
+ },
+ {
+  "n": 31,
+  "med_id": "venlafaxine",
+  "generic": "Venlafaxine",
+  "us": "https://medlineplus.gov/druginfo/meds/a694020.html",
+  "uk": "https://www.nhs.uk/medicines/venlafaxine/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=EFFEXOR"
+ },
+ {
+  "n": 32,
+  "med_id": "alprazolam",
+  "generic": "Alprazolam",
+  "us": "https://medlineplus.gov/druginfo/meds/a684001.html",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=XANAX"
+ },
+ {
+  "n": 33,
+  "med_id": "pregabalin",
+  "generic": "Pregabalin",
+  "us": "https://medlineplus.gov/druginfo/meds/a605045.html",
+  "uk": "https://www.nhs.uk/medicines/pregabalin/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=LYRICA"
+ },
+ {
+  "n": 34,
+  "med_id": "albuterol-salbutamol",
+  "generic": "Albuterol / Salbutamol",
+  "us": "https://medlineplus.gov/druginfo/meds/a682145.html",
+  "uk": "https://www.nhs.uk/medicines/salbutamol-inhalers/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=VENTOLIN"
+ },
+ {
+  "n": 35,
+  "med_id": "montelukast",
+  "generic": "Montelukast",
+  "us": "https://medlineplus.gov/druginfo/meds/a600014.html",
+  "uk": "https://www.nhs.uk/medicines/montelukast/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=SINGULAIR"
+ },
+ {
+  "n": 36,
+  "med_id": "fluticasone",
+  "generic": "Fluticasone",
+  "us": "https://medlineplus.gov/druginfo/meds/a695002.html",
+  "uk": "https://www.nhs.uk/medicines/fluticasone-nasal-spray-and-drops/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=FLONASE"
+ },
+ {
+  "n": 37,
+  "med_id": "cetirizine",
+  "generic": "Cetirizine",
+  "us": "https://medlineplus.gov/druginfo/meds/a623043.html",
+  "uk": "https://www.nhs.uk/medicines/cetirizine/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=REACTINE"
+ },
+ {
+  "n": 38,
+  "med_id": "budesonide-formoterol",
+  "generic": "Budesonide / Formoterol",
+  "us": "https://medlineplus.gov/druginfo/meds/a699056.html",
+  "uk": "https://www.nhs.uk/medicines/budesonide-inhalers/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=SYMBICORT"
+ },
+ {
+  "n": 39,
+  "med_id": "omeprazole",
+  "generic": "Omeprazole",
+  "us": "https://medlineplus.gov/druginfo/meds/a693050.html",
+  "uk": "https://www.nhs.uk/medicines/omeprazole/"
+ },
+ {
+  "n": 40,
+  "med_id": "pantoprazole",
+  "generic": "Pantoprazole",
+  "us": "https://medlineplus.gov/druginfo/meds/a601246.html",
+  "uk": "https://www.nhs.uk/medicines/pantoprazole/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=PANTOLOC"
+ },
+ {
+  "n": 41,
+  "med_id": "ondansetron",
+  "generic": "Ondansetron",
+  "us": "https://medlineplus.gov/druginfo/meds/a601209.html",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=ZOFRAN"
+ },
+ {
+  "n": 42,
+  "med_id": "famotidine",
+  "generic": "Famotidine",
+  "us": "https://medlineplus.gov/druginfo/meds/a687011.html",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=PEPCID"
+ },
+ {
+  "n": 43,
+  "med_id": "ibuprofen",
+  "generic": "Ibuprofen",
+  "us": "https://medlineplus.gov/druginfo/meds/a682159.html",
+  "uk": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=ADVIL"
+ },
+ {
+  "n": 44,
+  "med_id": "acetaminophen-paracetamol",
+  "generic": "Acetaminophen / Paracetamol",
+  "us": "https://medlineplus.gov/druginfo/meds/a681004.html",
+  "uk": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=TYLENOL"
+ },
+ {
+  "n": 45,
+  "med_id": "meloxicam",
+  "generic": "Meloxicam",
+  "us": "https://medlineplus.gov/druginfo/meds/a601242.html",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=MOBIC"
+ },
+ {
+  "n": 46,
+  "med_id": "prednisone",
+  "generic": "Prednisone",
+  "us": "https://medlineplus.gov/druginfo/meds/a601102.html"
+ },
+ {
+  "n": 47,
+  "med_id": "cyclobenzaprine",
+  "generic": "Cyclobenzaprine",
+  "us": "https://medlineplus.gov/druginfo/meds/a682514.html",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=FLEXERIL"
+ },
+ {
+  "n": 48,
+  "med_id": "amoxicillin",
+  "generic": "Amoxicillin",
+  "us": "https://medlineplus.gov/druginfo/meds/a685001.html",
+  "uk": "https://www.nhs.uk/medicines/amoxicillin/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=AMOXIL"
+ },
+ {
+  "n": 49,
+  "med_id": "azithromycin",
+  "generic": "Azithromycin",
+  "us": "https://medlineplus.gov/druginfo/meds/a697037.html",
+  "uk": "https://www.nhs.uk/medicines/azithromycin/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=ZITHROMAX"
+ },
+ {
+  "n": 50,
+  "med_id": "tamsulosin",
+  "generic": "Tamsulosin",
+  "us": "https://medlineplus.gov/druginfo/meds/a698012.html",
+  "uk": "https://www.nhs.uk/medicines/tamsulosin/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=FLOMAX"
+ }
+]

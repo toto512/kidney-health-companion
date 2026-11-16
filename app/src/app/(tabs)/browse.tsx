@@ -7,7 +7,7 @@ import { AccentName, font, Palette, useColors } from '@/theme/tokens';
 // Labels are UI only. No health facts are shown until content is sourced and verified.
 const CATEGORIES: { id: string; label: string; icon: string; accent: AccentName }[] = [
   { id: 'conditions', label: 'My conditions', icon: '🩺', accent: 'blue' },
-  { id: 'medications', label: 'My medicines', icon: '💊', accent: 'teal' },
+  { id: 'medications', label: 'My medications', icon: '💊', accent: 'teal' },
   { id: 'blood-pressure', label: 'Blood pressure', icon: '❤️', accent: 'red' },
   { id: 'blood-results', label: 'Blood results', icon: '🩸', accent: 'purple' },
   { id: 'food', label: 'Food', icon: '🍎', accent: 'orange' },

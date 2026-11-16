@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import { Text } from 'react-native';
+import { useI18n } from '@/i18n/I18nProvider';
 import { useColors } from '@/theme/tokens';
 
 const icon = (e: string) => () => <Text style={{ fontSize: 26 }} accessible={false}>{e}</Text>;
@@ -7,6 +8,7 @@ const icon = (e: string) => () => <Text style={{ fontSize: 26 }} accessible={fal
 // A floating rounded bar. Screens leave 120 px at the bottom so nothing hides behind it.
 export default function TabsLayout() {
   const color = useColors();
+  const { t } = useI18n();
   return (
     <Tabs screenOptions={{
       headerShown: false,
@@ -21,9 +23,9 @@ export default function TabsLayout() {
       },
       tabBarItemStyle: { minHeight: 56, borderRadius: 32, marginVertical: 6, marginHorizontal: 2, paddingVertical: 4 },
     }}>
-      <Tabs.Screen name="index" options={{ title: 'Today', tabBarIcon: icon('🏠'), tabBarAccessibilityLabel: 'Today' }} />
-      <Tabs.Screen name="browse" options={{ title: 'Browse', tabBarIcon: icon('🗂️'), tabBarAccessibilityLabel: 'Browse' }} />
-      <Tabs.Screen name="me" options={{ title: 'Profile', tabBarIcon: icon('👤'), tabBarAccessibilityLabel: 'Profile' }} />
+      <Tabs.Screen name="index" options={{ title: t('tab.today'), tabBarIcon: icon('🏠'), tabBarAccessibilityLabel: t('tab.today') }} />
+      <Tabs.Screen name="browse" options={{ title: t('tab.browse'), tabBarIcon: icon('🗂️'), tabBarAccessibilityLabel: t('tab.browse') }} />
+      <Tabs.Screen name="me" options={{ title: t('tab.profile'), tabBarIcon: icon('👤'), tabBarAccessibilityLabel: t('tab.profile') }} />
     </Tabs>
   );
 }

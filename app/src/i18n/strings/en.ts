@@ -1,0 +1,43 @@
+// English is the source language. Every key here must exist in every other language (enforced by a test).
+export const en = {
+  'tab.today': 'Today',
+  'tab.browse': 'Browse',
+  'tab.profile': 'Profile',
+
+  'today.title': 'Today',
+  'today.yourHealth': 'Your health',
+  'today.extraProtection': 'Extra protection',
+  'today.twoStepTitle': 'Turn on two-step sign-in',
+  'today.twoStepBody': 'A 6-digit code from your phone keeps your health information safe if someone learns your password. It is optional.',
+  'today.turnOn': 'Turn it on',
+  'today.emergencyTitle': 'Emergency services',
+  'today.emergencyNoteNumber': 'Official number: {number}. Tap for the source.',
+  'today.emergencyNoteGeneric': 'See the number to call and where it comes from.',
+  'today.peopleTitle': 'My people',
+  'today.peopleNoteSome': 'Tap a name below to call. Tap here to add, change or replace people.',
+  'today.peopleNoteNone': 'Add your doctor, family or a friend, so their number is here when you need it.',
+  'today.callPerson': 'Call {name}, {relationship}, {phone}. Opens a confirm screen first.',
+  'today.bpTitle': 'Blood pressure',
+  'today.bpLast': 'Last reading, {date}',
+  'today.bpLoading': 'Loading.',
+  'today.bpError': 'Could not load your readings. Tap to try again.',
+  'today.bpNone': 'No readings yet. Tap to add one.',
+  'today.conditionsTitle': 'My conditions',
+  'today.conditionsNote': 'Information from official health sources.',
+  'today.dismissHint': '{message} Tap to dismiss.',
+
+  'me.title': 'Profile',
+  'me.myProfile': 'My profile',
+  'me.conditions': 'Conditions I track',
+  'me.medicines': 'Medicines I take',
+  'me.twoStep': 'Two-step sign-in',
+  'me.language': 'Language',
+  'me.settings': 'Settings',
+  'me.signOut': 'Sign out',
+
+  'language.title': 'Language',
+  'language.intro': 'Choose the language for the app. Official health quotes stay in their original language, with a link to the source.',
+  'language.review': 'Draft translation. A native speaker has not reviewed it yet.',
+  'language.saved': 'Language saved.',
+} as const;
+export type Key = keyof typeof en;

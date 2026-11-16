@@ -1,0 +1,43 @@
+import type { Key } from './en';
+// DRAFT translation, needs native review before launch.
+export const fr: Record<Key, string> = {
+  'tab.today': "Aujourd'hui",
+  'tab.browse': 'Explorer',
+  'tab.profile': 'Profil',
+
+  'today.title': "Aujourd'hui",
+  'today.yourHealth': 'Votre santé',
+  'today.extraProtection': 'Protection supplémentaire',
+  'today.twoStepTitle': 'Activer la connexion en deux étapes',
+  'today.twoStepBody': 'Un code à 6 chiffres envoyé sur votre téléphone protège vos renseignements de santé si quelqu’un découvre votre mot de passe. C’est facultatif.',
+  'today.turnOn': 'Activer',
+  'today.emergencyTitle': "Services d'urgence",
+  'today.emergencyNoteNumber': 'Numéro officiel : {number}. Touchez pour voir la source.',
+  'today.emergencyNoteGeneric': 'Voyez le numéro à composer et d’où il provient.',
+  'today.peopleTitle': 'Mes proches',
+  'today.peopleNoteSome': 'Touchez un nom ci-dessous pour appeler. Touchez ici pour ajouter, modifier ou remplacer des personnes.',
+  'today.peopleNoteNone': 'Ajoutez votre médecin, votre famille ou un ami pour avoir leur numéro à portée de main.',
+  'today.callPerson': 'Appeler {name}, {relationship}, {phone}. Un écran de confirmation s’ouvre d’abord.',
+  'today.bpTitle': 'Tension artérielle',
+  'today.bpLast': 'Dernière mesure, {date}',
+  'today.bpLoading': 'Chargement.',
+  'today.bpError': 'Impossible de charger vos mesures. Touchez pour réessayer.',
+  'today.bpNone': 'Aucune mesure pour l’instant. Touchez pour en ajouter une.',
+  'today.conditionsTitle': 'Mes problèmes de santé',
+  'today.conditionsNote': 'Information provenant de sources de santé officielles.',
+  'today.dismissHint': '{message} Touchez pour fermer.',
+
+  'me.title': 'Profil',
+  'me.myProfile': 'Mon profil',
+  'me.conditions': 'Problèmes de santé que je suis',
+  'me.medicines': 'Médicaments que je prends',
+  'me.twoStep': 'Connexion en deux étapes',
+  'me.language': 'Langue',
+  'me.settings': 'Paramètres',
+  'me.signOut': 'Se déconnecter',
+
+  'language.title': 'Langue',
+  'language.intro': 'Choisissez la langue de l’application. Les citations officielles sur la santé restent dans leur langue d’origine, avec un lien vers la source.',
+  'language.review': 'Traduction provisoire. Elle n’a pas encore été révisée par un locuteur natif.',
+  'language.saved': 'Langue enregistrée.',
+};

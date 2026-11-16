@@ -1,0 +1,43 @@
+import type { Key } from './en';
+// DRAFT translation, needs native review before launch.
+export const he: Record<Key, string> = {
+  'tab.today': 'היום',
+  'tab.browse': 'עיון',
+  'tab.profile': 'פרופיל',
+
+  'today.title': 'היום',
+  'today.yourHealth': 'הבריאות שלך',
+  'today.extraProtection': 'הגנה נוספת',
+  'today.twoStepTitle': 'הפעלת התחברות בשני שלבים',
+  'today.twoStepBody': 'קוד בן 6 ספרות מהטלפון שלך שומר על המידע הבריאותי שלך אם מישהו יגלה את הסיסמה. זה אופציונלי.',
+  'today.turnOn': 'הפעלה',
+  'today.emergencyTitle': 'שירותי חירום',
+  'today.emergencyNoteNumber': 'המספר הרשמי: {number}. לחצו כדי לראות את המקור.',
+  'today.emergencyNoteGeneric': 'ראו לאיזה מספר להתקשר ומאיפה הוא מגיע.',
+  'today.peopleTitle': 'האנשים שלי',
+  'today.peopleNoteSome': 'לחצו על שם למטה כדי להתקשר. לחצו כאן כדי להוסיף, לשנות או להחליף אנשים.',
+  'today.peopleNoteNone': 'הוסיפו את הרופא, המשפחה או חבר, כדי שהמספר שלהם יהיה בהישג יד כשתצטרכו.',
+  'today.callPerson': 'להתקשר אל {name}, {relationship}, {phone}. קודם נפתח מסך אישור.',
+  'today.bpTitle': 'לחץ דם',
+  'today.bpLast': 'מדידה אחרונה, {date}',
+  'today.bpLoading': 'טוען.',
+  'today.bpError': 'לא ניתן לטעון את המדידות שלכם. לחצו כדי לנסות שוב.',
+  'today.bpNone': 'עדיין אין מדידות. לחצו כדי להוסיף.',
+  'today.conditionsTitle': 'המצבים הרפואיים שלי',
+  'today.conditionsNote': 'מידע ממקורות בריאות רשמיים.',
+  'today.dismissHint': '{message} לחצו כדי לסגור.',
+
+  'me.title': 'פרופיל',
+  'me.myProfile': 'הפרופיל שלי',
+  'me.conditions': 'מצבים רפואיים שאני עוקב אחריהם',
+  'me.medicines': 'תרופות שאני לוקח',
+  'me.twoStep': 'התחברות בשני שלבים',
+  'me.language': 'שפה',
+  'me.settings': 'הגדרות',
+  'me.signOut': 'התנתקות',
+
+  'language.title': 'שפה',
+  'language.intro': 'בחרו את שפת האפליקציה. ציטוטים רשמיים בנושא בריאות נשארים בשפת המקור שלהם, עם קישור למקור.',
+  'language.review': 'תרגום טיוטה. דובר שפת אם עדיין לא בדק אותו.',
+  'language.saved': 'השפה נשמרה.',
+};

@@ -6,6 +6,7 @@ import { TrackingSuggestions } from '@/components/TrackingSuggestions';
 import { useAuth } from '@/lib/auth';
 import { dismiss, wasDismissed } from '@/lib/suggestions';
 import { takeFlash } from '@/lib/flash';
+import { useI18n } from '@/i18n/I18nProvider';
 import { supabase } from '@/lib/supabase';
 import { displayPhone, relationshipLabel } from '@/lib/contactLogic';
 import { Contact, loadContactsOrCopy } from '@/lib/emergencyContacts';
@@ -16,6 +17,7 @@ import { font, space, useColors } from '@/theme/tokens';
 type Latest = { systolic: number; diastolic: number; taken_at: string } | null | 'error';
 
 export default function Today() {
+  const { t, date } = useI18n();
   const [bp, setBp] = useState<Latest>(null);
   const [loaded, setLoaded] = useState(false);
   const color = useColors();
@@ -58,52 +60,52 @@ export default function Today() {
   }, []));
 
   const ev = emergencyView(country);
-  const emergencyNote = ev.kind === 'supported' ? `Official number: ${EMERGENCY[ev.country].number}. Tap for the source.` : ev.kind === 'listed' ? `Official number: ${LISTED_EMERGENCY[ev.code].number}. Tap for the source.` : 'See the number to call and where it comes from.';
+  const emergencyNote = ev.kind === 'supported' ? t('today.emergencyNoteNumber', { number: EMERGENCY[ev.country].number }) : ev.kind === 'listed' ? t('today.emergencyNoteNumber', { number: LISTED_EMERGENCY[ev.code].number }) : t('today.emergencyNoteGeneric');
   return (
     <ScrollView>
       <Screen>
-        <H1>Today</H1>
+        <H1>{t('today.title')}</H1>
         {flash ? (
-          <Pressable accessibilityRole="alert" accessibilityLiveRegion="polite" accessibilityLabel={`${flash} Tap to dismiss.`} onPress={() => setFlashMsg(null)}
+          <Pressable accessibilityRole="alert" accessibilityLiveRegion="polite" accessibilityLabel={t('today.dismissHint', { message: flash })} onPress={() => setFlashMsg(null)}
             style={{ backgroundColor: color.primaryTint, borderColor: color.primary, borderWidth: 2, borderRadius: 16, padding: space.m, minHeight: 56, justifyContent: 'center' }}>
             <Text style={{ fontSize: font.label, color: color.text, fontWeight: '600' }}>{flash}</Text>
           </Pressable>
         ) : null}
         {showTip ? (
-          <Suggestion label="Extra protection" title="Turn on two-step sign-in" body="A 6-digit code from your phone keeps your health information safe if someone learns your password. It is optional."
-            action="Turn it on" onAction={() => router.push('/feature/two-step')} onDismiss={() => { setTipGone(true); if (uid) void dismiss('two-step', uid); }} />
+          <Suggestion label={t('today.extraProtection')} title={t('today.twoStepTitle')} body={t('today.twoStepBody')}
+            action={t('today.turnOn')} onAction={() => router.push('/feature/two-step')} onDismiss={() => { setTipGone(true); if (uid) void dismiss('two-step', uid); }} />
         ) : null}
-        <H2>Your health</H2>
+        <H2>{t('today.yourHealth')}</H2>
         <View style={{ gap: 16 }}>
-          <Card title="Emergency services" icon="🚨" tone="danger" onPress={() => router.push('/feature/emergency')}>
+          <Card title={t('today.emergencyTitle')} icon="🚨" tone="danger" onPress={() => router.push('/feature/emergency')}>
             <CardNote>{emergencyNote}</CardNote>
           </Card>
           {emergencyDialFor(country).slice(0, 2).map((t) => (
             <BigButton key={t.tel} label={t.text} onPress={() => { Linking.openURL(t.tel).catch(() => {}); }} />
           ))}
-          <Card title="My people" icon="👥" accent="teal" onPress={() => router.push('/feature/my-people')}>
-            <CardNote>{people && people.length ? 'Tap a name below to call. Tap here to add, change or replace people.' : 'Add your doctor, family or a friend, so their number is here when you need it.'}</CardNote>
+          <Card title={t('today.peopleTitle')} icon="👥" accent="teal" onPress={() => router.push('/feature/my-people')}>
+            <CardNote>{people && people.length ? t('today.peopleNoteSome') : t('today.peopleNoteNone')}</CardNote>
           </Card>
           {people?.map((c) => (
-            <Pressable key={c.id} accessibilityRole="button" accessibilityLabel={`Call ${c.name}, ${relationshipLabel(c.relationship)}, ${displayPhone(c.phone)}. Opens a confirm screen first.`}
+            <Pressable key={c.id} accessibilityRole="button" accessibilityLabel={t('today.callPerson', { name: c.name, relationship: relationshipLabel(c.relationship), phone: displayPhone(c.phone) })}
               onPress={() => router.push({ pathname: '/feature/call-contact', params: { id: c.id } })}
               style={{ minHeight: 72, borderRadius: 18, borderWidth: 2, borderColor: color.accent.teal, backgroundColor: color.surface, paddingHorizontal: 18, paddingVertical: 12, justifyContent: 'center' }}>
               <Text style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>📞 {c.name}</Text>
               <Text style={{ fontSize: font.body, color: color.muted }}>{relationshipLabel(c.relationship)}  {displayPhone(c.phone)}</Text>
             </Pressable>
           ))}
-          <Card title="Blood pressure" icon="❤️" accent="red" onPress={() => router.push('/feature/blood-pressure')}>
+          <Card title={t('today.bpTitle')} icon="❤️" accent="red" onPress={() => router.push('/feature/blood-pressure')}>
             {bp && bp !== 'error' ? (
               <>
                 <CardValue accent="red" unit="mmHg">{bp.systolic}/{bp.diastolic}</CardValue>
-                <CardNote>Last reading, {new Date(bp.taken_at).toLocaleDateString()}</CardNote>
+                <CardNote>{t('today.bpLast', { date: date(bp.taken_at) })}</CardNote>
               </>
             ) : (
-              <CardNote>{!loaded ? 'Loading.' : bp === 'error' ? 'Could not load your readings. Tap to try again.' : 'No readings yet. Tap to add one.'}</CardNote>
+              <CardNote>{!loaded ? t('today.bpLoading') : bp === 'error' ? t('today.bpError') : t('today.bpNone')}</CardNote>
             )}
           </Card>
-          <Card title="My conditions" icon="🩺" accent="blue" onPress={() => router.push('/feature/conditions')}>
-            <CardNote>Information from official health sources.</CardNote>
+          <Card title={t('today.conditionsTitle')} icon="🩺" accent="blue" onPress={() => router.push('/feature/conditions')}>
+            <CardNote>{t('today.conditionsNote')}</CardNote>
           </Card>
         </View>
         <TrackingSuggestions />

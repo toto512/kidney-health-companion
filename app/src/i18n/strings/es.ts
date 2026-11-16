@@ -1,0 +1,43 @@
+import type { Key } from './en';
+// DRAFT translation, needs native review before launch.
+export const es: Record<Key, string> = {
+  'tab.today': 'Hoy',
+  'tab.browse': 'Explorar',
+  'tab.profile': 'Perfil',
+
+  'today.title': 'Hoy',
+  'today.yourHealth': 'Su salud',
+  'today.extraProtection': 'Protección adicional',
+  'today.twoStepTitle': 'Activar el inicio de sesión en dos pasos',
+  'today.twoStepBody': 'Un código de 6 dígitos en su teléfono protege su información de salud si alguien descubre su contraseña. Es opcional.',
+  'today.turnOn': 'Activar',
+  'today.emergencyTitle': 'Servicios de emergencia',
+  'today.emergencyNoteNumber': 'Número oficial: {number}. Toque para ver la fuente.',
+  'today.emergencyNoteGeneric': 'Vea el número al que llamar y de dónde proviene.',
+  'today.peopleTitle': 'Mis contactos',
+  'today.peopleNoteSome': 'Toque un nombre abajo para llamar. Toque aquí para agregar, cambiar o reemplazar personas.',
+  'today.peopleNoteNone': 'Agregue a su médico, su familia o un amigo para tener su número a mano cuando lo necesite.',
+  'today.callPerson': 'Llamar a {name}, {relationship}, {phone}. Primero se abre una pantalla de confirmación.',
+  'today.bpTitle': 'Presión arterial',
+  'today.bpLast': 'Última medición, {date}',
+  'today.bpLoading': 'Cargando.',
+  'today.bpError': 'No se pudieron cargar sus mediciones. Toque para intentar de nuevo.',
+  'today.bpNone': 'Aún no hay mediciones. Toque para agregar una.',
+  'today.conditionsTitle': 'Mis afecciones',
+  'today.conditionsNote': 'Información de fuentes de salud oficiales.',
+  'today.dismissHint': '{message} Toque para cerrar.',
+
+  'me.title': 'Perfil',
+  'me.myProfile': 'Mi perfil',
+  'me.conditions': 'Afecciones que sigo',
+  'me.medicines': 'Medicamentos que tomo',
+  'me.twoStep': 'Inicio de sesión en dos pasos',
+  'me.language': 'Idioma',
+  'me.settings': 'Ajustes',
+  'me.signOut': 'Cerrar sesión',
+
+  'language.title': 'Idioma',
+  'language.intro': 'Elija el idioma de la aplicación. Las citas oficiales sobre salud se mantienen en su idioma original, con un enlace a la fuente.',
+  'language.review': 'Traducción provisional. Aún no la ha revisado un hablante nativo.',
+  'language.saved': 'Idioma guardado.',
+};

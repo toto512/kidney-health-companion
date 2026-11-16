@@ -3,7 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { Select } from '@/components/Select';
 import { BigButton, Body, DisclaimerFooter, H1, Panel, Screen, SectionHeader } from '@/components/ui';
-import { BP_LIMITS, parseReading } from '@/lib/bp';
+import { BpChart } from '@/components/BpChart';
+import { BP_LIMITS, checkReading, parseReading } from '@/lib/bp';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
 
@@ -23,13 +24,14 @@ export default function BloodPressure() {
   const [pulse, setPulse] = useState('');
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
+  const [confirm, setConfirm] = useState('');
 
   const sysOptions = useMemo(() => range(BP_LIMITS.systolic), []);
   const diaOptions = useMemo(() => range(BP_LIMITS.diastolic), []);
   const pulseOptions = useMemo(() => range(BP_LIMITS.pulse), []);
 
   const load = useCallback(async () => {
-    const { data, error } = await supabase.from('bp_readings').select('id,systolic,diastolic,pulse,taken_at').order('taken_at', { ascending: false }).limit(60);
+    const { data, error } = await supabase.from('bp_readings').select('id,systolic,diastolic,pulse,taken_at').order('taken_at', { ascending: false }).limit(200);
     if (error) { setErr('Could not load your readings. Try again.'); return; }
     setRows(data ?? []);
   }, []);
@@ -38,7 +40,12 @@ export default function BloodPressure() {
   async function save() {
     setErr('');
     const r = parseReading(sys, dia, pulse);
-    if (!r.ok) { setErr(r.error); return; }
+    if (!r.ok) { setErr(r.error); setConfirm(''); return; }
+    // First press on an unusual pair shows the prompt; pressing again with the same numbers saves it.
+    const warn = checkReading(r.value);
+    const key = `${r.value.systolic}/${r.value.diastolic}`;
+    if (warn && confirm !== key) { setConfirm(key); setErr(warn); return; }
+    setConfirm('');
     setBusy(true);
     const { data: u } = await supabase.auth.getUser();
     const { error } = await supabase.from('bp_readings').insert({ user_id: u.user?.id, ...r.value });
@@ -70,9 +77,13 @@ export default function BloodPressure() {
           {err ? <Body tone="danger">{err}</Body> : null}
           <BigButton label={busy ? 'Saving...' : 'Save reading'} onPress={save} disabled={busy || !sys || !dia} />
         </Panel>
-        <SectionHeader icon="📈" accent="red">My readings</SectionHeader>
+        <Panel>
+          <SectionHeader icon="📈" accent="red">My chart</SectionHeader>
+          <BpChart rows={rows} />
+        </Panel>
+        <SectionHeader icon="📋" accent="red">My readings</SectionHeader>
         {rows.length === 0 ? <Body>No readings yet.</Body> : null}
-        {rows.map((r) => (
+        {rows.slice(0, 30).map((r) => (
           <Panel key={r.id}>
             <Text style={{ fontSize: 40, lineHeight: 48, fontWeight: '800', color: color.accent.red }}>{r.systolic} / {r.diastolic}<Text style={{ fontSize: font.label, fontWeight: '600', color: color.muted }}> mmHg</Text></Text>
             {r.pulse != null ? <Text style={{ fontSize: font.label, fontWeight: '600', color: color.text }}>Pulse {r.pulse}</Text> : null}

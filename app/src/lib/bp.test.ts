@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseReading } from './bp';
+import { checkReading, parseReading } from './bp';
 
 describe('parseReading', () => {
   it('accepts a normal entry with pulse', () => {
@@ -29,5 +29,20 @@ describe('BP_LIMITS', () => {
     expect(parseReading(String(BP_LIMITS.systolic.max + 1), '80', '').ok).toBe(false);
     expect(parseReading('120', String(BP_LIMITS.diastolic.min - 1), '').ok).toBe(false);
     expect(parseReading('120', '80', String(BP_LIMITS.pulse.max + 1)).ok).toBe(false);
+  });
+});
+
+describe('checkReading', () => {
+  const v = (systolic: number, diastolic: number) => ({ systolic, diastolic, pulse: null });
+  it('flags typing slips such as 40/21', () => {
+    expect(checkReading(v(40, 21))).toContain('Check this number');
+    expect(checkReading(v(300, 80))).not.toBeNull();
+    expect(checkReading(v(120, 118))).not.toBeNull();
+    expect(checkReading(v(120, 30))).not.toBeNull();
+  });
+  it('does not flag ordinary entries and never labels them', () => {
+    expect(checkReading(v(120, 80))).toBeNull();
+    expect(checkReading(v(95, 60))).toBeNull();
+    expect(checkReading(v(170, 100))).toBeNull();
   });
 });

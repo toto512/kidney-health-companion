@@ -223,3 +223,17 @@ const makeStyles = (color: Palette) => StyleSheet.create({
   textLinkText: { color: color.primary, fontSize: font.label, fontWeight: '700', textDecorationLine: 'underline' },
   footer: { fontSize: font.body, color: color.text, textAlign: 'center', paddingTop: space.m },
 });
+
+export function Segmented<T extends string | number>({ label, value, options, onChange }: { label: string; value: T; options: { value: T; label: string }[]; onChange: (v: T) => void }) {
+  const color = useColors();
+  return (
+    <View style={{ flexDirection: 'row', gap: 8 }} accessibilityRole="radiogroup" accessibilityLabel={label}>
+      {options.map((o) => (
+        <Pressable key={String(o.value)} accessibilityRole="radio" accessibilityState={{ selected: value === o.value }} accessibilityLabel={o.label} onPress={() => onChange(o.value)}
+          style={{ flex: 1, minHeight: MIN_TOUCH, borderRadius: 12, borderWidth: 2, borderColor: color.primary, alignItems: 'center', justifyContent: 'center', backgroundColor: value === o.value ? color.primary : color.bg }}>
+          <Text style={{ fontSize: font.label, fontWeight: '700', color: value === o.value ? color.primaryText : color.primary }}>{o.label}</Text>
+        </Pressable>
+      ))}
+    </View>
+  );
+}

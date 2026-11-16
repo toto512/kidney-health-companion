@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Select } from '@/components/Select';
-import { BigButton, Body, DisclaimerFooter, Field, H1, Panel, Screen, SectionHeader } from '@/components/ui';
+import { BigButton, Body, DisclaimerFooter, Field, H1, Panel, Screen, SectionHeader, Segmented as UnitToggle } from '@/components/ui';
 import { WORLD_COUNTRIES } from '@/content/countries';
 import { useAuth } from '@/lib/auth';
 import { cmToFeetInches, countryName, HeightUnit, isSupported, kgToLb, parseHeightCm, parseProfile, parseWeightKg, SEX_OPTIONS, WeightUnit } from '@/lib/profile';
@@ -12,20 +12,6 @@ import { font, useColors } from '@/theme/tokens';
 import { supabase } from '@/lib/supabase';
 
 const UNITS_KEY = 'profile.units';
-
-function UnitToggle<T extends string>({ label, value, options, onChange }: { label: string; value: T; options: { value: T; label: string }[]; onChange: (v: T) => void }) {
-  const color = useColors();
-  return (
-    <View style={{ flexDirection: 'row', gap: 8 }} accessibilityRole="radiogroup" accessibilityLabel={label}>
-      {options.map((o) => (
-        <Pressable key={o.value} accessibilityRole="radio" accessibilityState={{ selected: value === o.value }} accessibilityLabel={o.label} onPress={() => onChange(o.value)}
-          style={{ flex: 1, minHeight: 56, borderRadius: 12, borderWidth: 2, borderColor: color.primary, alignItems: 'center', justifyContent: 'center', backgroundColor: value === o.value ? color.primary : color.bg }}>
-          <Text style={{ fontSize: font.label, fontWeight: '700', color: value === o.value ? color.primaryText : color.primary }}>{o.label}</Text>
-        </Pressable>
-      ))}
-    </View>
-  );
-}
 
 // Country decides which approved medicine list and official sources the app will use later.
 export default function Profile() {

@@ -21,3 +21,15 @@ export function parseReading(sys: string, dia: string, pulse: string): BpResult 
   }
   return { ok: true, value: { systolic, diastolic, pulse: p } };
 }
+
+// Typing-mistake check only. It flags numbers that home monitors almost never show, so a slip like 40/21 gets a second look.
+// It is not a medical judgement and the reading can still be saved after the prompt.
+export const CHECK_LIMITS = { systolic: { min: 70, max: 250 }, diastolic: { min: 40, max: 150 }, gap: { min: 15, max: 120 } } as const;
+
+export function checkReading(v: BpInput): string | null {
+  const odd =
+    v.systolic < CHECK_LIMITS.systolic.min || v.systolic > CHECK_LIMITS.systolic.max ||
+    v.diastolic < CHECK_LIMITS.diastolic.min || v.diastolic > CHECK_LIMITS.diastolic.max ||
+    v.systolic - v.diastolic < CHECK_LIMITS.gap.min || v.systolic - v.diastolic > CHECK_LIMITS.gap.max;
+  return odd ? `Check this number: ${v.systolic} / ${v.diastolic} is unusual for a home monitor. Look at your monitor again. If it matches, press Save reading once more.` : null;
+}

@@ -115,7 +115,7 @@ function WeeklyView({ weekly }: { weekly: ReturnType<typeof weeklyAverages> }) {
 }
 
 // How many readings fall in each 10 mmHg range. Counts are printed next to each bar.
-function SpreadView({ b, c }: { b: Bin[]; c: string }) {
+function SpreadView({ b, c, name }: { b: Bin[]; c: string; name: string }) {
   const color = useColors();
   const max = Math.max(...b.map((x) => x.count));
   return (
@@ -138,10 +138,10 @@ const arc = (cx: number, cy: number, r0: number, r1: number, a0: number, a1: num
 };
 
 // Donut of the same ranges. Every slice is listed with its count and percent, so colour is never the only cue.
-function ShareView({ b, total }: { b: Bin[]; total: number }) {
+function ShareView({ b, total, name, accent }: { b: Bin[]; total: number; name: string; accent: 'red' | 'blue' }) {
   const color = useColors();
   const used = b.filter((x) => x.count > 0);
-  const cols = ramp(color, used.length);
+  const cols = ramp(color, used.length, accent);
   let acc = 0;
   const S = 200;
   return (
@@ -159,7 +159,7 @@ function ShareView({ b, total }: { b: Bin[]; total: number }) {
         {used.map((x, i) => (
           <View key={x.from} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <Swatch c={cols[i]} />
-            <Text style={{ flex: 1, fontSize: font.body, color: color.text }}>{binLabel(x)}</Text>
+            <Text style={{ flex: 1, fontSize: font.body, color: color.text }}>{name} {binLabel(x)}</Text>
             <Text style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{x.count} ({x.percent}%)</Text>
           </View>
         ))}
@@ -182,6 +182,8 @@ export function BpChart({ rows }: { rows: ChartRow[] }) {
   const b = useMemo(() => bins(data, which), [data, which]);
   const label = which === 'systolic' ? 'Top' : 'Bottom';
   const text = view === 'line' ? summary(data, days) : view === 'weekly' ? weeklySummary(weekly, days) : spreadSummary(b, label, days);
+  const accent = which === 'systolic' ? 'red' : 'blue';
+  const full = which === 'systolic' ? 'Top number (SYS)' : 'Bottom number (DIA)';
   const needsToggle = view === 'spread' || view === 'share';
 
   return (
@@ -189,12 +191,13 @@ export function BpChart({ rows }: { rows: ChartRow[] }) {
       <Segmented label="Chart type" value={view} options={[{ value: 'line', label: 'Line' }, { value: 'weekly', label: 'Weekly' }, { value: 'spread', label: 'Spread' }, { value: 'share', label: 'Share' }]} onChange={setView} />
       <Segmented label="Time range" value={days} options={RANGES.map((d) => ({ value: d, label: `${d} days` }))} onChange={setDays} />
       {needsToggle ? <Segmented label="Which number" value={which} options={[{ value: 'systolic', label: 'Top (SYS)' }, { value: 'diastolic', label: 'Bottom (DIA)' }]} onChange={setWhich} /> : null}
+      {needsToggle ? <Text accessibilityRole="header" style={{ fontSize: font.h2, fontWeight: '800', color: accent === 'red' ? color.accent.red : color.accent.blue }}>{full}</Text> : null}
       <Text accessibilityRole="text" accessibilityLabel={text} style={{ fontSize: font.body, color: color.text }}>{view === 'line' ? text : `Last ${days} days: ${data.length} ${data.length === 1 ? 'reading' : 'readings'}.`}</Text>
       {data.length < 2 ? <Body>Add at least 2 readings in this time range to see your chart.</Body>
         : view === 'line' ? <LineView data={data} days={days} now={now} />
         : view === 'weekly' ? <WeeklyView weekly={weekly} />
-        : view === 'spread' ? <SpreadView b={b} c={which === 'systolic' ? color.accent.red : color.accent.blue} />
-        : <ShareView b={b} total={data.length} />}
+        : view === 'spread' ? <SpreadView b={b} c={accent === 'red' ? color.accent.red : color.accent.blue} name={label} />
+        : <ShareView b={b} total={data.length} name={label} accent={accent} />}
       <Text style={{ fontSize: font.body, color: color.muted }}>These charts show your numbers only. Your doctor tells you which numbers are right for you.</Text>
     </View>
   );

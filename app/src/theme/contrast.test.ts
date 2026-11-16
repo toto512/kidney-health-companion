@@ -48,6 +48,6 @@ describe.each([['light', light], ['dark', dark]] as const)('%s accent colours', 
 import { ramp } from './palette';
 describe.each([['light', light], ['dark', dark]] as const)('%s chart ramp', (_n, p) => {
   it.each([1, 3, 8, 25])('every one of %s slices is at least 3:1 on the card (graphics)', (n) => {
-    for (const c of ramp(p, n)) expect(ratio(c, p.surface)).toBeGreaterThanOrEqual(3);
+    for (const c of [...ramp(p, n, 'blue'), ...ramp(p, n, 'red')]) expect(ratio(c, p.surface)).toBeGreaterThanOrEqual(3);
   });
 });

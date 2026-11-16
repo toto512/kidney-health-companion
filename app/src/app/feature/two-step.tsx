@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Image, Linking, Pressable, ScrollView } from 'react-native';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Screen } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
+import { useI18n } from '@/i18n/I18nProvider';
 import { normalizeSvgDataUri } from '@/lib/qr';
 import { supabase } from '@/lib/supabase';
 
@@ -11,6 +12,8 @@ type F = { id: string; friendly_name?: string | null; created_at: string };
 // Turn two-step sign-in on or off and manage authenticator apps. Two-step sign-in is optional.
 export default function TwoStep() {
   const { refreshAal } = useAuth();
+  const { t, date } = useI18n();
+  const fname = (f: F) => (f.friendly_name ?? t('ts.defaultName')).replace(/\s\d{10,}$/, '');
   const [factors, setFactors] = useState<F[]>([]);
   const [err, setErr] = useState('');
   const [msg, setMsg] = useState('');
@@ -22,7 +25,7 @@ export default function TwoStep() {
 
   const load = useCallback(async () => {
     const { data, error } = await supabase.auth.mfa.listFactors();
-    if (error || !data) { setErr('Could not read your authenticator apps. Try again.'); return; }
+    if (error || !data) { setErr(t('ts.errRead')); return; }
     setFactors(data.totp as F[]);
   }, []);
   useEffect(() => { void load(); }, [load]);
@@ -34,7 +37,7 @@ export default function TwoStep() {
     const label = name.trim() || `Authenticator ${new Date().toISOString().slice(0, 10)}`;
     const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: `${label} ${Date.now()}` });
     setBusy(false);
-    if (error || !data) { setErr('Could not start setup. Try again.'); return; }
+    if (error || !data) { setErr(t('ts.errStart')); return; }
     setAdding({ id: data.id, qr: normalizeSvgDataUri(data.totp.qr_code), secret: data.totp.secret, uri: data.totp.uri });
   }
 
@@ -42,12 +45,12 @@ export default function TwoStep() {
     if (!adding) return;
     setErr(''); setBusy(true);
     const ch = await supabase.auth.mfa.challenge({ factorId: adding.id });
-    if (ch.error || !ch.data) { setBusy(false); setErr('Could not check the code. Try again.'); return; }
+    if (ch.error || !ch.data) { setBusy(false); setErr(t('ts.errCheck')); return; }
     const v = await supabase.auth.mfa.verify({ factorId: adding.id, challengeId: ch.data.id, code: code.trim() });
     setBusy(false);
-    if (v.error) { setErr('That code did not work. Use the newest code from the new app.'); return; }
+    if (v.error) { setErr(t('ts.errBad')); return; }
     const first = factors.length === 0;
-    setAdding(null); setCode(''); setName(''); setMsg(first ? 'Two-step sign-in is turned on.' : 'New authenticator added.');
+    setAdding(null); setCode(''); setName(''); setMsg(first ? t('ts.msgOn') : t('ts.msgAdded'));
     await load();
     await refreshAal();
     if (first) router.replace('/feature/recovery-codes'); // make recovery codes right away, before a phone is ever lost
@@ -59,8 +62,8 @@ export default function TwoStep() {
     setBusy(true);
     const { error } = await supabase.auth.mfa.unenroll({ factorId: id });
     setBusy(false); setConfirmId('');
-    if (error) { setErr('Could not remove it. Try again.'); return; }
-    setMsg(factors.length <= 1 ? 'Two-step sign-in is turned off. You now sign in with your email and password only.' : 'Authenticator removed.');
+    if (error) { setErr(t('ts.errRemove')); return; }
+    setMsg(factors.length <= 1 ? t('ts.msgOff') : t('ts.msgRemoved'));
     await load();
     await refreshAal();
   }
@@ -68,38 +71,38 @@ export default function TwoStep() {
   return (
     <ScrollView>
       <Screen>
-        <H1>Two-step sign-in</H1>
-        <Body>{factors.length === 0 ? 'Two-step sign-in is off. You sign in with your email and password only. Turn it on to also need a 6-digit code from an app on your phone each time you sign in.' : 'Two-step sign-in is on. Your authenticator app gives a 6-digit code each time you sign in. You can add a second app or phone as a spare.'}</Body>
+        <H1>{t('ts.title')}</H1>
+        <Body>{factors.length === 0 ? t('ts.off') : t('ts.on')}</Body>
         {factors.map((f) => (
           <Body key={f.id}>
-            {(f.friendly_name ?? 'Authenticator').replace(/\s\d{10,}$/, '')}, added {new Date(f.created_at).toLocaleDateString()}
+            {t('ts.added', { name: fname(f), date: date(f.created_at) })}
           </Body>
         ))}
         {factors.map((f) => (
-          <BigButton key={`rm-${f.id}`} label={confirmId === f.id ? 'Tap again to remove' : (factors.length <= 1 ? 'Turn off two-step sign-in' : `Remove ${(f.friendly_name ?? 'Authenticator').replace(/\s\d{10,}$/, '')}`)} onPress={() => remove(f.id)} disabled={busy} />
+          <BigButton key={`rm-${f.id}`} label={confirmId === f.id ? t('ts.tapAgain') : (factors.length <= 1 ? t('ts.turnOff') : t('ts.removeName', { name: fname(f) }))} onPress={() => remove(f.id)} disabled={busy} />
         ))}
         {adding ? (
           <>
-            <Body>Scan this with the new authenticator app, then type the 6-digit code it shows.</Body>
-            <Image accessibilityLabel="Authenticator QR code" source={{ uri: adding.qr }} style={{ width: 220, height: 220 }} />
+            <Body>{t('ts.scan')}</Body>
+            <Image accessibilityLabel={t('mfa.qrAlt')} source={{ uri: adding.qr }} style={{ width: 220, height: 220 }} />
             <Pressable accessibilityRole="link" onPress={() => Linking.openURL(adding.uri)}>
-              <Body>On this phone? Tap here to open your authenticator app.</Body>
+              <Body>{t('mfa.openApp')}</Body>
             </Pressable>
-            <Body>Or type this key into the app: {adding.secret.match(/.{1,4}/g)?.join(' ')}</Body>
-            <Field label="6-digit code" value={code} onChangeText={setCode} keyboardType="number-pad" maxLength={6} />
-            <BigButton label={busy ? 'Checking...' : 'Confirm new authenticator'} onPress={confirmAdd} disabled={busy || code.length !== 6} />
-            <BigButton variant="secondary" label="Cancel" onPress={() => { setAdding(null); setCode(''); }} disabled={busy} />
+            <Body>{t('mfa.typeKey', { key: adding.secret.match(/.{1,4}/g)?.join(' ') ?? '' })}</Body>
+            <Field label={t('mfa.code')} value={code} onChangeText={setCode} keyboardType="number-pad" maxLength={6} />
+            <BigButton label={busy ? t('mfa.checking') : t('ts.confirmNew')} onPress={confirmAdd} disabled={busy || code.length !== 6} />
+            <BigButton variant="secondary" label={t('people.cancel')} onPress={() => { setAdding(null); setCode(''); }} disabled={busy} />
           </>
         ) : (
           <>
-            <Field label="Name for the authenticator (optional)" value={name} onChangeText={setName} maxLength={30} />
-            <BigButton label={busy ? 'Starting...' : factors.length === 0 ? 'Turn on two-step sign-in' : 'Add another authenticator'} onPress={startAdd} disabled={busy} />
+            <Field label={t('ts.nameLabel')} value={name} onChangeText={setName} maxLength={30} />
+            <BigButton label={busy ? t('ts.starting') : factors.length === 0 ? t('ts.turnOn') : t('ts.addAnother')} onPress={startAdd} disabled={busy} />
           </>
         )}
         {err ? <Body tone="danger">{err}</Body> : null}
         {msg ? <Body>{msg}</Body> : null}
-        {factors.length > 0 ? <BigButton variant="secondary" label="Recovery codes" onPress={() => router.replace('/feature/recovery-codes')} /> : null}
-        <BigButton variant="secondary" label="Back to my profile" onPress={() => router.replace('/feature/profile')} />
+        {factors.length > 0 ? <BigButton variant="secondary" label={t('ts.recovery')} onPress={() => router.replace('/feature/recovery-codes')} /> : null}
+        <BigButton variant="secondary" label={t('ts.backProfile')} onPress={() => router.replace('/feature/profile')} />
         <DisclaimerFooter />
       </Screen>
     </ScrollView>

@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { BigButton, Body, DisclaimerFooter, H1, Screen } from '@/components/ui';
+import { useI18n } from '@/i18n/I18nProvider';
 import { generateError } from '@/lib/recovery';
 import { supabase } from '@/lib/supabase';
 import { font, space, useColors } from '@/theme/tokens';
@@ -9,6 +10,7 @@ import { font, space, useColors } from '@/theme/tokens';
 // Recovery codes for two-step sign-in. New codes are shown once, here, and never again.
 export default function RecoveryCodes() {
   const color = useColors();
+  const { t } = useI18n();
   const [remaining, setRemaining] = useState<number | null>(null);
   const [codes, setCodes] = useState<string[] | null>(null);
   const [err, setErr] = useState('');
@@ -33,11 +35,11 @@ export default function RecoveryCodes() {
     if (error || !Array.isArray(data)) {
       if (__DEV__ && error) console.log('[recovery-codes] generate:', error.code, error.message); // paste this line when reporting a problem
       const k = generateError(error);
-      setErr(k === 'missing' ? 'Recovery codes are not set up on the server yet. The database update (migration 0006) has not been run.'
-        : k === 'off' ? 'Turn on two-step sign-in first, then make recovery codes.'
-        : k === 'aal2' ? 'Sign out and sign in again with your 6-digit code, then try again.'
-        : k === 'signedOut' ? 'You were signed out. Sign in again, then try again.'
-        : 'Could not make the codes. Try again.');
+      setErr(k === 'missing' ? t('rc.errMissing')
+        : k === 'off' ? t('rc.errOff')
+        : k === 'aal2' ? t('rc.errAal2')
+        : k === 'signedOut' ? t('rc.errSignedOut')
+        : t('rc.errGeneric'));
       return;
     }
     setCodes(data as string[]);
@@ -47,30 +49,30 @@ export default function RecoveryCodes() {
   return (
     <ScrollView>
       <Screen>
-        <H1>Recovery codes</H1>
+        <H1>{t('rc.title')}</H1>
         {codes ? (
           <>
-            <Body tone="danger">Write these codes down now. They are shown only once. Keep them somewhere safe, away from your phone. Each code works one time.</Body>
+            <Body tone="danger">{t('rc.writeDown')}</Body>
             <View style={{ backgroundColor: color.surface, borderColor: color.border, borderWidth: 1, borderRadius: 16, padding: space.m }}>
               {codes.map((c) => <Text key={c} selectable style={{ fontSize: font.h2, color: color.text, letterSpacing: 2, paddingVertical: 4 }}>{c}</Text>)}
             </View>
-            <Body>Anyone who has your password and one of these codes can turn off two-step sign-in. Do not share them.</Body>
-            <BigButton label="I have saved them" onPress={() => { setCodes(null); void load(); }} />
+            <Body>{t('rc.warn')}</Body>
+            <BigButton label={t('rc.saved')} onPress={() => { setCodes(null); void load(); }} />
           </>
         ) : (
           <>
-            <Body>If you lose your phone or authenticator app, a recovery code lets you sign in. Each code works once.</Body>
+            <Body>{t('rc.intro')}</Body>
             {twoStepOn === false ? (
               <>
-                <Body>Recovery codes go with two-step sign-in, and two-step sign-in is off right now. Turn it on first, and then you can make your codes.</Body>
-                <BigButton label="Go to two-step sign-in" onPress={() => router.replace('/feature/two-step')} />
+                <Body>{t('rc.needTwoStep')}</Body>
+                <BigButton label={t('rc.goTwoStep')} onPress={() => router.replace('/feature/two-step')} />
               </>
             ) : null}
-            <Body>{remaining === null ? '' : remaining > 0 ? `You have ${remaining} unused codes.` : 'You have no recovery codes yet.'}</Body>
-            {confirm ? <Body tone="danger">Making new codes cancels the old ones. Tap again to continue.</Body> : null}
-            {twoStepOn !== false ? <BigButton label={busy ? 'Making codes...' : remaining ? 'Make new codes' : 'Make recovery codes'} onPress={make} disabled={busy || twoStepOn === null} /> : null}
+            <Body>{remaining === null ? '' : remaining > 0 ? t('rc.remaining', { n: remaining }) : t('rc.none')}</Body>
+            {confirm ? <Body tone="danger">{t('rc.newCancels')}</Body> : null}
+            {twoStepOn !== false ? <BigButton label={busy ? t('rc.making') : remaining ? t('rc.makeNew') : t('rc.make')} onPress={make} disabled={busy || twoStepOn === null} /> : null}
             {err ? <Body tone="danger">{err}</Body> : null}
-            <BigButton variant="secondary" label="Back to two-step sign-in" onPress={() => router.replace('/feature/two-step')} />
+            <BigButton variant="secondary" label={t('rc.backTwoStep')} onPress={() => router.replace('/feature/two-step')} />
           </>
         )}
         <DisclaimerFooter />

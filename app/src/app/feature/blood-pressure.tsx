@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Select } from '@/components/Select';
 import { BigButton, Body, DisclaimerFooter, H1, Panel, Screen, SectionHeader } from '@/components/ui';
 import { BpChart } from '@/components/BpChart';
@@ -15,6 +15,17 @@ const SMALL = 140;
 
 type Row = { id: string; systolic: number; diastolic: number; pulse: number | null; taken_at: string };
 
+function SmallBtn({ label, onPress, danger }: { label: string; onPress: () => void; danger?: boolean }) {
+  const color = useColors();
+  const c = danger ? color.danger : color.primary;
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel={label === 'Delete' ? 'Delete this reading' : label} onPress={onPress}
+      style={{ minHeight: 44, minWidth: 44, paddingHorizontal: 12, borderRadius: 10, borderWidth: 2, borderColor: c, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: font.body, fontWeight: '700', color: c }}>{label}</Text>
+    </Pressable>
+  );
+}
+
 // Stores and lists readings only. No Low/Medium/High labels until a sourced reference range is supplied.
 export default function BloodPressure() {
   const color = useColors();
@@ -25,6 +36,7 @@ export default function BloodPressure() {
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
   const [confirm, setConfirm] = useState('');
+  const [confirmDel, setConfirmDel] = useState('');
 
   const sysOptions = useMemo(() => range(BP_LIMITS.systolic), []);
   const diaOptions = useMemo(() => range(BP_LIMITS.diastolic), []);
@@ -84,12 +96,18 @@ export default function BloodPressure() {
         <SectionHeader icon="📋" accent="red">My readings</SectionHeader>
         {rows.length === 0 ? <Body>No readings yet.</Body> : null}
         {rows.slice(0, 30).map((r) => (
-          <Panel key={r.id}>
-            <Text style={{ fontSize: 40, lineHeight: 48, fontWeight: '800', color: color.accent.red }}>{r.systolic} / {r.diastolic}<Text style={{ fontSize: font.label, fontWeight: '600', color: color.muted }}> mmHg</Text></Text>
-            {r.pulse != null ? <Text style={{ fontSize: font.label, fontWeight: '600', color: color.text }}>Pulse {r.pulse}</Text> : null}
-            <Text style={{ fontSize: font.body, color: color.muted }}>{new Date(r.taken_at).toLocaleString()}</Text>
-            <BigButton variant="secondary" label="Delete this reading" onPress={() => remove(r.id)} />
-          </Panel>
+          <View key={r.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8, paddingHorizontal: 12, borderRadius: 14, borderWidth: 1, borderColor: color.outline, backgroundColor: color.surface }}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 30, lineHeight: 36, fontWeight: '800', color: color.accent.red }}>{r.systolic} / {r.diastolic}<Text style={{ fontSize: font.body, fontWeight: '600', color: color.muted }}> mmHg</Text></Text>
+              <Text style={{ fontSize: font.body, color: color.muted }}>{r.pulse != null ? `Pulse ${r.pulse} · ` : ''}{new Date(r.taken_at).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</Text>
+            </View>
+            {confirmDel === r.id ? (
+              <View style={{ flexDirection: 'row', gap: 6 }}>
+                <SmallBtn label="Yes, delete" danger onPress={() => { setConfirmDel(''); void remove(r.id); }} />
+                <SmallBtn label="Keep" onPress={() => setConfirmDel('')} />
+              </View>
+            ) : <SmallBtn label="Delete" onPress={() => setConfirmDel(r.id)} />}
+          </View>
         ))}
         <Body>Show this list to your doctor, nurse, or pharmacist. They tell you which numbers are right for you.</Body>
         <BigButton variant="secondary" label="Back to my health" onPress={() => router.replace('/')} />

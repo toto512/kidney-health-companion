@@ -63,6 +63,23 @@ export const MED_LIST: MedItem[] = [
   m(6, "tamsulosin", "Tamsulosin", ["Flomax"]),
 ];
 
+// Links are added only after the live page title was read and matched the generic name(s) (checked_on = that day).
+// Anything not yet re-checked stays hidden. Source list: plan/medications-official-links.md.
+const MLP = 'MedlinePlus (US National Library of Medicine)';
+const mlp = (id: string, code: string, reviewed: string): [string, OfficialLink] => [id, { country: 'US', publisher: MLP, url: `https://medlineplus.gov/druginfo/meds/${code}.html`, page_reviewed: reviewed, checked_on: '2026-11-16' }];
+const VERIFIED: [string, OfficialLink][] = [
+  mlp('atorvastatin', 'a600045', '2026-02-15'), mlp('amlodipine', 'a692044', '2025-09-15'), mlp('lisinopril', 'a692051', '2021-02-15'),
+  mlp('losartan', 'a695008', '2018-02-15'), mlp('metoprolol', 'a682864', '2026-03-15'), mlp('rosuvastatin', 'a603033', '2026-02-15'),
+  mlp('hydrochlorothiazide', 'a682571', '2021-02-15'), mlp('apixaban', 'a613032', '2025-10-15'), mlp('simvastatin', 'a692030', '2026-02-15'),
+  mlp('furosemide', 'a682858', '2025-04-15'), mlp('carvedilol', 'a697042', '2026-03-15'), mlp('clopidogrel', 'a601040', '2026-08-15'),
+  mlp('spironolactone', 'a682627', '2018-02-15'), mlp('ramipril', 'a692027', '2026-01-15'),
+  ['atorvastatin', { country: 'CA', publisher: 'Health Canada Drug Product Database (lists brands ever authorised, not only those on sale)', url: 'https://health-products.canada.ca/dpd-bdpp/info?lang=eng&code=49973', checked_on: '2026-11-16' }],
+];
+for (const [id, link] of VERIFIED) MED_LIST.find((x) => x.med_id === id)!.official_links.push(link);
+
+// The link for the person's country only, or undefined (then nothing is shown).
+export const linkFor = (x: MedItem, country: string | null | undefined): OfficialLink | undefined => x.official_links.find((l) => l.country === country);
+
 export const medById = (id: string) => MED_LIST.find((x) => x.med_id === id);
 
 // Every brand name we hold for a medicine, once each, in the order: as listed, then Canada, then US.

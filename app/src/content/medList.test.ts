@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { allBrands, groupMeds, MED_GROUPS, MED_LIST, medById, medLabel, searchMeds } from './medList';
+import { allBrands, groupMeds, linkFor, MED_GROUPS, MED_LIST, medById, medLabel, searchMeds } from './medList';
 
 describe('medicine list', () => {
   it('has 50 medicines in 7 groups with unique ids and generic names', () => {
@@ -37,5 +37,19 @@ describe('medicine list', () => {
     const names = searchMeds('').map((x) => x.generic);
     expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b)));
     expect(groupMeds(MED_LIST)).toHaveLength(7);
+  });
+
+  it('links only by the matching country, on the official host, with a check date', () => {
+    const host: Record<string, string> = { US: 'medlineplus.gov', CA: 'health-products.canada.ca', GB: 'www.nhs.uk' };
+    for (const x of MED_LIST) for (const l of x.official_links) {
+      expect(new URL(l.url).host, x.med_id).toBe(host[l.country]);
+      expect(l.url.startsWith('https://'), x.med_id).toBe(true);
+    }
+    const a = medById('atorvastatin')!;
+    expect(linkFor(a, 'US')?.url).toContain('medlineplus.gov');
+    expect(linkFor(a, 'CA')?.url).toContain('health-products.canada.ca');
+    expect(linkFor(a, 'GB')).toBeUndefined();
+    expect(linkFor(a, null)).toBeUndefined();
+    expect(linkFor(medById('semaglutide')!, 'US')).toBeUndefined();
   });
 });

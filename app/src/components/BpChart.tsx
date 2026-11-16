@@ -36,6 +36,7 @@ function LineView({ data, days, now }: { data: ChartRow[]; days: number; now: nu
             const xl = even ? [t0, t1] : [lo, lo + (hi - lo) / 2, hi];
             const last = xl.length - 1;
             return (
+              <View style={{ width: w, height: H }}>
               <Svg width={w} height={H}>
                 {ticks.map((v) => (
                   <G key={v}>
@@ -54,11 +55,15 @@ function LineView({ data, days, now }: { data: ChartRow[]; days: number; now: nu
                       {on ? <Line x1={x} x2={x} y1={PAD.t} y2={PAD.t + ih} stroke={color.outline} strokeWidth={2} /> : null}
                       <Circle cx={x} cy={Y(r.systolic)} r={on ? 9 : 6} fill={color.accent.red} stroke={color.bg} strokeWidth={2} />
                       <Rect x={x - (on ? 8 : 5.5)} y={Y(r.diastolic) - (on ? 8 : 5.5)} width={on ? 16 : 11} height={on ? 16 : 11} fill={color.accent.blue} stroke={color.bg} strokeWidth={2} />
-                      <Rect x={x - 22} y={PAD.t} width={44} height={ih} fill="transparent" onPress={() => setSel(i)} />
                     </G>
                   );
                 })}
               </Svg>
+              {/* Tap targets are plain React Native views over the drawing: responder props on svg shapes warn on web. */}
+              {data.map((r, i) => (
+                <Pressable key={r.id} accessible={false} onPress={() => setSel(i)} style={{ position: 'absolute', left: X(Date.parse(r.taken_at), i) - 22, top: PAD.t, width: 44, height: ih }} />
+              ))}
+              </View>
             );
           })() : <View style={{ height: H }} />}
         </View>

@@ -1,8 +1,9 @@
 // Re-checks every candidate official medicine page against the live site and prints a report (JSON on stdout).
-// Run from the app folder on a machine that can reach the sites:  node scripts/verify-med-links.mjs > med-links-report.json
+// Run from the app folder on a machine that can reach the sites:  node scripts/verify-med-links.mjs
+// Prints one short line per check (paste that back) and also writes med-links-report.json.
 // Sends no user data. Reads only scripts/med-link-candidates.json. Rule: a link is "ok" only when the live page title
 // contains every generic name part (MedlinePlus, NHS) or the brand exists in the Health Canada DPD (CA).
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 
 const cands = JSON.parse(readFileSync(new URL('./med-link-candidates.json', import.meta.url), 'utf8'));
 const today = new Date().toISOString().slice(0, 10);
@@ -58,4 +59,6 @@ for (const c of cands) {
   await sleep(500);
 }
 const flat = report.flatMap((r) => r.checks.map((k) => ({ med_id: r.med_id, ...k })));
-console.log(JSON.stringify({ checked_on: today, ok: flat.filter((k) => k.ok).length, failed: flat.filter((k) => !k.ok).length, report }, null, 1));
+writeFileSync('med-links-report.json', JSON.stringify({ checked_on: today, report }, null, 1));
+console.log(`checked_on ${today}  ok ${flat.filter((k) => k.ok).length}  failed ${flat.filter((k) => !k.ok).length}`);
+for (const k of flat) console.log([k.ok ? 'OK' : 'FAIL', k.med_id, k.country, k.url.replace('https://', ''), k.page_reviewed ?? '', k.ok ? (k.title ?? k.brand ?? '') : k.why].join(' | '));

@@ -459,4 +459,11 @@ export const fr: Record<Key, string> = {
   "lab.t.uric_acid": "Acide urique",
   "lab.t.hba1c": "HbA1c",
   "lab.t.glucose": "Glucose (glycémie)",
+  "acct.delete": "Supprimer mon compte",
+  "acct.ask": "Cela supprime définitivement votre compte, vos informations de santé et tous les fichiers que vous avez téléversés. Impossible de revenir en arrière.",
+  "acct.yes": "Oui, supprimer mon compte",
+  "acct.deleting": "Suppression...",
+  "acct.errFailed": "Votre compte n'a pas pu être supprimé. Réessayez.",
+  "acct.errTwoStep": "Reconnectez-vous avec votre code en deux étapes, puis réessayez.",
+  "acct.errNotSetUp": "La suppression du compte n'est pas encore activée. Demandez à la personne qui gère cette application.",
 };

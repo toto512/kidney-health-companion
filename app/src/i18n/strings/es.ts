@@ -459,4 +459,11 @@ export const es: Record<Key, string> = {
   "lab.t.uric_acid": "Ácido úrico",
   "lab.t.hba1c": "HbA1c",
   "lab.t.glucose": "Glucosa (azúcar en sangre)",
+  "acct.delete": "Eliminar mi cuenta",
+  "acct.ask": "Esto elimina para siempre su cuenta, su información de salud y todos los archivos que subió. No se puede deshacer.",
+  "acct.yes": "Sí, eliminar mi cuenta",
+  "acct.deleting": "Eliminando...",
+  "acct.errFailed": "No se pudo eliminar su cuenta. Inténtelo de nuevo.",
+  "acct.errTwoStep": "Inicie sesión de nuevo con su código de dos pasos e inténtelo otra vez.",
+  "acct.errNotSetUp": "La eliminación de cuentas aún no está activada. Pregunte a quien administra esta aplicación.",
 };

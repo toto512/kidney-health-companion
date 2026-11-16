@@ -458,5 +458,12 @@ export const en = {
   "lab.t.uric_acid": "Uric acid",
   "lab.t.hba1c": "HbA1c",
   "lab.t.glucose": "Glucose (blood sugar)",
+  "acct.delete": "Delete my account",
+  "acct.ask": "This permanently deletes your account, your health information and every file you uploaded. It cannot be undone.",
+  "acct.yes": "Yes, delete my account",
+  "acct.deleting": "Deleting...",
+  "acct.errFailed": "Your account could not be deleted. Try again.",
+  "acct.errTwoStep": "Sign in again with your two-step code, then try again.",
+  "acct.errNotSetUp": "Account deletion is not switched on yet. Ask the person who runs this app.",
 } as const;
 export type Key = keyof typeof en;

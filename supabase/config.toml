@@ -1,0 +1,5 @@
+# Used only by the Supabase CLI to deploy the Edge Function. Migrations are still run by hand in the SQL editor.
+project_id = "kidney-health-companion"
+
+[functions.delete-account]
+verify_jwt = true

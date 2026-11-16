@@ -1,16 +1,34 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
+import { Linking, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { BigButton, Body, CategoryBadge, DisclaimerFooter, H1, Panel, Screen } from '@/components/ui';
 import { EMERGENCY, emergencyView, LISTED_EMERGENCY } from '@/content/emergency';
+import { emergencyDialFor } from '@/content/emergencyDial';
 import { COUNTRIES, Country, countryName } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
 
-type EntryProps = { place: string; number: string; quote: string; lang?: string; source: string; url: string; reviewed: string; checked: string };
+type EntryProps = { calls?: string; place: string; number: string; quote: string; lang?: string; source: string; url: string; reviewed: string; checked: string };
+
+// One tap, no confirm step: for an emergency every second counts. The confirm screen is only for personal contacts.
+function CallButtons({ country }: { country: string }) {
+  const targets = emergencyDialFor(country);
+  const [failed, setFailed] = useState(false);
+  if (!targets.length) return null;
+  return (
+    <>
+      {targets.map((t) => (
+        <BigButton key={t.tel} label={t.text} onPress={() => { Linking.openURL(t.tel).catch(() => setFailed(true)); }} />
+      ))}
+      {Platform.OS === 'web' ? <Body>On a computer, this needs a calling app.</Body> : null}
+      {failed ? <Body tone="danger">The call did not start. Dial the number yourself.</Body> : null}
+      <Body>This calls from your own phone. The app does not contact emergency services.</Body>
+    </>
+  );
+}
 
 // One country's number as a large line, then the exact official quote and where it came from.
-function Entry({ place, number, quote, lang, source, url, reviewed, checked }: EntryProps) {
+function Entry({ calls, place, number, quote, lang, source, url, reviewed, checked }: EntryProps) {
   const color = useColors();
   return (
     <Panel tone="danger">
@@ -19,6 +37,7 @@ function Entry({ place, number, quote, lang, source, url, reviewed, checked }: E
         <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: color.text }}>{place}</Text>
       </View>
       <Text accessibilityRole="header" style={{ fontSize: 34, lineHeight: 42, fontWeight: '800', color: color.danger }}>Call {number}</Text>
+      {calls ? <CallButtons country={calls} /> : null}
       <Body>{'\u201C'}{quote}{'\u201D'}{lang ? ` (quoted in ${lang})` : ''}</Body>
       <Pressable accessibilityRole="link" onPress={() => Linking.openURL(url)} style={{ minHeight: 56, justifyContent: 'center' }}>
         <Text style={{ fontSize: font.body, color: color.primary, textDecorationLine: 'underline', lineHeight: font.body * 1.4 }}>
@@ -50,11 +69,11 @@ export default function Emergency() {
         ) : null}
         {view.kind === 'listed' && country !== undefined ? (() => {
           const e = LISTED_EMERGENCY[view.code];
-          return <Entry place={countryName(view.code)} number={e.number} quote={e.quote} lang={e.lang} source={e.source} url={e.url} reviewed={e.pageReviewed ?? 'review date not shown'} checked={e.checkedOn} />;
+          return <Entry calls={view.code} place={countryName(view.code)} number={e.number} quote={e.quote} lang={e.lang} source={e.source} url={e.url} reviewed={e.pageReviewed ?? 'review date not shown'} checked={e.checkedOn} />;
         })() : null}
         {shown.map((c) => {
           const e = EMERGENCY[c];
-          return <Entry key={c} place={COUNTRIES.find((x) => x.code === c)?.label ?? c} number={e.number} quote={e.quote} source={e.source} url={e.url} reviewed={e.pageReviewed ? `reviewed ${e.pageReviewed}` : 'review date not shown'} checked={e.checkedOn} />;
+          return <Entry key={c} calls={view.kind === 'supported' ? c : undefined} place={COUNTRIES.find((x) => x.code === c)?.label ?? c} number={e.number} quote={e.quote} source={e.source} url={e.url} reviewed={e.pageReviewed ? `reviewed ${e.pageReviewed}` : 'review date not shown'} checked={e.checkedOn} />;
         })}
         <BigButton variant="secondary" label="Back" onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} />
         <DisclaimerFooter />

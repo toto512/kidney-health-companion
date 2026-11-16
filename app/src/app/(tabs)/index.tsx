@@ -1,7 +1,7 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
-import { Card, CardNote, CardValue, DisclaimerFooter, H1, H2, Screen, Suggestion } from '@/components/ui';
+import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
+import { BigButton, Card, CardNote, CardValue, DisclaimerFooter, H1, H2, Screen, Suggestion } from '@/components/ui';
 import { TrackingSuggestions } from '@/components/TrackingSuggestions';
 import { useAuth } from '@/lib/auth';
 import { dismiss, wasDismissed } from '@/lib/suggestions';
@@ -10,6 +10,7 @@ import { supabase } from '@/lib/supabase';
 import { displayPhone, relationshipLabel } from '@/lib/contactLogic';
 import { Contact, loadContactsOrCopy } from '@/lib/emergencyContacts';
 import { emergencyView, EMERGENCY, LISTED_EMERGENCY } from '@/content/emergency';
+import { emergencyDialFor } from '@/content/emergencyDial';
 import { font, space, useColors } from '@/theme/tokens';
 
 type Latest = { systolic: number; diastolic: number; taken_at: string } | null | 'error';
@@ -77,6 +78,9 @@ export default function Today() {
           <Card title="Emergency services" icon="🚨" tone="danger" onPress={() => router.push('/feature/emergency')}>
             <CardNote>{emergencyNote}</CardNote>
           </Card>
+          {emergencyDialFor(country).slice(0, 2).map((t) => (
+            <BigButton key={t.tel} label={t.text} onPress={() => { Linking.openURL(t.tel).catch(() => {}); }} />
+          ))}
           <Card title="My people" icon="👥" accent="teal" onPress={() => router.push('/feature/my-people')}>
             <CardNote>{people && people.length ? 'Tap a name below to call. Tap here to add, change or replace people.' : 'Add your doctor, family or a friend, so their number is here when you need it.'}</CardNote>
           </Card>

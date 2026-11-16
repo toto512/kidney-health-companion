@@ -49,8 +49,8 @@ async function checkDpd(c) {
   const code = hit[0].drug_code;
   const page = `https://health-products.canada.ca/dpd-bdpp/info?lang=eng&code=${code}`;
   const p = await get(page);
-  const ok = !!p.text && norm(p.text).includes(brand);
-  return { country: 'CA', url: page, ok, brand: hit[0].brand_name, strength_in_name: !exact.length, products_with_this_brand: hit.length, ...(ok ? {} : { why: 'info page missing or brand not on page' }) };
+  const ok = !!p.text && norm(p.text).includes(brand) && exact.length > 0; // strength-named records are held back (no doses)
+  return { country: 'CA', url: page, ok, brand: hit[0].brand_name, strength_in_name: !exact.length, products_with_this_brand: hit.length, ...(ok ? {} : { why: exact.length ? 'info page missing or brand not on page' : `HELD: DPD record name includes a strength (${hit[0].brand_name})` }) };
 }
 
 const report = [];
@@ -65,4 +65,4 @@ for (const c of cands) {
 const flat = report.flatMap((r) => r.checks.map((k) => ({ med_id: r.med_id, ...k })));
 writeFileSync('med-links-report.json', JSON.stringify({ checked_on: today, report }, null, 1));
 console.log(`checked_on ${today}  ok ${flat.filter((k) => k.ok).length}  failed ${flat.filter((k) => !k.ok).length}`);
-for (const k of flat) console.log([k.ok ? 'OK' : 'FAIL', k.med_id, k.country, k.url.replace('https://', ''), k.page_reviewed ?? '', k.ok ? (k.title ?? `${k.brand}${k.strength_in_name ? ' [STRENGTH IN NAME]' : ''}`) : k.why].join(' | '));
+for (const k of flat) console.log([k.ok ? 'OK' : 'FAIL', k.med_id, k.country, k.url.replace('https://', ''), k.page_reviewed ?? '', k.ok ? (k.title ?? k.brand) : k.why].join(' | '));

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Linking, Pressable, Text, View } from 'react-native';
 import { Body } from '@/components/ui';
+import { useI18n } from '@/i18n/I18nProvider';
 import { isGap, overdue, RefEntry, referenceFor, SOURCES, sourceLabel } from '@/content/reference';
 import { Country } from '@/lib/profile';
 import { AccentName, font, mix, useColors } from '@/theme/tokens';
@@ -10,6 +11,7 @@ const NOTE_LAB = 'These are typical ranges from the page, not your result. Your 
 
 function Group({ title, note, entries, accent }: { title: string; note: string; entries: RefEntry[]; accent: AccentName }) {
   const color = useColors();
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   if (entries.length === 0) return null;
   const today = new Date();
@@ -22,11 +24,11 @@ function Group({ title, note, entries, accent }: { title: string; note: string; 
       <Pressable accessibilityRole="button" accessibilityState={{ expanded: open }} onPress={() => setOpen(!open)}
         style={{ minHeight: 56, borderRadius: 12, borderWidth: 2, borderColor: color.accent[accent], paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: mix(color.accent[accent], color.surface, 0.06) }}>
         <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: color.accent[accent] }}>{title}</Text>
-        <Text style={{ fontSize: font.label, fontWeight: '800', color: color.accent[accent] }}>{open ? 'Hide' : 'Show'}</Text>
+        <Text style={{ fontSize: font.label, fontWeight: '800', color: color.accent[accent] }}>{open ? t('common.hide') : t('common.show')}</Text>
       </Pressable>
       {open ? (
         <View style={{ gap: 14 }}>
-          <Body>{note}</Body>
+          <Body>{note === NOTE_MED ? t('ref.noteMed') : note === NOTE_LAB ? t('ref.noteLab') : note}</Body>
           {order.map((id) => {
             const s = SOURCES[id];
             return (

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Screen } from '@/components/ui';
 import { CONDITION_LIST, groupByDomain, searchConditions } from '@/content/conditionList';
+import { useI18n } from '@/i18n/I18nProvider';
 import { toggleId } from '@/lib/conditionSelection';
 import { setFlash } from '@/lib/flash';
 import { loadMyConditionIds, saveMyConditionIds } from '@/lib/userConditions';
@@ -11,6 +12,7 @@ import { font, mix, useColors } from '@/theme/tokens';
 // Optional. The list is plain names only; picking one just adds a "Suggested to track" card to Today.
 export default function ChooseConditions() {
   const color = useColors();
+  const { t } = useI18n();
   const [saved, setSaved] = useState<string[] | null | undefined>(undefined);
   const [picked, setPicked] = useState<string[]>([]);
   const [q, setQ] = useState('');
@@ -27,26 +29,26 @@ export default function ChooseConditions() {
     setBusy(true); setErr('');
     const ok = await saveMyConditionIds(saved ?? [], picked);
     setBusy(false);
-    if (!ok) { setErr('Could not save. Try again.'); return; }
-    setFlash(picked.length ? 'Conditions saved.' : 'No conditions chosen.');
+    if (!ok) { setErr(t('profile.errSave')); return; }
+    setFlash(picked.length ? t('track.saved') : t('track.none'));
     router.replace('/');
   }
 
   return (
     <ScrollView keyboardShouldPersistTaps="handled">
       <Screen>
-        <H1>Conditions I want to track</H1>
-        <Body>Only you can see this. Pick any that apply to you. It is optional, and you can change it later.</Body>
-        {saved === undefined ? <Body>Loading...</Body> : null}
-        {saved === null ? <Body tone="danger">Could not load your saved choices. You can still pick, but Save may not work until this is fixed.</Body> : null}
-        <Field label="Search by name" value={q} onChangeText={setQ} placeholder="For example: kidney" autoCapitalize="none" autoCorrect={false} />
+        <H1>{t('track.title')}</H1>
+        <Body>{t('track.intro')}</Body>
+        {saved === undefined ? <Body>{t('common.loading')}</Body> : null}
+        {saved === null ? <Body tone="danger">{t('track.errLoad')}</Body> : null}
+        <Field label={t('common.searchName')} value={q} onChangeText={setQ} placeholder={t('track.example')} autoCapitalize="none" autoCorrect={false} />
         {picked.length ? (
           <View style={{ gap: 6 }} accessibilityLiveRegion="polite">
-            <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{picked.length} chosen</Text>
+            <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{t('common.chosen', { n: picked.length })}</Text>
             <Text style={{ fontSize: font.body, color: color.muted }}>{picked.map(nameOf).join(', ')}</Text>
           </View>
         ) : null}
-        {groups.length === 0 ? <Body>Nothing matches. Try a different word.</Body> : null}
+        {groups.length === 0 ? <Body>{t('common.nothingMatches')}</Body> : null}
         {groups.map((g) => {
           const isOpen = searching || open.includes(g.domain);
           const n = g.items.filter((i) => picked.includes(i.id)).length;
@@ -54,8 +56,8 @@ export default function ChooseConditions() {
             <View key={g.domain} style={{ gap: 8 }}>
               <Pressable accessibilityRole="button" accessibilityState={{ expanded: isOpen }} onPress={() => setOpen(toggleId(open, g.domain))}
                 style={{ minHeight: 56, borderRadius: 12, borderWidth: 2, borderColor: color.accent.blue, backgroundColor: mix(color.accent.blue, color.surface, 0.06), paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: color.accent.blue }}>{g.domain}{n ? ` (${n} chosen)` : ''}</Text>
-                <Text style={{ fontSize: font.label, fontWeight: '800', color: color.accent.blue }}>{isOpen ? 'Hide' : 'Show'}</Text>
+                <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: color.accent.blue }}>{n ? t('common.chosenIn', { name: g.domain, n }) : g.domain}</Text>
+                <Text style={{ fontSize: font.label, fontWeight: '800', color: color.accent.blue }}>{isOpen ? t('common.hide') : t('common.show')}</Text>
               </Pressable>
               {isOpen ? g.items.map((c) => {
                 const on = picked.includes(c.id);
@@ -73,8 +75,8 @@ export default function ChooseConditions() {
           );
         })}
         {err ? <Body tone="danger">{err}</Body> : null}
-        <BigButton label={busy ? 'Saving...' : 'Save my conditions'} onPress={save} disabled={busy || saved === undefined} />
-        <BigButton variant="secondary" label="Skip for now" onPress={() => router.replace('/')} />
+        <BigButton label={busy ? t('profile.saving') : t('track.save')} onPress={save} disabled={busy || saved === undefined} />
+        <BigButton variant="secondary" label={t('common.skip')} onPress={() => router.replace('/')} />
         <DisclaimerFooter />
       </Screen>
     </ScrollView>

@@ -27,12 +27,19 @@ const ERR: Record<string, Key> = {
   'Bottom number must be a whole number from 20 to 200.': 'err.bpBottom',
   'The top number must be higher than the bottom number. Check both numbers.': 'err.bpGap',
   'Pulse must be a whole number from 20 to 250, or leave it empty.': 'err.bpPulse',
+  'Type a name first.': 'err.typeName',
+  'That name is already on your list.': 'err.dupName',
+  'Use letters, numbers and simple marks only, for example 150 mcg.': 'err.strengthChars',
   'Enter their name.': 'err.contactName',
   'Use 60 letters or fewer for the name.': 'err.contactNameLong',
   'Choose who they are to you.': 'err.contactRole',
   'Check the phone number. Include the area code, or start with + and the country code.': 'err.contactPhone',
 };
-export const trError = (t: T, msg: string) => (ERR[msg] ? t(ERR[msg]) : msg);
+export const trError = (t: T, msg: string) => {
+  if (ERR[msg]) return t(ERR[msg]);
+  const m = /^Use (\d+) characters or fewer\.$/.exec(msg);
+  return m ? t('err.chars', { n: m[1] }) : msg;
+};
 
 // Country names in the chosen language where the device supports it, else the English name.
 export function countryLabel(code: string, lang: Lang, fallback: string): string {

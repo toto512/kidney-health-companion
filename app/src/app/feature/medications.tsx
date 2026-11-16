@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { BigButton, Body, DisclaimerFooter, H1, Panel, Screen, SectionHeader } from '@/components/ui';
 import { linkFor, medById, medLabel } from '@/content/medList';
+import { useI18n } from '@/i18n/I18nProvider';
 import { customKey, listKey } from '@/lib/medSelection';
 import { loadMyMeds, MyMeds } from '@/lib/userMedications';
 import { supabase } from '@/lib/supabase';
@@ -11,6 +12,7 @@ import { font, useColors } from '@/theme/tokens';
 // A list of names the person chose. No doses, schedules or advice. "Official page" shows only once a verified link exists.
 export default function Medications() {
   const color = useColors();
+  const { t, lang } = useI18n();
   const [m, setM] = useState<MyMeds | null | undefined>(undefined);
   useFocusEffect(useCallback(() => { let alive = true; void loadMyMeds().then((v) => { if (alive) setM(v); }); return () => { alive = false; }; }, []));
   const [country, setCountry] = useState<string | null>(null);
@@ -20,29 +22,29 @@ export default function Medications() {
   return (
     <ScrollView>
       <Screen>
-        <H1>My medications</H1>
-        {m === undefined ? <Body>Loading...</Body> : null}
-        {m === null ? <Body tone="danger">Could not load your medicines. Try again.</Body> : null}
+        <H1>{t('medlist.title')}</H1>
+        {m === undefined ? <Body>{t('common.loading')}</Body> : null}
+        {m === null ? <Body tone="danger">{t('medlist.errLoad')}</Body> : null}
         {m && items.length === 0 && m.custom.length === 0 ? (
           <Panel>
-            <Body>You have not chosen any medicines yet. It is optional, and only you can see it.</Body>
-            <BigButton label="Choose my medicines" onPress={() => router.push('/feature/choose-medicines')} />
+            <Body>{t('medlist.none')}</Body>
+            <BigButton label={t('medlist.choose')} onPress={() => router.push('/feature/choose-medicines')} />
           </Panel>
         ) : null}
         {m && (items.length > 0 || m.custom.length > 0) ? (
           <Panel>
-            <SectionHeader icon="💊" accent="teal">Medicines I take</SectionHeader>
+            <SectionHeader icon="💊" accent="teal">{t('meds.pickTitle')}</SectionHeader>
             {items.map((x) => x && (
               <View key={x.med_id} style={{ gap: 4, paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: color.border }}>
                 <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{medLabel(x)}</Text>
-                {m.strengths[listKey(x.med_id)] ? <Text style={{ fontSize: font.body, color: color.text }}>Strength: {m.strengths[listKey(x.med_id)]}</Text> : null}
+                {m.strengths[listKey(x.med_id)] ? <Text style={{ fontSize: font.body, color: color.text }}>{t('medlist.strength', { s: m.strengths[listKey(x.med_id)] })}</Text> : null}
                 {(() => { const l = linkFor(x, country); return l ? (
                   <View>
                     <Pressable accessibilityRole="link" onPress={() => Linking.openURL(l.url)} style={{ minHeight: 48, justifyContent: 'center' }}>
-                      <Text style={{ fontSize: font.body, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>Official page: {l.publisher}</Text>
+                      <Text style={{ fontSize: font.body, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>{t('medlist.official', { publisher: l.publisher })}</Text>
                     </Pressable>
-                    {l.page_title ? <Text style={{ fontSize: font.body, color: color.muted }}>Page: {l.page_title}</Text> : null}
-                    <Text style={{ fontSize: font.body, color: color.muted }}>{l.page_reviewed ? `Page last reviewed ${l.page_reviewed}. ` : ''}Link checked {l.checked_on}.{l.country === 'CA' ? ' This database lists brands ever authorised in Canada, not only those on sale.' : ''}</Text>
+                    {l.page_title ? <Text style={{ fontSize: font.body, color: color.muted }}>{t('medlist.page', { title: l.page_title })}</Text> : null}
+                    <Text style={{ fontSize: font.body, color: color.muted }}>{l.page_reviewed ? t('medlist.pageReviewed', { date: l.page_reviewed }) : ''}{t('medlist.linkChecked', { date: l.checked_on })}{l.country === 'CA' ? t('medlist.caNote') : ''}</Text>
                   </View>
                 ) : null; })()}
               </View>
@@ -50,15 +52,15 @@ export default function Medications() {
             {m.custom.map((c) => (
               <View key={c} style={{ paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: color.border }}>
                 <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{c}</Text>
-                {m.strengths[customKey(c)] ? <Text style={{ fontSize: font.body, color: color.text }}>Strength: {m.strengths[customKey(c)]}</Text> : null}
-                <Text style={{ fontSize: font.body, color: color.muted }}>Added by you</Text>
+                {m.strengths[customKey(c)] ? <Text style={{ fontSize: font.body, color: color.text }}>{t('medlist.strength', { s: m.strengths[customKey(c)] })}</Text> : null}
+                <Text style={{ fontSize: font.body, color: color.muted }}>{t('medlist.addedByYou')}</Text>
               </View>
             ))}
           </Panel>
         ) : null}
-        {m ? <BigButton variant="secondary" label={items.length || m.custom.length ? 'Change my medicines' : 'Pick from the list'} onPress={() => router.push('/feature/choose-medicines')} /> : null}
-        <Body>This is a list you made. Any strength is what you typed. As on your label, ask your pharmacist. It does not tell you how to take anything.</Body>
-        <BigButton variant="secondary" label="Back to my health" onPress={() => router.replace('/')} />
+        {m ? <BigButton variant="secondary" label={items.length || m.custom.length ? t('medlist.change') : t('medlist.pick')} onPress={() => router.push('/feature/choose-medicines')} /> : null}
+        <Body>{t('medlist.note')}</Body>
+        <BigButton variant="secondary" label={t('profile.backHealth')} onPress={() => router.replace('/')} />
         <DisclaimerFooter />
       </Screen>
     </ScrollView>

@@ -7,6 +7,8 @@ import { BigButton, Body, DisclaimerFooter, Field, H1, H2, Panel, Screen } from 
 import { canAddMore, displayPhone, MAX_CONTACTS, RELATIONSHIPS, Relationship, relationshipLabel, validateContact } from '@/lib/contactLogic';
 import { addContact, Contact, deleteContact, deviceCopyOn, loadContacts, setDeviceCopy, updateContact } from '@/lib/emergencyContacts';
 import { useAuth } from '@/lib/auth';
+import { relLabel, trError } from '@/i18n/labels';
+import { useI18n } from '@/i18n/I18nProvider';
 import { setFlash } from '@/lib/flash';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
@@ -16,6 +18,8 @@ const blank: Form = { id: null, name: '', relationship: '', phone: '' };
 
 // Personal emergency contacts: up to 5, edit or replace any time. `first=1` is the step after the first profile save, with Skip.
 export default function MyPeople() {
+  const { t } = useI18n();
+  const rel = (v: string) => relLabel(t, v, relationshipLabel(v));
   const { first } = useLocalSearchParams<{ first?: string }>();
   const wizard = first === '1';
   const color = useColors();
@@ -31,7 +35,7 @@ export default function MyPeople() {
 
   const reload = useCallback(async () => {
     const l = await loadContacts();
-    if (!l) { setErr('Could not load your people. Try again.'); return; }
+    if (!l) { setErr(t('people.errLoad')); return; }
     setList(l);
     return l;
   }, []);
@@ -45,17 +49,17 @@ export default function MyPeople() {
     if (!form) return;
     setErr('');
     const r = validateContact(form, country);
-    if (!r.ok) { setErr(r.error); return; }
+    if (!r.ok) { setErr(trError(t, r.error)); return; }
     setBusy(true);
     let ok = false;
     if (form.id) ok = await updateContact(form.id, r.value);
     else {
       const res = await addContact(r.value);
       ok = res === 'ok';
-      if (res === 'limit') { setBusy(false); setErr(`You can save up to ${MAX_CONTACTS} people. Remove one first.`); return; }
+      if (res === 'limit') { setBusy(false); setErr(t('people.errLimit', { max: MAX_CONTACTS })); return; }
     }
     setBusy(false);
-    if (!ok) { setErr('Could not save. Try again.'); return; }
+    if (!ok) { setErr(t('profile.errSave')); return; }
     setForm(null);
     const l = await reload();
     if (uid && l && copyOn) await setDeviceCopy(uid, true, l);
@@ -64,7 +68,7 @@ export default function MyPeople() {
     setBusy(true);
     const ok = await deleteContact(id);
     setBusy(false); setConfirmDel(null);
-    if (!ok) { setErr('Could not remove. Try again.'); return; }
+    if (!ok) { setErr(t('people.errRemove')); return; }
     const l = await reload();
     if (uid && l && copyOn) await setDeviceCopy(uid, true, l);
   }
@@ -74,32 +78,32 @@ export default function MyPeople() {
     await setDeviceCopy(uid, on, list ?? []);
   }
   function done() {
-    if (wizard) { setFlash('Profile saved.'); router.replace('/'); }
+    if (wizard) { setFlash(t('profile.saved')); router.replace('/'); }
     else router.canGoBack() ? router.back() : router.replace('/');
   }
 
   return (
     <ScrollView keyboardShouldPersistTaps="handled">
       <Screen>
-        <H1>My people</H1>
-        <Body>Add the people to call first if something goes wrong, such as your doctor, a nurse, a family member or a friend. You can add up to {MAX_CONTACTS}. They show on Today with a Call button.</Body>
-        <Body>This app does not call or alert anyone for you. For an emergency, call your local emergency number.</Body>
+        <H1>{t('people.title')}</H1>
+        <Body>{t('people.intro', { max: MAX_CONTACTS })}</Body>
+        <Body>{t('people.noAlert')}</Body>
         {err ? <Text accessibilityRole="alert" style={{ color: color.danger, fontSize: font.body, fontWeight: '600' }}>{err}</Text> : null}
-        {list === null && !err ? <Body>Loading.</Body> : null}
+        {list === null && !err ? <Body>{t('emergency.loading')}</Body> : null}
 
         {list?.map((c) => (
           <Panel key={c.id}>
             <ContactRow c={c} />
             {confirmDel === c.id ? (
               <>
-                <Body tone="danger">Remove {c.name} from your list?</Body>
-                <BigButton label="Yes, remove" disabled={busy} onPress={() => remove(c.id)} />
-                <BigButton variant="secondary" label="Keep" onPress={() => setConfirmDel(null)} />
+                <Body tone="danger">{t('people.removeAsk', { name: c.name })}</Body>
+                <BigButton label={t('people.yesRemove')} disabled={busy} onPress={() => remove(c.id)} />
+                <BigButton variant="secondary" label={t('people.keep')} onPress={() => setConfirmDel(null)} />
               </>
             ) : (
               <>
-                <BigButton variant="secondary" label={`Change ${c.name}`} onPress={() => { setErr(''); setForm({ id: c.id, name: c.name, relationship: c.relationship, phone: c.phone }); }} />
-                <BigButton variant="secondary" label={`Remove ${c.name}`} onPress={() => setConfirmDel(c.id)} />
+                <BigButton variant="secondary" label={t('people.change', { name: c.name })} onPress={() => { setErr(''); setForm({ id: c.id, name: c.name, relationship: c.relationship, phone: c.phone }); }} />
+                <BigButton variant="secondary" label={t('people.remove', { name: c.name })} onPress={() => setConfirmDel(c.id)} />
               </>
             )}
           </Panel>
@@ -107,37 +111,37 @@ export default function MyPeople() {
 
         {form ? (
           <Panel>
-            <H2>{form.id ? 'Change this person' : 'Add a person'}</H2>
-            <Select label="Who are they to you? Scroll and choose" value={form.relationship as Relationship | ''} options={RELATIONSHIPS.map((r) => ({ value: r.value, label: r.label }))}
-              onChange={(v) => { setForm({ ...form, relationship: v }); setErr(''); }} placeholder="Choose from the list" searchable={false} />
+            <H2>{form.id ? t('people.changeThis') : t('people.addPerson')}</H2>
+            <Select label={t('people.who')} value={form.relationship as Relationship | ''} options={RELATIONSHIPS.map((r) => ({ value: r.value, label: rel(r.value) }))}
+              onChange={(v) => { setForm({ ...form, relationship: v }); setErr(''); }} placeholder={t('people.chooseList')} searchable={false} />
             {form.relationship ? (
               <>
-                <Field label={`${relationshipLabel(form.relationship)}'s name`} value={form.name} onChangeText={(v) => { setForm({ ...form, name: v }); setErr(''); }} maxLength={60} autoCapitalize="words" />
-              <Field label="Phone number" value={form.phone} onChangeText={(v) => { setForm({ ...form, phone: v }); setErr(''); }} keyboardType="phone-pad" autoComplete="off" maxLength={24} placeholder="For example 613 555 0123" />
-                <BigButton label={busy ? 'Saving.' : 'Save'} disabled={busy} onPress={save} />
+                <Field label={t('people.nameOf', { role: rel(form.relationship) })} value={form.name} onChangeText={(v) => { setForm({ ...form, name: v }); setErr(''); }} maxLength={60} autoCapitalize="words" />
+              <Field label={t('people.phone')} value={form.phone} onChangeText={(v) => { setForm({ ...form, phone: v }); setErr(''); }} keyboardType="phone-pad" autoComplete="off" maxLength={24} placeholder={t('people.phoneEx')} />
+                <BigButton label={busy ? t('people.saving') : t('people.save')} disabled={busy} onPress={save} />
               </>
             ) : null}
-            <BigButton variant="secondary" label="Cancel" onPress={() => { setForm(null); setErr(''); }} />
+            <BigButton variant="secondary" label={t('people.cancel')} onPress={() => { setForm(null); setErr(''); }} />
           </Panel>
         ) : null}
 
-        {!form && list && canAddMore(list.length) ? <BigButton label={list.length ? 'Add another person' : 'Add a person'} onPress={() => { setErr(''); setForm({ ...blank }); }} /> : null}
-        {list && !canAddMore(list.length) && !form ? <Body>You have {MAX_CONTACTS} people. Remove one to add someone new.</Body> : null}
+        {!form && list && canAddMore(list.length) ? <BigButton label={list.length ? t('people.addAnother') : t('people.addPerson')} onPress={() => { setErr(''); setForm({ ...blank }); }} /> : null}
+        {list && !canAddMore(list.length) && !form ? <Body>{t('people.full', { max: MAX_CONTACTS })}</Body> : null}
 
         <Panel>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-            <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: color.text }}>Keep a copy on this device</Text>
-            <Switch accessibilityLabel="Keep a copy of my people on this device" value={copyOn} onValueChange={toggleCopy} />
+            <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: color.text }}>{t('people.copyTitle')}</Text>
+            <Switch accessibilityLabel={t('people.copyA11y')} value={copyOn} onValueChange={toggleCopy} />
           </View>
-          <Body>Off by default. When on, these names and numbers can still show with no internet. Anyone who uses this device can then see them without signing in, so leave it off on a shared device. Turning it off deletes the copy.</Body>
+          <Body>{t('people.copyBody')}</Body>
         </Panel>
 
         {wizard ? (
           <>
-            <BigButton label={list?.length ? 'Done' : 'Continue'} onPress={done} />
-            {!list?.length ? <BigButton variant="secondary" label="Skip for now" onPress={done} /> : null}
+            <BigButton label={list?.length ? t('people.done') : t('people.continue')} onPress={done} />
+            {!list?.length ? <BigButton variant="secondary" label={t('people.skip')} onPress={done} /> : null}
           </>
-        ) : <BigButton variant="secondary" label="Back" onPress={done} />}
+        ) : <BigButton variant="secondary" label={t('people.back')} onPress={done} />}
         <DisclaimerFooter />
       </Screen>
     </ScrollView>

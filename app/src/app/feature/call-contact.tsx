@@ -6,18 +6,21 @@ import { EMERGENCY, emergencyView, LISTED_EMERGENCY } from '@/content/emergency'
 import { displayPhone, relationshipLabel, telHref } from '@/lib/contactLogic';
 import { Contact, loadContactsOrCopy } from '@/lib/emergencyContacts';
 import { useAuth } from '@/lib/auth';
+import { useI18n } from '@/i18n/I18nProvider';
+import { relLabel } from '@/i18n/labels';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
 
 // "Not for emergencies" line: names the official number only when it is a single short number.
-function emergencyLine(country: string | null | undefined): string {
+function emergencyLine(t: (k: 'call.notEmergency' | 'call.notEmergencyLocal', v?: Record<string, string>) => string, country: string | null | undefined): string {
   const v = emergencyView(country);
   const n = v.kind === 'supported' ? EMERGENCY[v.country].number : v.kind === 'listed' ? LISTED_EMERGENCY[v.code].number : '';
-  return /^[0-9-]{2,5}$/.test(n) ? `Not for emergencies. Call ${n} for those.` : 'Not for emergencies. Call your local emergency number for those.';
+  return /^[0-9-]{2,5}$/.test(n) ? t('call.notEmergency', { number: n }) : t('call.notEmergencyLocal');
 }
 
 // Confirm step before dialing. The id comes in the address, never the phone number.
 export default function CallContact() {
+  const { t } = useI18n();
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { session } = useAuth();
   const color = useColors();
@@ -39,20 +42,20 @@ export default function CallContact() {
   return (
     <ScrollView>
       <Screen>
-        {c === undefined ? <Body>One moment.</Body> : null}
-        {c === null ? (<><Body>This person is no longer on your list.</Body><BigButton variant="secondary" label="Back" onPress={back} /></>) : null}
+        {c === undefined ? <Body>{t('call.oneMoment')}</Body> : null}
+        {c === null ? (<><Body>{t('call.gone')}</Body><BigButton variant="secondary" label={t('people.back')} onPress={back} /></>) : null}
         {c ? (
           <>
             <Panel>
               <Text accessibilityRole="header" style={{ fontSize: font.h1, lineHeight: font.h1 * 1.2, fontWeight: '800', color: color.text }}>{c.name}</Text>
-              <Body>{relationshipLabel(c.relationship)}</Body>
-              <Text selectable accessibilityLabel={`Number ${c.phone.split('').join(' ')}`} style={{ fontSize: Math.round(font.h1 * 1.1), lineHeight: Math.round(font.h1 * 1.4), fontWeight: '800', color: color.text }}>{displayPhone(c.phone)}</Text>
+              <Body>{relLabel(t, c.relationship, relationshipLabel(c.relationship))}</Body>
+              <Text selectable accessibilityLabel={t('call.number', { digits: c.phone.split('').join(' ') })} style={{ fontSize: Math.round(font.h1 * 1.1), lineHeight: Math.round(font.h1 * 1.4), fontWeight: '800', color: color.text }}>{displayPhone(c.phone)}</Text>
             </Panel>
-            <BigButton label="Call now" onPress={dial} />
-            <BigButton variant="secondary" label="Cancel" onPress={back} />
-            <Body>{emergencyLine(country)}</Body>
-            {Platform.OS === 'web' ? <Body>On a computer, this needs a calling app.</Body> : null}
-            {failed ? <Body tone="danger">The call did not start. Dial the number above.</Body> : null}
+            <BigButton label={t('call.now')} onPress={dial} />
+            <BigButton variant="secondary" label={t('people.cancel')} onPress={back} />
+            <Body>{emergencyLine(t, country)}</Body>
+            {Platform.OS === 'web' ? <Body>{t('contact.webNote')}</Body> : null}
+            {failed ? <Body tone="danger">{t('call.failed')}</Body> : null}
           </>
         ) : null}
       </Screen>

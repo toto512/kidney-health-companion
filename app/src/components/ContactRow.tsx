@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, Linking, Platform, Pressable, Text, View } from 'react-native';
 import { useI18n } from '@/i18n/I18nProvider';
+import { relLabel } from '@/i18n/labels';
 import { displayPhone, relationshipLabel, telHref } from '@/lib/contactLogic';
 import type { Contact } from '@/lib/emergencyContacts';
 import { font, useColors } from '@/theme/tokens';
@@ -52,10 +53,10 @@ export function ContactRow({ c }: { c: Contact }) {
   return (
     <View>
       <View style={{ flexDirection: 'row', alignItems: 'stretch', gap: 12, borderRadius: 18, borderWidth: 2, borderColor: color.accent.teal, backgroundColor: color.surface, padding: 10 }}>
-        <Pressable accessibilityRole="button" accessibilityLabel={t('today.callPerson', { name: c.name, relationship: relationshipLabel(c.relationship), phone: displayPhone(c.phone) })}
+        <Pressable accessibilityRole="button" accessibilityLabel={t('today.callPerson', { name: c.name, relationship: relLabel(t, c.relationship, relationshipLabel(c.relationship)), phone: displayPhone(c.phone) })}
           onPress={() => router.push(confirmHref)} style={{ flex: 1, minHeight: 72, justifyContent: 'center', paddingHorizontal: 8 }}>
           <Text style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{c.name}</Text>
-          <Text style={{ fontSize: font.body, color: color.muted }}>{relationshipLabel(c.relationship)}</Text>
+          <Text style={{ fontSize: font.body, color: color.muted }}>{relLabel(t, c.relationship, relationshipLabel(c.relationship))}</Text>
           <Text style={{ fontSize: font.body, fontWeight: '700', color: color.text }}>{displayPhone(c.phone)}</Text>
         </Pressable>
         <Pressable accessibilityRole="button" accessibilityLabel={`${t('contact.call')} ${c.name}`} accessibilityHint={t('contact.holdA11y')}

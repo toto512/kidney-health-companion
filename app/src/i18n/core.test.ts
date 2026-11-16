@@ -54,3 +54,24 @@ describe('every language is complete', () => {
     });
   }
 });
+
+import { trError } from './labels';
+import { validateContact } from '../lib/contactLogic';
+import { parseProfile } from '../lib/profile';
+describe('validation messages are all translatable', () => {
+  const t = (k: string) => `T:${k}`;
+  it('maps contact and profile errors', () => {
+    const cases = [
+      validateContact({ name: '', relationship: 'doctor', phone: '+16135550123' }, 'CA'),
+      validateContact({ name: 'A', relationship: '', phone: '+16135550123' }, 'CA'),
+      validateContact({ name: 'A', relationship: 'doctor', phone: 'x' }, 'CA'),
+      validateContact({ name: 'A'.repeat(61), relationship: 'doctor', phone: '+16135550123' }, 'CA'),
+      parseProfile({ name: '', dob: '', sex: '', height: '', weight: '', country: '' }, new Date()),
+      parseProfile({ name: '', dob: 'x', sex: '', height: '', weight: '', country: 'CA' }, new Date()),
+      parseProfile({ name: '', dob: '1950-03-27', sex: '', height: '', weight: '', country: 'CA' }, new Date()),
+      parseProfile({ name: '', dob: '1950-03-27', sex: 'male', height: '10', weight: '', country: 'CA' }, new Date()),
+      parseProfile({ name: '', dob: '1950-03-27', sex: 'male', height: '170', weight: '1', country: 'CA' }, new Date()),
+    ];
+    for (const c of cases) { expect(c.ok).toBe(false); if (!c.ok) expect(trError(t as never, c.error), c.error).toMatch(/^T:err\./); }
+  });
+});

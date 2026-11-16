@@ -5,6 +5,15 @@
 -- authenticator needs an aal2 session. Requires 0005 (has_verified_mfa). Fake data only until the Supabase region is settled.
 -- The app reads text from the image on the device. Nothing is sent to an OCR or AI service.
 
+-- 0001 created an unused placeholder public.lab_results (columns test_name, confirmed_at). The app never wrote to it. Replace it with the
+-- design below, but only while it still has the old column, so running this file twice never deletes confirmed results.
+do $$
+begin
+  if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'lab_results' and column_name = 'test_name') then
+    drop table public.lab_results;
+  end if;
+end $$;
+
 create table if not exists public.lab_reports (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users (id) on delete cascade,

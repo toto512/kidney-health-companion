@@ -44,7 +44,7 @@ describe('listed countries (official government pages)', () => {
     });
   }
   it('has a government host for every link', () => {
-    for (const e of Object.values(LISTED_EMERGENCY)) expect(new URL(e.url).hostname).toMatch(/(^|\.)(gov\.[a-z]{2}|govt\.nz|go\.jp|gob\.mx|gob\.es|gob\.ar|bund\.de|go\.id|gv\.at|mvr\.bg|gov|service-public\.fr)$/);
+    for (const e of Object.values(LISTED_EMERGENCY)) expect(new URL(e.url).hostname).toMatch(/(^|\.)(gov\.[a-z]{2}|govt\.nz|go\.jp|gob\.mx|gob\.es|gob\.ar|bund\.de|go\.id|gv\.at|mvr\.bg|gov|service-public\.fr|borger\.dk|terviseportaal\.ee)$/);
   });
 });
 

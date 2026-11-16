@@ -30,9 +30,9 @@ async function checkTitle(c, url, country) {
   if (!r.text) return { country, url, ok: false, why: `fetch ${r.status}` };
   const t = title(r.text);
   const all = parts(c.generic);
-  const ok = all.every((p) => t.includes(p));
+  const ok = c.alias ? all.some((p) => t.includes(p)) : all.every((p) => t.includes(p));
   const reviewed = r.text.match(/Last Revised\s*-\s*(\d\d)\/(\d\d)\/(\d{4})/i);
-  return { country, url, ok, title: t, ...(reviewed ? { page_reviewed: `${reviewed[3]}-${reviewed[1]}-${reviewed[2]}` } : {}), ...(ok ? {} : { why: 'title does not contain every generic name' }) };
+  return { country, url, ok, title: t, ...(reviewed ? { page_reviewed: `${reviewed[3]}-${reviewed[1]}-${reviewed[2]}` } : {}), ...(ok ? {} : { why: `title does not match: ${t}` }) };
 }
 
 async function checkDpd(c) {
@@ -40,13 +40,17 @@ async function checkDpd(c) {
   if (!r.text) return { country: 'CA', url: c.ca, ok: false, why: `fetch ${r.status}` };
   let rows; try { rows = JSON.parse(r.text); } catch { return { country: 'CA', url: c.ca, ok: false, why: 'not JSON' }; }
   const brand = new URL(c.ca).searchParams.get('brandname').toLowerCase();
-  const hit = rows.filter((x) => String(x.brand_name).toLowerCase() === brand);
-  if (!hit.length) return { country: 'CA', url: c.ca, ok: false, why: 'no exact brand match in DPD' };
+  const esc = brand.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const exact = rows.filter((x) => String(x.brand_name).toLowerCase() === brand);
+  // DPD names many records "BRAND - 10MG". Those pages show a strength, so they are flagged and not shipped without a decision.
+  const strengthy = rows.filter((x) => new RegExp(`^${esc}\\s*-\\s*\\d`, 'i').test(String(x.brand_name)));
+  const hit = exact.length ? exact : strengthy;
+  if (!hit.length) return { country: 'CA', url: c.ca, ok: false, why: `no brand match in DPD (${rows.length} rows, e.g. ${rows.slice(0, 2).map((x) => x.brand_name).join(' / ')})` };
   const code = hit[0].drug_code;
   const page = `https://health-products.canada.ca/dpd-bdpp/info?lang=eng&code=${code}`;
   const p = await get(page);
   const ok = !!p.text && norm(p.text).includes(brand);
-  return { country: 'CA', url: page, ok, brand: hit[0].brand_name, products_with_this_brand: hit.length, ...(ok ? {} : { why: 'info page missing or brand not on page' }) };
+  return { country: 'CA', url: page, ok, brand: hit[0].brand_name, strength_in_name: !exact.length, products_with_this_brand: hit.length, ...(ok ? {} : { why: 'info page missing or brand not on page' }) };
 }
 
 const report = [];
@@ -61,4 +65,4 @@ for (const c of cands) {
 const flat = report.flatMap((r) => r.checks.map((k) => ({ med_id: r.med_id, ...k })));
 writeFileSync('med-links-report.json', JSON.stringify({ checked_on: today, report }, null, 1));
 console.log(`checked_on ${today}  ok ${flat.filter((k) => k.ok).length}  failed ${flat.filter((k) => !k.ok).length}`);
-for (const k of flat) console.log([k.ok ? 'OK' : 'FAIL', k.med_id, k.country, k.url.replace('https://', ''), k.page_reviewed ?? '', k.ok ? (k.title ?? k.brand ?? '') : k.why].join(' | '));
+for (const k of flat) console.log([k.ok ? 'OK' : 'FAIL', k.med_id, k.country, k.url.replace('https://', ''), k.page_reviewed ?? '', k.ok ? (k.title ?? `${k.brand}${k.strength_in_name ? ' [STRENGTH IN NAME]' : ''}`) : k.why].join(' | '));

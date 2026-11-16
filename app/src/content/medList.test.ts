@@ -48,8 +48,10 @@ describe('medicine list', () => {
     const a = medById('atorvastatin')!;
     expect(linkFor(a, 'US')?.url).toContain('medlineplus.gov');
     expect(linkFor(a, 'CA')?.url).toContain('health-products.canada.ca');
-    expect(linkFor(a, 'GB')).toBeUndefined();
+    expect(linkFor(a, 'GB')?.url).toBe('https://www.nhs.uk/medicines/atorvastatin/');
     expect(linkFor(a, null)).toBeUndefined();
-    expect(linkFor(medById('semaglutide')!, 'US')).toBeUndefined();
+    for (const id of ['amphetamine-dextroamphetamine', 'budesonide-formoterol', 'estradiol']) expect(medById(id)!.official_links, id).toEqual([]);
+    expect(MED_LIST.every((x) => x.official_links.every((l) => l.checked_on === '2026-11-16'))).toBe(true);
+    expect(MED_LIST.every((x) => new Set(x.official_links.map((l) => l.country)).size === x.official_links.length)).toBe(true);
   });
 });

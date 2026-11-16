@@ -37,7 +37,7 @@
   "generic": "Metoprolol",
   "us": "https://medlineplus.gov/druginfo/meds/a682864.html",
   "uk": "https://www.nhs.uk/medicines/metoprolol/",
-  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=LOPRES"
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=LOPRESOR"
  },
  {
   "n": 6,
@@ -258,8 +258,9 @@
   "med_id": "albuterol-salbutamol",
   "generic": "Albuterol / Salbutamol",
   "us": "https://medlineplus.gov/druginfo/meds/a682145.html",
-  "uk": "https://www.nhs.uk/medicines/salbutamol-inhalers/",
-  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=VENTOLIN"
+  "uk": "https://www.nhs.uk/medicines/salbutamol-inhaler/",
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=VENTOLIN",
+  "alias": true
  },
  {
   "n": 35,
@@ -336,7 +337,8 @@
   "generic": "Acetaminophen / Paracetamol",
   "us": "https://medlineplus.gov/druginfo/meds/a681004.html",
   "uk": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
-  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=TYLENOL"
+  "ca": "https://health-products.canada.ca/api/drug/drugproduct/?lang=en&type=json&brandname=TYLENOL",
+  "alias": true
  },
  {
   "n": 45,

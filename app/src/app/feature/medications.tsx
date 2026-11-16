@@ -41,7 +41,8 @@ export default function Medications() {
                     <Pressable accessibilityRole="link" onPress={() => Linking.openURL(l.url)} style={{ minHeight: 48, justifyContent: 'center' }}>
                       <Text style={{ fontSize: font.body, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>Official page: {l.publisher}</Text>
                     </Pressable>
-                    <Text style={{ fontSize: font.body, color: color.muted }}>{l.page_reviewed ? `Page last reviewed ${l.page_reviewed}. ` : ''}Link checked {l.checked_on}.</Text>
+                    {l.page_title ? <Text style={{ fontSize: font.body, color: color.muted }}>Page: {l.page_title}</Text> : null}
+                    <Text style={{ fontSize: font.body, color: color.muted }}>{l.page_reviewed ? `Page last reviewed ${l.page_reviewed}. ` : ''}Link checked {l.checked_on}.{l.country === 'CA' ? ' This database lists brands ever authorised in Canada, not only those on sale.' : ''}</Text>
                   </View>
                 ) : null; })()}
               </View>

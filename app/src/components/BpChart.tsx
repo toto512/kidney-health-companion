@@ -16,6 +16,12 @@ function LineView({ data, days, now }: { data: ChartRow[]; days: number; now: nu
   const [w, setW] = useState(0);
   const [sel, setSel] = useState<number | null>(null);
   const from = now - days * DAY;
+  // 7 days: fit the axis to the readings. Readings on one day are spaced evenly in order, labelled with their time.
+  // 30 and 90 days: the axis is the whole window, by date.
+  const t0 = Date.parse(data[0].taken_at); const t1 = Date.parse(data[data.length - 1].taken_at);
+  const fit = days === 7; const even = fit && new Date(t0).toDateString() === new Date(t1).toDateString();
+  const lo = fit ? t0 : from; const hi = fit ? t1 : now; const inset = fit ? 12 : 0;
+  const fmtTime = (t: number) => new Date(t).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
   const idx = sel !== null && sel < data.length ? sel : null;
   const picked = idx !== null ? data[idx] : null;
   return (
@@ -24,10 +30,11 @@ function LineView({ data, days, now }: { data: ChartRow[]; days: number; now: nu
           {w > 0 ? (() => {
             const { min, max, ticks } = yScale(data);
             const iw = w - PAD.l - PAD.r; const ih = H - PAD.t - PAD.b;
-            const X = (t: number) => PAD.l + xFraction(t, from, now) * iw;
+            const X = (t: number, i: number) => even ? PAD.l + inset + (i / (data.length - 1)) * (iw - 2 * inset) : PAD.l + inset + xFraction(t, lo, hi) * (iw - 2 * inset);
             const Y = (v: number) => PAD.t + (1 - (v - min) / (max - min)) * ih;
-            const pts = (k: 'systolic' | 'diastolic') => data.map((r) => `${X(Date.parse(r.taken_at))},${Y(r[k])}`).join(' ');
-            const xl = [from, from + (now - from) / 2, now];
+            const pts = (k: 'systolic' | 'diastolic') => data.map((r, i) => `${X(Date.parse(r.taken_at), i)},${Y(r[k])}`).join(' ');
+            const xl = even ? [t0, t1] : [lo, lo + (hi - lo) / 2, hi];
+            const last = xl.length - 1;
             return (
               <Svg width={w} height={H}>
                 {ticks.map((v) => (
@@ -36,11 +43,11 @@ function LineView({ data, days, now }: { data: ChartRow[]; days: number; now: nu
                     <SvgText x={PAD.l - 8} y={Y(v) + 6} fontSize={18} fill={color.muted} textAnchor="end">{v}</SvgText>
                   </G>
                 ))}
-                {xl.map((t, i) => <SvgText key={i} x={i === 0 ? PAD.l : i === 2 ? w - PAD.r : X(t)} y={H - 8} fontSize={18} fill={color.muted} textAnchor={i === 0 ? 'start' : i === 2 ? 'end' : 'middle'}>{fmtDay(t)}</SvgText>)}
+                {xl.map((t, i) => <SvgText key={i} x={i === 0 ? PAD.l : i === last ? w - PAD.r : PAD.l + iw / 2} y={H - 8} fontSize={18} fill={color.muted} textAnchor={i === 0 ? 'start' : i === last ? 'end' : 'middle'}>{even ? `${fmtDay(t)} ${fmtTime(t)}` : fmtDay(t)}</SvgText>)}
                 <Polyline points={pts('systolic')} fill="none" stroke={color.accent.red} strokeWidth={3} />
                 <Polyline points={pts('diastolic')} fill="none" stroke={color.accent.blue} strokeWidth={3} />
                 {data.map((r, i) => {
-                  const x = X(Date.parse(r.taken_at));
+                  const x = X(Date.parse(r.taken_at), i);
                   const on = i === idx;
                   return (
                     <G key={r.id}>
@@ -69,7 +76,7 @@ function LineView({ data, days, now }: { data: ChartRow[]; days: number; now: nu
       {(
         <View style={{ gap: 8 }}>
           <Text accessibilityLiveRegion="polite" style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>
-            {picked ? `${new Date(picked.taken_at).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}: top ${picked.systolic}, bottom ${picked.diastolic}${picked.pulse != null ? `, pulse ${picked.pulse}` : ''}` : 'Tap a point, or use the buttons, to see one reading.'}
+            {picked ? `${new Date(picked.taken_at).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}: top ${picked.systolic}, bottom ${picked.diastolic}${picked.pulse != null ? `, pulse ${picked.pulse}` : ''}` : 'Tap a point, or use the buttons, to see one reading.'}
           </Text>
           <View style={{ flexDirection: 'row', gap: 8 }}>
             <View style={{ flex: 1 }}><BigButton variant="secondary" label="Earlier" disabled={idx === 0} onPress={() => setSel(idx === null ? data.length - 1 : Math.max(0, idx - 1))} /></View>

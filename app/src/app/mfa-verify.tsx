@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { Image, Linking, Pressable } from 'react-native';
 import { AuthScreen, BigButton, Body, Field, TextLink } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
+import { useI18n } from '@/i18n/I18nProvider';
 import { normalizeSvgDataUri } from '@/lib/qr';
 import { supabase } from '@/lib/supabase';
 
 // Enrols a TOTP factor if none is verified yet, otherwise challenges the existing one.
 export default function MfaVerify() {
   const { refreshAal } = useAuth();
+  const { t } = useI18n();
   const [factorId, setFactorId] = useState('');
   const [qr, setQr] = useState('');
   const [secret, setSecret] = useState('');
@@ -37,7 +39,7 @@ export default function MfaVerify() {
         await supabase.auth.signOut({ scope: 'local' });
         return;
       }
-      if (listErr || !list) { fail('Could not read your authenticator settings.', listErr); return; }
+      if (listErr || !list) { fail(t('mfa.errRead'), listErr); return; }
       const verified = list.totp?.[0];
       if (verified) { setFactorId(verified.id); return; }
       // Leftover unverified factors from earlier attempts can block a new enrolment, so clear them first.
@@ -45,7 +47,7 @@ export default function MfaVerify() {
       if (!live) return;
       const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: `Authenticator ${Date.now()}` });
       if (!live) return;
-      if (error || !data) { fail('Could not start authenticator setup.', error); return; }
+      if (error || !data) { fail(t('mfa.errStart'), error); return; }
       setFactorId(data.id); setQr(normalizeSvgDataUri(data.totp.qr_code)); setSecret(data.totp.secret); setUri(data.totp.uri);
     })();
     return () => { live = false; };
@@ -60,7 +62,7 @@ export default function MfaVerify() {
     try {
       const ch = await withTimeout(supabase.auth.mfa.challenge({ factorId }));
       const t1 = Date.now();
-      if (ch.error || !ch.data) { fail('Could not check the code.', ch.error); return; }
+      if (ch.error || !ch.data) { fail(t('mfa.errCheck'), ch.error); return; }
       const v = await withTimeout(supabase.auth.mfa.verify({ factorId, challengeId: ch.data.id, code: code.trim() }));
       const t2 = Date.now();
       if (__DEV__) console.log(`[mfa] challenge ${t1 - t0}ms, verify ${t2 - t1}ms, error=${v.error?.code ?? 'none'} ${v.error?.message ?? ''}`);
@@ -68,32 +70,32 @@ export default function MfaVerify() {
         // A repeat press after a successful verify returns 422; if the session is already aal2, just move on.
         const { data: lvl } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
         if (lvl?.currentLevel === 'aal2') { await refreshAal(); return; }
-        fail('That code did not work. Try the newest code from your authenticator app.', v.error); return;
+        fail(t('mfa.errBad'), v.error); return;
       }
       await refreshAal();
     } catch (e) {
-      fail('The check took too long. Check your connection and try again.', e as Error);
+      fail(t('mfa.errTimeout'), e as Error);
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <AuthScreen title="Enter your 6-digit code">
+    <AuthScreen title={t('mfa.title')}>
         {qr ? (
           <>
-            <Body>Set up an authenticator app, then type the 6-digit code it shows. Any one of the three ways below works.</Body>
-            <Image accessibilityLabel="Authenticator QR code" source={{ uri: qr }} style={{ width: 220, height: 220 }} />
+            <Body>{t('mfa.setup')}</Body>
+            <Image accessibilityLabel={t('mfa.qrAlt')} source={{ uri: qr }} style={{ width: 220, height: 220 }} />
             <Pressable accessibilityRole="link" onPress={() => Linking.openURL(uri)}>
-              <Body>On this phone? Tap here to open your authenticator app.</Body>
+              <Body>{t('mfa.openApp')}</Body>
             </Pressable>
-            <Body>Or type this key into the app: {secret.match(/.{1,4}/g)?.join(' ')}</Body>
+            <Body>{t('mfa.typeKey', { key: secret.match(/.{1,4}/g)?.join(' ') ?? '' })}</Body>
           </>
         ) : null}
-        <Field label="6-digit code" value={code} onChangeText={setCode} keyboardType="number-pad" maxLength={6} />
+        <Field label={t('mfa.code')} value={code} onChangeText={setCode} keyboardType="number-pad" maxLength={6} />
         {err ? <Body tone="danger">{err}</Body> : null}
-        <BigButton label={busy ? 'Checking...' : 'Continue'} onPress={verify} disabled={busy || code.length !== 6 || !factorId} />
-        {!qr ? <TextLink href="/recover" label="Lost your phone or app? Use a recovery code" /> : null}
+        <BigButton label={busy ? t('mfa.checking') : t('people.continue')} onPress={verify} disabled={busy || code.length !== 6 || !factorId} />
+        {!qr ? <TextLink href="/recover" label={t('mfa.lost')} /> : null}
     </AuthScreen>
   );
 }

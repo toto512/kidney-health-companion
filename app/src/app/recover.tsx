@@ -2,12 +2,14 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { AuthScreen, BigButton, Body, Field, TextLink } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
+import { useI18n } from '@/i18n/I18nProvider';
 import { formatRecoveryInput, isRecoveryCodeShape, redeemResult } from '@/lib/recovery';
 import { supabase } from '@/lib/supabase';
 
 // Lost authenticator: a recovery code turns two-step sign-in off so the person can get in and turn it on again.
 export default function Recover() {
   const { refreshAal } = useAuth();
+  const { t } = useI18n();
   const [code, setCode] = useState('');
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
@@ -20,20 +22,20 @@ export default function Recover() {
     if (r === 'ok') {
       await refreshAal();
       router.replace('/feature/two-step');
-    } else if (r === 'wrong') setErr('That code did not work. Check each letter and number, then try again.');
-    else if (r === 'locked') setErr('Too many tries. Wait 15 minutes, then try again.');
-    else if (r === 'off') setErr('Two-step sign-in is already off. Go back and sign in again.');
-    else setErr('Something went wrong. Check your connection and try again.');
+    } else if (r === 'wrong') setErr(t('recover.wrong'));
+    else if (r === 'locked') setErr(t('recover.locked'));
+    else if (r === 'off') setErr(t('recover.off'));
+    else setErr(t('recover.generic'));
     setBusy(false);
   }
 
   return (
-    <AuthScreen title="Use a recovery code">
-      <Body>Type one of the recovery codes you saved when you turned on two-step sign-in. Each code works once. Using it turns two-step sign-in off, and you can turn it back on right after.</Body>
-      <Field label="Recovery code" value={code} onChangeText={(t) => setCode(formatRecoveryInput(t))} autoCapitalize="characters" autoCorrect={false} maxLength={11} />
+    <AuthScreen title={t('recover.title')}>
+      <Body>{t('recover.intro')}</Body>
+      <Field label={t('recover.label')} value={code} onChangeText={(v) => setCode(formatRecoveryInput(v))} autoCapitalize="characters" autoCorrect={false} maxLength={11} />
       {err ? <Body tone="danger">{err}</Body> : null}
-      <BigButton label={busy ? 'Checking...' : 'Use this code'} onPress={submit} disabled={busy || !isRecoveryCodeShape(code)} />
-      <TextLink href="/mfa-verify" label="Back to the 6-digit code" />
+      <BigButton label={busy ? t('mfa.checking') : t('recover.use')} onPress={submit} disabled={busy || !isRecoveryCodeShape(code)} />
+      <TextLink href="/mfa-verify" label={t('recover.back')} />
     </AuthScreen>
   );
 }

@@ -1,8 +1,9 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, Switch, Text, View } from 'react-native';
+import { Select } from '@/components/Select';
 import { BigButton, Body, DisclaimerFooter, Field, H1, H2, Panel, Screen } from '@/components/ui';
-import { canAddMore, displayPhone, MAX_CONTACTS, RELATIONSHIPS, relationshipLabel, validateContact } from '@/lib/contactLogic';
+import { canAddMore, displayPhone, MAX_CONTACTS, RELATIONSHIPS, Relationship, relationshipLabel, validateContact } from '@/lib/contactLogic';
 import { addContact, Contact, deleteContact, deviceCopyOn, loadContacts, setDeviceCopy, updateContact } from '@/lib/emergencyContacts';
 import { useAuth } from '@/lib/auth';
 import { setFlash } from '@/lib/flash';
@@ -107,22 +108,15 @@ export default function MyPeople() {
         {form ? (
           <Panel>
             <H2>{form.id ? 'Change this person' : 'Add a person'}</H2>
-            <Field label="Name" value={form.name} onChangeText={(v) => { setForm({ ...form, name: v }); setErr(''); }} maxLength={60} autoCapitalize="words" />
-            <Text style={{ fontSize: font.label, fontWeight: '600', color: color.text }}>Who they are to you</Text>
-            <View style={{ gap: 8 }}>
-              {RELATIONSHIPS.map((r) => {
-                const on = form.relationship === r.value;
-                return (
-                  <Pressable key={r.value} accessibilityRole="radio" accessibilityState={{ selected: on }} accessibilityLabel={r.label}
-                    onPress={() => { setForm({ ...form, relationship: r.value }); setErr(''); }}
-                    style={{ minHeight: 56, borderRadius: 14, borderWidth: 2, borderColor: on ? color.primary : color.outline, backgroundColor: on ? color.primaryTint : 'transparent', justifyContent: 'center', paddingHorizontal: 16 }}>
-                    <Text style={{ fontSize: font.body, color: color.text, fontWeight: on ? '700' : '400' }}>{r.label}</Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-            <Field label="Phone number" value={form.phone} onChangeText={(v) => { setForm({ ...form, phone: v }); setErr(''); }} keyboardType="phone-pad" autoComplete="off" maxLength={24} placeholder="For example 613 555 0123" />
-            <BigButton label={busy ? 'Saving.' : 'Save'} disabled={busy} onPress={save} />
+            <Select label="Who are they to you? Scroll and choose" value={form.relationship as Relationship | ''} options={RELATIONSHIPS.map((r) => ({ value: r.value, label: r.label }))}
+              onChange={(v) => { setForm({ ...form, relationship: v }); setErr(''); }} placeholder="Choose from the list" searchable={false} />
+            {form.relationship ? (
+              <>
+                <Field label={`${relationshipLabel(form.relationship)}'s name`} value={form.name} onChangeText={(v) => { setForm({ ...form, name: v }); setErr(''); }} maxLength={60} autoCapitalize="words" />
+              <Field label="Phone number" value={form.phone} onChangeText={(v) => { setForm({ ...form, phone: v }); setErr(''); }} keyboardType="phone-pad" autoComplete="off" maxLength={24} placeholder="For example 613 555 0123" />
+                <BigButton label={busy ? 'Saving.' : 'Save'} disabled={busy} onPress={save} />
+              </>
+            ) : null}
             <BigButton variant="secondary" label="Cancel" onPress={() => { setForm(null); setErr(''); }} />
           </Panel>
         ) : null}

@@ -96,6 +96,7 @@ function Wheel({ group, selId, setSelId, onBack, onOpen }: { group: FoodGroup; s
           </View>
         )}
         {list.length > 0 ? <Body>{t('food.hint')}</Body> : null}
+        <BigButton variant="secondary" label={t('food.backGroups')} onPress={onBack} />
         <DisclaimerFooter />
       </Screen>
     </ScrollView>

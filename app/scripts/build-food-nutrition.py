@@ -64,12 +64,16 @@ mname = {r['Measure_Code']: r['Measure_Description_and_Unit_EN'] for r in rd(os.
 meas = collections.defaultdict(list)
 for r in rd(os.path.join(a.cnf, 'Measure_Weight_Conversion.csv')):
     if r['Measure_Type_Code'] == '6': meas[r['Food_Code']].append((mname.get(r['Measure_Code'], ''), float(r['Measure_Weight_Conversion'])))
-PREF = [r'^\d+ g$', r'^1 (medium|slice|small|large)\b', r'^250 ml$', r'^125 ml$']
+# Serving: a household measure first (1 medium, 1 slice, 1 small or large, 1 cup), grams in brackets on screen; the plain "N g" amount when the table lists no household measure.
+PREF = [r'^1 medium( \(|$| whole)', r'^1 slice( \(|$| presliced)', r'^1 small( \(|$| whole)', r'^1 large( \(|$| whole)', r'^250 ml$', r'^\d+ g$', r'^125 ml$']
+def tidy(lab):
+    lab = re.sub(r'\s*\([^)]*\)', '', lab).replace(' whole', '').replace(' presliced', '').strip()  # drop sizes such as (18cm to 20cm long)
+    return {'250 ml': '1 cup', '125 ml': '\u00bd cup'}.get(lab, lab.replace(' ml', ' mL'))
 def serving(code):
     ms = meas.get(code, [])
     for p in PREF:
         for lab, g in ms:
-            if re.search(p, lab): return lab, g
+            if re.search(p, lab): return tidy(lab), g
     return None
 
 # USDA: Foundation Foods (newer) first, then SR Legacy, both JSON, linked through the NDB number the CNF stores
@@ -137,7 +141,7 @@ def num(x): return round(x, 3)
 def make_form(cr):
     code = cr['Food_Code']; sv = serving(code); am = amt.get(code, {})
     if not sv or not am: return None
-    rec = {'form': form_of(cr['Food_Description_EN']), 'servingG': num(sv[1]), 'servingLabel': sv[0].replace(' ml', ' mL'),
+    rec = {'form': form_of(cr['Food_Description_EN']), 'servingG': num(sv[1]), 'servingLabel': sv[0],
            'cnf': {'code': int(code), 'name': cr['Food_Description_EN'],
                    'per100': {k: num(v[0]) for k, v in am.items()},
                    'src': {k: v[1] for k, v in am.items()},

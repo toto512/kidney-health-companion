@@ -50,7 +50,7 @@ export function amountsFor(foodId: string, country: string | null | undefined, w
     form: n.form,
     forms,
     missing,
-    serving: `${n.servingLabel}${/\bg$/.test(n.servingLabel) ? '' : ` (${round1(n.servingG)} g)`}`,
+    serving: /\bg$/.test(n.servingLabel) ? n.servingLabel : `${n.servingLabel} (${Math.round(n.servingG)} g)`,
     rows,
     recordName: rec.name,
     recordId: source === 'cnf' ? n.cnf.code : n.usda!.fdcId,

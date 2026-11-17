@@ -65,10 +65,16 @@ function Wheel({ group, selId, setSelId, onBack, onOpen }: { group: FoodGroup; s
   return (
     <ScrollView keyboardShouldPersistTaps="handled">
       <Screen>
-        <Pressable accessibilityRole="button" onPress={onBack} style={{ minHeight: 48, justifyContent: 'center' }}>
-          <Text style={{ fontSize: font.body, color: color.primary }}>{`‹ ${t('food.groupsBack')}`}</Text>
-        </Pressable>
-        <H1>{t(`foodgrp.${group}` as Key)}</H1>
+        {/* Title and a Back button on one row. A long title pushes the button under it. In right-to-left languages the row flips, so the button sits on the left. */}
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', columnGap: 12, rowGap: 8 }}>
+          <View style={{ flexGrow: 1, flexShrink: 1, flexBasis: 220, minWidth: 0 }}>
+            <H1>{t(`foodgrp.${group}` as Key)}</H1>
+          </View>
+          <Pressable accessibilityRole="button" accessibilityLabel={t('food.backGroups')} onPress={onBack}
+            style={{ minHeight: 56, minWidth: 96, paddingHorizontal: 18, borderRadius: 14, borderWidth: 2, borderColor: color.primary, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: font.label, fontWeight: '800', color: color.primary }}>{t('food.backShort')}</Text>
+          </Pressable>
+        </View>
         <Field label={t('food.searchGroup')} placeholder={t('food.searchHint')} value={q} onChangeText={(v) => { setQ(v); setSelId(null); }} autoCorrect={false} autoCapitalize="none" returnKeyType="search" />
         <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{t('food.choose', { n: String(list.length) })}</Text>
         {list.length === 0 ? <Panel><Body>{t('food.noneInGroup')}</Body></Panel> : (

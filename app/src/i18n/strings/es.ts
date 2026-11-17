@@ -520,4 +520,5 @@ export const es: Record<Key, string> = {
   "food.form.cooked": "Cocinado",
   "food.formMissing": "{form}: requiere revisión. Aún no hay un registro oficial asociado.",
   "food.formPick": "Mostrar cantidades para",
+  "food.backShort": "Atrás",
 };

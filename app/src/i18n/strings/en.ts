@@ -519,5 +519,6 @@ export const en = {
   "food.form.cooked": "Cooked",
   "food.formMissing": "{form}: Needs review. No matched official record yet.",
   "food.formPick": "Show amounts for",
+  "food.backShort": "Back",
 } as const;
 export type Key = keyof typeof en;

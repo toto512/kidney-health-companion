@@ -520,4 +520,5 @@ export const he: Record<Key, string> = {
   "food.form.cooked": "מבושל",
   "food.formMissing": "{form}: דורש בדיקה. עדיין אין רשומה רשמית תואמת.",
   "food.formPick": "הצג כמויות עבור",
+  "food.backShort": "חזרה",
 };

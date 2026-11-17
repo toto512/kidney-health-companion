@@ -17,3 +17,21 @@ describe('labCsv', () => {
     expect(csvCell(-1)).toBe('-1');
   });
 });
+
+describe('labCsv with hostile lab names', () => {
+  const row = (lab: string | null) => ({ taken_on: '2026-11-01', test: 'sodium', value: 139, unit: 'mmol/L', lab });
+  const cell = (csv: string) => csv.split('\r\n')[1].split(',').slice(4).join(',');
+  it.each(['=1+1', '+1+1', '-1+1', '@SUM(A1)', '\t=1+1', '\r=1+1', '=cmd|\' /C calc\'!A0'])('neutralises %j', (lab) => {
+    const out = cell(labCsv([row(lab)]));
+    expect(out.replace(/^"/, '')).toMatch(/^'/);
+  });
+  it('keeps a lab name that merely contains a formula character', () => {
+    expect(cell(labCsv([row('North = South')]))).toBe('North = South');
+  });
+  it('keeps embedded line breaks inside one quoted cell', () => {
+    expect(cell(labCsv([row('Line1\nLine2')]))).toBe('"Line1\nLine2"');
+  });
+  it('writes a missing lab name as an empty cell', () => {
+    expect(cell(labCsv([row(null)]))).toBe('');
+  });
+});

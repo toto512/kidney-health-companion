@@ -1,9 +1,10 @@
 import { Linking, Platform, Share } from 'react-native';
 
+// A byte-order mark at the start tells Excel the file is UTF-8, so accented lab names show correctly.
 // Hands the person a text file: a download in the browser, the share sheet on a phone.
 export async function saveTextFile(name: string, text: string, mime = 'text/csv'): Promise<void> {
   if (Platform.OS === 'web') {
-    const url = URL.createObjectURL(new Blob([text], { type: mime + ';charset=utf-8' }));
+    const url = URL.createObjectURL(new Blob(['\ufeff', text], { type: mime + ';charset=utf-8' }));
     const a = document.createElement('a');
     a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 10000);

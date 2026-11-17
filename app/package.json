@@ -31,6 +31,7 @@
   "devDependencies": {
     "@tesseract.js-data/eng": "^1.0.0",
     "@tesseract.js-data/fra": "^1.0.0",
+    "@types/node": "^22.20.5",
     "@types/react": "~19.3.0",
     "typescript": "~6.0.3",
     "vitest": "^5.1.0"

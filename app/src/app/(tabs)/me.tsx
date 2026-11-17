@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { ScrollView, type ScrollViewInstance, View } from 'react-native';
 import { BigButton, Body, DisclaimerFooter, H1, Panel, Screen, Tile } from '@/components/ui';
 import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
@@ -14,16 +14,17 @@ export default function Me() {
   const [asking, setAsking] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
+  const scroll = useRef<ScrollViewInstance>(null);
 
   async function remove() {
     setErr(''); setBusy(true);
     const r = await deleteMyAccount();
     setBusy(false);
-    if (!r.ok) setErr(t(DELETE_ERR[r.error]));
+    if (!r.ok) { setErr(t(DELETE_ERR[r.error])); setTimeout(() => scroll.current?.scrollToEnd({ animated: true }), 80); }
   }
 
   return (
-    <ScrollView>
+    <ScrollView ref={scroll}>
       <Screen>
         <H1>{t('me.title')}</H1>
         <View style={{ gap: 12 }}>
@@ -42,9 +43,9 @@ export default function Me() {
             <BigButton label={busy ? t('acct.deleting') : t('acct.yes')} onPress={() => void remove()} disabled={busy} />
             <BigButton variant="secondary" label={t('people.keep')} onPress={() => { setAsking(false); setErr(''); }} disabled={busy} />
           </Panel>
-        ) : <BigButton variant="secondary" label={t('acct.delete')} onPress={() => setAsking(true)} />}
+        ) : <BigButton variant="secondary" label={t('acct.delete')} onPress={() => { setAsking(true); setTimeout(() => scroll.current?.scrollToEnd({ animated: true }), 80); }} />}
         <DisclaimerFooter />
-        <View style={{ height: 110 }} />
+        <View style={{ height: 130 }} />
       </Screen>
     </ScrollView>
   );

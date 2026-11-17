@@ -30,3 +30,7 @@ Do this on your dev project with fake data first.
 6. Test with a throwaway account (not your two main test users): sign up, add a fake blood test with a file, then Profile tab, Delete my account, Yes. You should be signed out. In the Supabase dashboard, Authentication shows the user gone and Storage, `lab-files` shows no folder for that id.
 
 If the button says deletion "is not switched on yet", the function is not deployed to this project. If it says to sign in again with your two-step code, the account has two-step on and the session is not fully verified.
+
+## Checked deployment
+
+2026-11-17: James deployed with the steps above on the dev project and ran step 6 on web with a throwaway account. His report: "worked". No step differed from this guide. [Unverified] He has not yet confirmed in the dashboard that the `lab-files` folder and the table rows were gone for that user; the function removes the folder first and the rows follow from `on delete cascade`.

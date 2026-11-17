@@ -6,7 +6,7 @@ import { Food, FOODS, FOOD_GROUPS, FoodGroup } from '@/content/foods';
 import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
 import type { FormKind } from '@/content/foodNutrition';
-import { amountsFor, reviewReason } from '@/lib/foodAmounts';
+import { amountsFor, lookupLinks, reviewReason } from '@/lib/foodAmounts';
 import { searchFoods } from '@/lib/foodSearch';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
@@ -181,6 +181,13 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
               <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t('food.noNumbers')}</Text>
               <Body>{t('food.about', { name: food.name, group: t(`foodgrp.${group}` as Key), sub: food.sub })}</Body>
               <Body>{t('food.notChecked')}</Body>
+              <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t('food.lookup.title')}</Text>
+              {lookupLinks(food.name, country, lang).map((l) => (
+                <Pressable key={l.kind} accessibilityRole="link" onPress={() => Linking.openURL(l.url)} style={{ minHeight: 56, justifyContent: 'center' }}>
+                  <Text style={{ fontSize: font.body, color: color.primary, textDecorationLine: 'underline' }}>{t(`food.lookup.${l.kind}` as Key, { name: food.name })}</Text>
+                </Pressable>
+              ))}
+              <Body>{t('food.lookup.note')}</Body>
             </>
           )}
         </Panel>

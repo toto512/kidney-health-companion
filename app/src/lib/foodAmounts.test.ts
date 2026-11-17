@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { FOOD_NUTRITION, NUTRITION_CHECKED_ON } from '../content/foodNutrition';
 import { FOODS } from '../content/foods';
-import { amountsFor, cnfUrl, perServing, reviewReason, usdaUrl } from './foodAmounts';
+import { amountsFor, cnfUrl, lookupLinks, perServing, reviewReason, usdaUrl } from './foodAmounts';
 
 const ids = new Set(FOODS.map((f) => f.id));
 const pears = Object.keys(FOOD_NUTRITION).find((i) => i.endsWith('-pears'))!;
@@ -101,5 +101,16 @@ describe('USDA-only foods', () => {
   });
   it('never uses a whole roast, rack or liter as a serving', () => {
     for (const [id, n] of Object.entries(FOOD_NUTRITION)) if (n.how === 'usda' && /^(meat-poultry|fish-seafood)\//.test(id)) for (const f of n.forms) expect(f.servingG, id).toBeLessThanOrEqual(130);
+  });
+});
+
+describe('look-up links', () => {
+  it('always offers the USDA search with the food name, and the national source for CA and GB', () => {
+    expect(lookupLinks('Canadian bacon', 'US').map((l) => l.kind)).toEqual(['usda']);
+    expect(lookupLinks('Canadian bacon', 'US')[0].url).toBe('https://fdc.nal.usda.gov/food-search/?query=Canadian%20bacon');
+    expect(lookupLinks('Pears', 'CA').map((l) => l.kind)).toEqual(['cnf', 'usda']);
+    expect(lookupLinks('Pears', 'CA', 'fr')[0].url).toMatch(/^https:\/\/aliments-nutrition\.canada\.ca\//);
+    expect(lookupLinks('Pears', 'GB').map((l) => l.kind)).toEqual(['cofid', 'usda']);
+    expect(lookupLinks('Pears', null).map((l) => l.kind)).toEqual(['usda']);
   });
 });

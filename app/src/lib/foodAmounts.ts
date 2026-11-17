@@ -2,6 +2,14 @@ import { FOOD_NUTRITION, NUTRITION_CHECKED_ON, type FormKind, type Nutrient, typ
 
 // Per-food pages: the CNF page for a Food_Code (Health Canada's Canadian Nutrient File site, English or French) and the FoodData Central nutrients page for an FDC ID.
 export const cnfUrl = (code: number, lang: string) => `https://${lang === 'fr' ? 'aliments-nutrition' : 'food-nutrition'}.canada.ca/cnf-fce/serving-portion?id=${code}`;
+// Official pages the person can open to look a food up themselves. The USDA search page fills in the food name. The CNF and CoFID links open each programme's own page.
+export type LookupKind = 'usda' | 'cnf' | 'cofid';
+export function lookupLinks(name: string, country: string | null | undefined, lang = 'en'): { kind: LookupKind; url: string }[] {
+  const out: { kind: LookupKind; url: string }[] = [{ kind: 'usda', url: `https://fdc.nal.usda.gov/food-search/?query=${encodeURIComponent(name)}` }];
+  if (country === 'CA') out.unshift({ kind: 'cnf', url: `https://${lang === 'fr' ? 'aliments-nutrition' : 'food-nutrition'}.canada.ca/cnf-fce/` });
+  if (country === 'GB') out.unshift({ kind: 'cofid', url: 'https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid' });
+  return out;
+}
 export const usdaUrl = (fdcId: number) => `https://fdc.nal.usda.gov/food-details/${fdcId}/nutrients`;
 // Why a value needs review, from its CNF source code.
 export function reviewReason(src: number | null): 'zero' | 'prov' | 'lit' | 'intl' | 'other' {

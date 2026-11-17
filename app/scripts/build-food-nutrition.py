@@ -69,9 +69,29 @@ PREF = [r'^1 medium( \(|$| whole)', r'^1 slice( \(|$| presliced)', r'^1 small( \
 def tidy(lab):
     lab = re.sub(r'\s*\([^)]*\)', '', lab).replace(' whole', '').replace(' presliced', '').strip()  # drop sizes such as (18cm to 20cm long)
     return {'250 ml': '1 cup', '125 ml': '\u00bd cup'}.get(lab, lab.replace(' ml', ' mL'))
-def serving(code):
+SMALL = {  # foods eaten by the spoon: the serving is a teaspoon, tablespoon or quarter cup, never a cup
+    'tsp': ('culinary-herbs', 'spices', 'seasoning-blends', 'sugars-syrups', 'jams'),
+    'tbsp': ('oils', 'animal-fats', 'sauces-condiments', 'processed-blende', 'seeds-nut-butters', 'nut-seed-butters'),
+    'quarter': ('gravies',),
+}
+def small_kind(fid):
+    for k, parts in SMALL.items():
+        if any(p in fid for p in parts): return k
+    return None
+def serving(code, fid=''):
     ms = meas.get(code, [])
-    for p in PREF:
+    kind = small_kind(fid)
+    want = {'tsp': ['5 ml', '15 ml'], 'tbsp': ['15 ml', '5 ml'], 'quarter': ['60 ml', '15 ml']}.get(kind, [])
+    for w in want:
+        for lab, g in ms:
+            if lab == w: return {'5 ml': '1 tsp', '15 ml': '1 tbsp', '60 ml': '\u00bc cup'}[w], g
+    for p in PREF[:4]:
+        for lab, g in ms:
+            if re.search(p, lab): return tidy(lab), g
+    # A small plain gram amount (nuts, seeds) beats a cup. Mixed dishes use their plain gram serving before a cup.
+    for lab, g in ms:
+        if re.search(r'^\d+ g$', lab) and (g <= 60 or 'composite' in fid or 'quick-service' in fid): return tidy(lab), g
+    for p in PREF[4:]:
         for lab, g in ms:
             if re.search(p, lab): return tidy(lab), g
     return None
@@ -138,8 +158,8 @@ def partner(cr):
     return c[0] if len(c) == 1 else None
 
 def num(x): return round(x, 3)
-def make_form(cr):
-    code = cr['Food_Code']; sv = serving(code); am = amt.get(code, {})
+def make_form(cr, fid=''):
+    code = cr['Food_Code']; sv = serving(code, fid); am = amt.get(code, {})
     if not sv or not am: return None
     rec = {'form': form_of(cr['Food_Description_EN']), 'servingG': num(sv[1]), 'servingLabel': sv[0],
            'cnf': {'code': int(code), 'name': cr['Food_Description_EN'],
@@ -155,11 +175,11 @@ def make_form(cr):
 
 out = {}; skipped = []
 for i, (cr, how) in matches.items():
-    main = make_form(cr)
+    main = make_form(cr, i)
     if not main: skipped.append((i, cr['Food_Description_EN'])); continue
     forms = [main]
     pr = partner(cr)
-    pf = make_form(pr) if pr else None
+    pf = make_form(pr, i) if pr else None
     if pf: forms.append(pf)
     order = {'raw': 0, 'cooked': 1, 'other': 2}
     forms.sort(key=lambda x: order[x['form']])

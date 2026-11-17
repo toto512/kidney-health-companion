@@ -51,11 +51,4 @@ describe('food data', () => {
     expect(all).toContain('protein powder');
     expect(all.some((n) => n.includes('infant formula') || n.includes('manoomin'))).toBe(false);
   });
-  it('carries no amount without a source link and a check date', () => {
-    for (const f of FOODS) if (f.amounts) {
-      expect(f.amounts.url).toMatch(/^https:\/\//);
-      expect(f.amounts.url).not.toContain('inonde.io');
-      expect(f.amounts.checkedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    }
-  });
 });

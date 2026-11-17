@@ -1,14 +1,10 @@
 // Food list. Names and groups only: 12 everyday groups, sub-groups from the project's food taxonomy file.
-// No nutrient amount, serving or rating is stored without an official source link and check date
-// (Canadian Nutrient File, USDA FoodData Central, UK CoFID). Food names stay in English until a native medical reviewer checks them.
+// Nutrient amounts live in foodNutrition.ts (generated from the Canadian Nutrient File and USDA FoodData Central, each with a source and check date). Food names stay in English until a native medical reviewer checks them.
 // Left out of this version on purpose: baby foods and traditional (American Indigenous) foods.
 export type FoodGroup = 'vegetables' | 'fruit' | 'grains-bread' | 'milk-cheese' | 'eggs' | 'meat-poultry' | 'fish-seafood' | 'beans-nuts-seeds' | 'drinks' | 'sweets-snacks' | 'soups-sauces-meals' | 'takeout-fast';
 export const FOOD_GROUPS: FoodGroup[] = ['vegetables', 'fruit', 'grains-bread', 'milk-cheese', 'eggs', 'meat-poultry', 'fish-seafood', 'beans-nuts-seeds', 'drinks', 'sweets-snacks', 'soups-sauces-meals', 'takeout-fast'];
 
-// Per typical serving. Only filled in with a source link and check date.
-export type Amounts = { serving: string; sodiumMg?: number; potassiumMg?: number; phosphorusMg?: number; proteinG?: number; source: string; url: string; checkedOn: string };
-
-export type Food = { id: string; name: string; group: FoodGroup; sub: string; synonyms?: string[]; amounts?: Amounts };
+export type Food = { id: string; name: string; group: FoodGroup; sub: string; synonyms?: string[] };
 
 export const FOODS: Food[] = [
   { id: 'vegetables/dark-green-leafy-veg-arugula', name: 'Arugula', group: 'vegetables', sub: 'Dark Green Leafy Vegetables' },

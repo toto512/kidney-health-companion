@@ -5,7 +5,9 @@ import { BigButton, Body, DisclaimerFooter, Field, H1, Panel, Screen } from '@/c
 import { Food, FOODS, FOOD_GROUPS, FoodGroup } from '@/content/foods';
 import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
+import { amountsFor } from '@/lib/foodAmounts';
 import { searchFoods } from '@/lib/foodSearch';
+import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
 
 type Step = { kind: 'groups' } | { kind: 'wheel'; group: FoodGroup } | { kind: 'detail'; group: FoodGroup; food: Food };
@@ -107,7 +109,13 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
   const color = useColors();
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
-  const a = food.amounts;
+  const [country, setCountry] = useState<string | null | undefined>(undefined);
+  useEffect(() => {
+    let alive = true;
+    supabase.from('profiles').select('country_code').maybeSingle().then(({ data }) => { if (alive) setCountry(data?.country_code ?? null); }, () => { if (alive) setCountry(null); });
+    return () => { alive = false; };
+  }, []);
+  const a = country === undefined ? null : amountsFor(food.id, country);
   const same = useMemo(() => FOODS.filter((f) => f.group === group).sort((x, y) => x.sub.localeCompare(y.sub) || x.name.localeCompare(y.name)), [group]);
   return (
     <ScrollView>
@@ -115,20 +123,33 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
         <Text style={{ fontSize: font.body, color: color.muted }}>{`${t(`foodgrp.${group}` as Key)} › ${food.sub}`}</Text>
         <H1>{food.name}</H1>
         <Panel>
-          <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t('food.needsReview')}</Text>
           {a ? (
             <>
+              <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t('food.amounts')}</Text>
               <Body>{t('food.serving', { serving: a.serving })}</Body>
-              <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{t('food.amounts')}</Text>
-              {a.sodiumMg !== undefined ? <Body>{`Sodium ${a.sodiumMg} mg`}</Body> : null}
-              {a.potassiumMg !== undefined ? <Body>{`Potassium ${a.potassiumMg} mg`}</Body> : null}
-              {a.phosphorusMg !== undefined ? <Body>{`Phosphorus ${a.phosphorusMg} mg`}</Body> : null}
-              {a.proteinG !== undefined ? <Body>{`Protein ${a.proteinG} g`}</Body> : null}
+              {a.rows.map((r) => (
+                <View key={r.nutrient} style={{ minHeight: 48, justifyContent: 'center' }}>
+                  <Text style={{ fontSize: font.body, color: color.text }}>
+                    <Text style={{ fontWeight: '700' }}>{`${t(`food.n.${r.nutrient}` as Key)} `}</Text>
+                    {r.value === null ? t('food.notAvail') : `${r.value} ${t(r.nutrient === 'proteinG' ? 'food.unit.g' : 'food.unit.mg')}`}
+                  </Text>
+                  {r.value !== null && r.cls ? <Text style={{ fontSize: font.body * 0.85, fontWeight: r.cls === 'review' ? '800' : '400', color: r.cls === 'review' ? color.text : color.muted }}>{t(`food.cls.${r.cls}` as Key)}</Text> : null}
+                </View>
+              ))}
+              <Body>{t('food.perServing')}</Body>
               <Pressable accessibilityRole="link" onPress={() => Linking.openURL(a.url)} style={{ minHeight: 56, justifyContent: 'center' }}>
-                <Text style={{ fontSize: font.body, color: color.primary, textDecorationLine: 'underline' }}>{`${a.source}. ${a.checkedOn}`}</Text>
+                <Text style={{ fontSize: font.body, color: color.primary, textDecorationLine: 'underline' }}>
+                  {a.source === 'cnf' ? t('food.srcCnf', { name: a.recordName, id: String(a.recordId), date: a.checkedOn }) : t('food.srcUsda', { file: a.file ?? '', name: a.recordName, id: String(a.recordId), date: a.checkedOn })}
+                </Text>
               </Pressable>
+              <Body>{t('food.refOnly')}</Body>
             </>
-          ) : <Body>{t('food.notChecked')}</Body>}
+          ) : (
+            <>
+              <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t('food.needsReview')}</Text>
+              <Body>{country === undefined ? '' : t('food.notChecked')}</Body>
+            </>
+          )}
         </Panel>
         <Pressable accessibilityRole="button" accessibilityState={{ expanded: open }} onPress={() => setOpen(!open)}
           style={{ minHeight: 56, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 14, borderRadius: 14, borderWidth: 2, borderColor: color.border, backgroundColor: color.surface }}>

@@ -466,4 +466,6 @@ export const fr: Record<Key, string> = {
   "acct.errFailed": "Votre compte n'a pas pu être supprimé. Réessayez.",
   "acct.errTwoStep": "Reconnectez-vous avec votre code en deux étapes, puis réessayez.",
   "acct.errNotSetUp": "La suppression du compte n'est pas encore activée. Demandez à la personne qui gère cette application.",
+  "lab.readNote": "Lu sur la page. Veuillez le vérifier.",
+  "lab.dateAmbig": "La page indique {raw}. Quelle date est la bonne ?",
 };

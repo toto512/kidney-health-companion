@@ -7,6 +7,8 @@ import { Select } from '@/components/Select';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Panel, Screen } from '@/components/ui';
 import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
+import { longDate } from '@/i18n/core';
+import { readCollectionDate, readLabName } from '@/lib/labMeta';
 import { readLabText } from '@/lib/labReader';
 import { saveReport, FILE_EXT, MAX_BYTES, type SaveError } from '@/lib/labData';
 import { checkEntry, TESTS, testDef, type TestKey } from '@/lib/labTests';
@@ -20,13 +22,16 @@ let nextKey = 1;
 
 // Pick or photograph a lab sheet, read it on this device, then show every number beside the original. Nothing is saved until the person presses Save.
 export default function AddBloodTest() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const color = useColors();
   const [step, setStep] = useState<'choose' | 'reading' | 'confirm'>('choose');
   const [file, setFile] = useState<File | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
   const [date, setDate] = useState('');
   const [lab, setLab] = useState('');
+  const [dateRead, setDateRead] = useState(false);
+  const [labRead, setLabRead] = useState(false);
+  const [ambig, setAmbig] = useState<{ raw: string; dayFirst: string; monthFirst: string } | null>(null);
   const [progress, setProgress] = useState(0);
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
@@ -38,13 +43,18 @@ export default function AddBloodTest() {
     const mime = asset.mimeType ?? '';
     if (!FILE_EXT[mime]) { setErr(t('lab.errFileType')); return; }
     if (asset.fileSize && asset.fileSize > MAX_BYTES) { setErr(t('lab.errFileSize')); return; }
-    setErr(''); setMsg('');
+    setErr(''); setMsg(''); setDate(''); setLab(''); setDateRead(false); setLabRead(false); setAmbig(null);
     setFile({ uri: asset.uri, mime });
     if (!ocrSupported) { setMsg(t('lab.unsupported')); setRows([]); setStep('confirm'); return; }
     setStep('reading'); setProgress(0);
     const r = await readTextFromFile(asset.uri, mime, setProgress);
     if (!r.ok) { setMsg(t('lab.readFailed')); setRows([]); setStep('confirm'); return; }
     const found = readLabText(r.text);
+    // Suggestions only: shown on the confirm screen, and the person can change them. Unclear dates stay empty.
+    const dr = readCollectionDate(r.text, new Date());
+    if (dr.kind === 'iso') { setDate(dr.value); setDateRead(true); } else if (dr.kind === 'ambiguous') setAmbig(dr);
+    const ln = readLabName(r.text);
+    if (ln) { setLab(ln); setLabRead(true); }
     setMsg(found.length ? '' : t('lab.noneFound'));
     setRows(found.map((c) => ({ key: nextKey++, test: c.test, value: c.value, unit: c.unit, read: c.value })));
     setStep('confirm');
@@ -111,8 +121,17 @@ export default function AddBloodTest() {
               </Panel>
             ) : null}
             <Panel>
-              <Field label={t('lab.date')} value={date} onChangeText={(v) => { setDate(v); setErr(''); }} placeholder="2026-11-01" autoComplete="off" maxLength={10} inputMode="numeric" />
-              <Field label={t('lab.labName')} value={lab} onChangeText={setLab} autoComplete="off" maxLength={80} />
+              {ambig ? (
+                <View style={{ gap: 8 }}>
+                  <Body>{t('lab.dateAmbig', { raw: ambig.raw })}</Body>
+                  <BigButton variant="secondary" label={longDate(ambig.dayFirst, lang)} onPress={() => { setDate(ambig.dayFirst); setDateRead(true); setAmbig(null); }} />
+                  <BigButton variant="secondary" label={longDate(ambig.monthFirst, lang)} onPress={() => { setDate(ambig.monthFirst); setDateRead(true); setAmbig(null); }} />
+                </View>
+              ) : null}
+              <Field label={t('lab.date')} value={date} onChangeText={(v) => { setDate(v); setErr(''); setDateRead(false); setAmbig(null); }} placeholder="2026-11-01" autoComplete="off" maxLength={10} inputMode="numeric" />
+              {dateRead && date ? <Body>{t('lab.readNote')}</Body> : null}
+              <Field label={t('lab.labName')} value={lab} onChangeText={(v) => { setLab(v); setLabRead(false); }} autoComplete="off" maxLength={80} />
+              {labRead && lab ? <Body>{t('lab.readNote')}</Body> : null}
             </Panel>
             {rows.map((r) => {
               const c = r.test && r.value ? checkEntry(r.test, r.value, r.unit, '2000-01-01', new Date()) : null;

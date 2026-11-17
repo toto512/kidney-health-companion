@@ -466,4 +466,6 @@ export const he: Record<Key, string> = {
   "acct.errFailed": "לא ניתן היה למחוק את החשבון. נסו שוב.",
   "acct.errTwoStep": "התחברו שוב עם קוד האימות הדו-שלבי ואז נסו שוב.",
   "acct.errNotSetUp": "מחיקת חשבון עדיין לא הופעלה. פנו למי שמנהל את האפליקציה.",
+  "lab.readNote": "נקרא מהדף. בדקו אותו.",
+  "lab.dateAmbig": "בדף כתוב {raw}. איזה תאריך נכון?",
 };

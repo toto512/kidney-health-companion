@@ -28,7 +28,7 @@ export function resolveLanguage(saved: unknown, deviceTags: readonly string[]): 
 
 // "Hello {name}" with { name: 'Ana' }. A missing variable stays visible as {name} so it is noticed in testing.
 // Phone and emergency numbers are wrapped in a left-to-right isolate (U+2066 ... U+2069) so right-to-left text cannot reorder "9-1-1" or "+1 613 555 0123".
-export const LTR_VARS = ['number', 'phone'];
+export const LTR_VARS = ['number', 'phone', 'raw'];
 export const ltrIsolate = (s: string) => '\u2066' + s + '\u2069';
 export function format(template: string, vars?: Record<string, string | number>): string {
   if (!vars) return template;
@@ -44,3 +44,6 @@ export function translate(dicts: Record<Lang, Dict>, lang: Lang, key: string, va
 // Dates and numbers follow the language. Hebrew uses Gregorian dates with Western digits here (explicit, not left to the device).
 export const localeTag = (l: Lang) => (l === 'he' ? 'he-IL-u-nu-latn' : l);
 export const formatDate = (iso: string | number | Date, l: Lang) => new Date(iso).toLocaleDateString(localeTag(l));
+
+// "20 October 2026" in the person's language, so a day-first and a month-first reading look clearly different.
+export const longDate = (iso: string, l: Lang) => new Date(iso + 'T12:00:00').toLocaleDateString(localeTag(l), { day: 'numeric', month: 'long', year: 'numeric' });

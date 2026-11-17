@@ -465,5 +465,7 @@ export const en = {
   "acct.errFailed": "Your account could not be deleted. Try again.",
   "acct.errTwoStep": "Sign in again with your two-step code, then try again.",
   "acct.errNotSetUp": "Account deletion is not switched on yet. Ask the person who runs this app.",
+  "lab.readNote": "Read from the page. Please check it.",
+  "lab.dateAmbig": "The page shows {raw}. Which date is right?",
 } as const;
 export type Key = keyof typeof en;

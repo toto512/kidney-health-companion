@@ -466,4 +466,6 @@ export const es: Record<Key, string> = {
   "acct.errFailed": "No se pudo eliminar su cuenta. Inténtelo de nuevo.",
   "acct.errTwoStep": "Inicie sesión de nuevo con su código de dos pasos e inténtelo otra vez.",
   "acct.errNotSetUp": "La eliminación de cuentas aún no está activada. Pregunte a quien administra esta aplicación.",
+  "lab.readNote": "Leído de la página. Compruébelo.",
+  "lab.dateAmbig": "La página muestra {raw}. ¿Qué fecha es la correcta?",
 };

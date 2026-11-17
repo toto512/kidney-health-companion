@@ -10,7 +10,7 @@ import { COUNTRIES, Country, countryName } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
 
-type EntryProps = { calls?: string; place: string; number: string; quote: string; lang?: string; source: string; url: string; reviewed: string; checked: string };
+type EntryProps = { calls?: string; note?: string; place: string; number: string; quote: string; lang?: string; source: string; url: string; reviewed: string; checked: string };
 
 // One tap, no confirm step: for an emergency every second counts. The confirm screen is only for personal contacts.
 function CallButtons({ country }: { country: string }) {
@@ -31,7 +31,7 @@ function CallButtons({ country }: { country: string }) {
 }
 
 // One country's number as a large line, then the exact official quote and where it came from.
-function Entry({ calls, place, number, quote, lang, source, url, reviewed, checked }: EntryProps) {
+function Entry({ calls, note, place, number, quote, lang, source, url, reviewed, checked }: EntryProps) {
   const color = useColors();
   const { t } = useI18n();
   return (
@@ -42,6 +42,7 @@ function Entry({ calls, place, number, quote, lang, source, url, reviewed, check
       </View>
       <Text accessibilityRole="header" style={{ fontSize: 34, lineHeight: 42, fontWeight: '800', color: color.danger }}>{t('emergency.call', { number })}</Text>
       {calls ? <CallButtons country={calls} /> : null}
+      {note ? <Body>{note}</Body> : null}
       <Body>{'\u201C'}{quote}{'\u201D'}{lang ? ` ${t('emergency.quotedIn', { lang })}` : ''}</Body>
       <Pressable accessibilityRole="link" onPress={() => Linking.openURL(url)} style={{ minHeight: 56, justifyContent: 'center' }}>
         <Text style={{ fontSize: font.body, color: color.primary, textDecorationLine: 'underline', lineHeight: font.body * 1.4 }}>
@@ -74,7 +75,7 @@ export default function Emergency() {
         ) : null}
         {view.kind === 'listed' && country !== undefined ? (() => {
           const e = LISTED_EMERGENCY[view.code];
-          return <Entry calls={view.code} place={countryName(view.code)} number={e.number} quote={e.quote} lang={e.lang} source={e.source} url={e.url} reviewed={e.pageReviewed ?? t('emergency.noReviewDate')} checked={e.checkedOn} />;
+          return <Entry calls={view.code} note={e.coverage === 'main-towns' ? t('emergency.mainTownsOnly') : undefined} place={countryName(view.code)} number={e.number} quote={e.quote} lang={e.lang} source={e.source} url={e.url} reviewed={e.pageReviewed ?? t('emergency.noReviewDate')} checked={e.checkedOn} />;
         })() : null}
         {shown.map((c) => {
           const e = EMERGENCY[c];

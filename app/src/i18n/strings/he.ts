@@ -80,6 +80,7 @@ export const he: Record<Key, string> = {
   "emergency.medical": "מצב חירום רפואי",
   "emergency.failed": "השיחה לא התחילה. חייגו את המספר בעצמכם.",
   "emergency.ownPhone": "השיחה יוצאת מהטלפון שלכם. האפליקציה אינה פונה לשירותי החירום.",
+  "emergency.mainTownsOnly": "המספר הזה מכסה רק את הערים הראשיות.",
   "emergency.quotedIn": "(ציטוט, שפת המקור: {lang})",
   "emergency.sourceLine": "{source}. עמוד {reviewed}. נבדק ב-{checked}.",
   "emergency.reviewed": "נבדק {date}",

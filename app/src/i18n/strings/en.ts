@@ -79,6 +79,7 @@ export const en = {
   "emergency.medical": "medical emergency",
   "emergency.failed": "The call did not start. Dial the number yourself.",
   "emergency.ownPhone": "This calls from your own phone. The app does not contact emergency services.",
+  "emergency.mainTownsOnly": "This number covers main towns only.",
   "emergency.quotedIn": "(quoted in {lang})",
   "emergency.sourceLine": "{source}. Page {reviewed}. Checked {checked}.",
   "emergency.reviewed": "reviewed {date}",

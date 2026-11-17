@@ -80,6 +80,7 @@ export const es: Record<Key, string> = {
   "emergency.medical": "emergencia médica",
   "emergency.failed": "La llamada no se inició. Marque usted mismo el número.",
   "emergency.ownPhone": "La llamada sale de su propio teléfono. La aplicación no contacta a los servicios de emergencia.",
+  "emergency.mainTownsOnly": "Este número cubre solo las ciudades principales.",
   "emergency.quotedIn": "(cita en {lang})",
   "emergency.sourceLine": "{source}. Página {reviewed}. Verificado el {checked}.",
   "emergency.reviewed": "revisada {date}",

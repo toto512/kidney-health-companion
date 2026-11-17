@@ -54,3 +54,10 @@ describe('alphabetical order', () => {
     expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b)));
   });
 });
+
+describe('coverage notes', () => {
+  it('Botswana carries the main-towns note (the official page lists covered towns only)', () => {
+    expect(LISTED_EMERGENCY.BW.coverage).toBe('main-towns');
+    expect(LISTED_EMERGENCY.BW.number).toContain('997');
+  });
+});

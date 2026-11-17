@@ -33,7 +33,9 @@ export function amountsFor(foodId: string, country: string | null | undefined, w
     return { nutrient: k, value: v === undefined ? null : perServing(k, v, n.servingG), cls: source === 'cnf' ? n.cnf.cls[k] ?? null : null };
   });
   const forms = food.forms.map((f) => f.form);
-  const missing = n.form === 'other' ? null : forms.includes(n.form === 'raw' ? 'cooked' : 'raw') ? null : n.form === 'raw' ? 'cooked' : 'raw';
+  // The note only makes sense where people eat both forms: fruit, nuts and dried legumes are not flagged.
+  const flag = /^(vegetables|meat-poultry|fish-seafood|eggs)\//.test(foodId);
+  const missing = n.form === 'other' || food.single || !flag ? null : forms.includes(n.form === 'raw' ? 'cooked' : 'raw') ? null : n.form === 'raw' ? 'cooked' : 'raw';
   return {
     source,
     form: n.form,

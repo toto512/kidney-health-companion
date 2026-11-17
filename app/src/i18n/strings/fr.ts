@@ -518,6 +518,6 @@ export const fr: Record<Key, string> = {
   "food.perServing": "Par portion. Les valeurs viennent de tables alimentaires officielles, ajustées au poids de la portion.",
   "food.form.raw": "Cru",
   "food.form.cooked": "Cuit",
-  "food.formMissing": "{form} : à vérifier. Aucune fiche officielle trouvée.",
+  "food.formMissing": "{form} : à vérifier. Aucune fiche officielle associée pour l’instant.",
   "food.formPick": "Afficher les quantités pour",
 };

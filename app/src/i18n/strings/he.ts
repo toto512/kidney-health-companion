@@ -518,6 +518,6 @@ export const he: Record<Key, string> = {
   "food.perServing": "לכל מנה. הערכים מגיעים מטבלאות מזון רשמיות ומותאמים למשקל המנה.",
   "food.form.raw": "נא",
   "food.form.cooked": "מבושל",
-  "food.formMissing": "{form}: דורש בדיקה. לא נמצאה רשומה רשמית.",
+  "food.formMissing": "{form}: דורש בדיקה. עדיין אין רשומה רשמית תואמת.",
   "food.formPick": "הצג כמויות עבור",
 };

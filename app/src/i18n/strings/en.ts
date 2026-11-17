@@ -517,7 +517,7 @@ export const en = {
   "food.perServing": "Per serving. Values come from official food tables, scaled to the serving weight.",
   "food.form.raw": "Raw",
   "food.form.cooked": "Cooked",
-  "food.formMissing": "{form}: Needs review. No official record found.",
+  "food.formMissing": "{form}: Needs review. No matched official record yet.",
   "food.formPick": "Show amounts for",
 } as const;
 export type Key = keyof typeof en;

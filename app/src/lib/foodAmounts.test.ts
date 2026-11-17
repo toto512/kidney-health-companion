@@ -58,8 +58,11 @@ describe('food amounts', () => {
     expect(raw.form).toBe('raw'); expect(cooked.form).toBe('cooked');
     expect(raw.recordName).not.toBe(cooked.recordName);
     expect(raw.missing).toBeNull();
-    const one = Object.keys(FOOD_NUTRITION).find((i) => i.endsWith('-blackberries'))!;
-    const b = amountsFor(one, 'CA', 'cooked')!; // falls back to the form that exists
+    const bb = Object.keys(FOOD_NUTRITION).find((i) => i.endsWith('-blackberries'))!;
+    const f = amountsFor(bb, 'CA', 'cooked')!; // falls back to the form that exists
+    expect(f.form).toBe('raw'); expect(f.missing).toBeNull(); // fruit is not flagged
+    const one = Object.keys(FOOD_NUTRITION).find((i) => i.endsWith('-cucumber'))!;
+    const b = amountsFor(one, 'CA', 'cooked')!;
     expect(b.form).toBe('raw'); expect(b.missing).toBe('cooked');
     const milk = Object.keys(FOOD_NUTRITION).find((i) => i.endsWith('-whole-milk'))!;
     expect(amountsFor(milk, 'CA')!.missing).toBeNull();

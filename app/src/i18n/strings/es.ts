@@ -521,4 +521,9 @@ export const es: Record<Key, string> = {
   "food.formMissing": "{form}: requiere revisión. Aún no hay un registro oficial asociado.",
   "food.formPick": "Mostrar cantidades para",
   "food.backShort": "Atrás",
+  "food.rv.zero": "Requiere revisión: se supone cero",
+  "food.rv.prov": "Requiere revisión: valor provisional",
+  "food.rv.lit": "Requiere revisión: de la literatura científica",
+  "food.rv.intl": "Requiere revisión: de una tabla de alimentos internacional",
+  "food.rv.other": "Requiere revisión",
 };

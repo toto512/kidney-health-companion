@@ -520,5 +520,10 @@ export const en = {
   "food.formMissing": "{form}: Needs review. No matched official record yet.",
   "food.formPick": "Show amounts for",
   "food.backShort": "Back",
+  "food.rv.zero": "Needs review: assumed zero",
+  "food.rv.prov": "Needs review: provisional value",
+  "food.rv.lit": "Needs review: from scientific literature",
+  "food.rv.intl": "Needs review: from an international food table",
+  "food.rv.other": "Needs review",
 } as const;
 export type Key = keyof typeof en;

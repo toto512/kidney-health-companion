@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { FOOD_NUTRITION, NUTRITION_CHECKED_ON } from '../content/foodNutrition';
 import { FOODS } from '../content/foods';
-import { amountsFor, perServing } from './foodAmounts';
+import { amountsFor, cnfUrl, perServing, reviewReason, usdaUrl } from './foodAmounts';
 
 const ids = new Set(FOODS.map((f) => f.id));
 const pears = Object.keys(FOOD_NUTRITION).find((i) => i.endsWith('-pears'))!;
@@ -22,7 +22,7 @@ describe('food amounts', () => {
     expect(NUTRITION_CHECKED_ON).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     for (const id of Object.keys(FOOD_NUTRITION)) for (const c of ['CA', 'US']) {
       const a = amountsFor(id, c)!;
-      expect(a.url).toMatch(/^https:\/\/(www\.canada\.ca|fdc\.nal\.usda\.gov)\//);
+      expect(a.url).toMatch(/^https:\/\/(food-nutrition\.canada\.ca\/cnf-fce\/serving-portion\?id=\d+|fdc\.nal\.usda\.gov\/food-details\/\d+\/nutrients)$/);
       expect(a.url).not.toContain('inonde.io');
       expect(a.checkedOn).toBe(NUTRITION_CHECKED_ON);
     }
@@ -66,6 +66,12 @@ describe('food amounts', () => {
     expect(b.form).toBe('raw'); expect(b.missing).toBe('cooked');
     const milk = Object.keys(FOOD_NUTRITION).find((i) => i.endsWith('-whole-milk'))!;
     expect(amountsFor(milk, 'CA')!.missing).toBeNull();
+  });
+  it('builds per-food links and explains review values', () => {
+    expect(cnfUrl(1731, 'en')).toBe('https://food-nutrition.canada.ca/cnf-fce/serving-portion?id=1731');
+    expect(cnfUrl(1731, 'fr')).toBe('https://aliments-nutrition.canada.ca/cnf-fce/serving-portion?id=1731');
+    expect(usdaUrl(169118)).toBe('https://fdc.nal.usda.gov/food-details/169118/nutrients');
+    expect([12, 14, 10, 81, 83, 6, null].map(reviewReason)).toEqual(['zero', 'prov', 'lit', 'intl', 'intl', 'other', 'other']);
   });
   it('scales per 100 g by serving weight only', () => {
     expect(perServing('potassiumMg', 116, 148)).toBe(172);

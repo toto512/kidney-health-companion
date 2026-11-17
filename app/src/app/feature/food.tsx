@@ -6,7 +6,7 @@ import { Food, FOODS, FOOD_GROUPS, FoodGroup } from '@/content/foods';
 import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
 import type { FormKind } from '@/content/foodNutrition';
-import { amountsFor } from '@/lib/foodAmounts';
+import { amountsFor, reviewReason } from '@/lib/foodAmounts';
 import { searchFoods } from '@/lib/foodSearch';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
@@ -114,7 +114,7 @@ function Wheel({ group, selId, setSelId, onBack, onOpen }: { group: FoodGroup; s
 
 function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGroup; food: Food; onSwitch: (f: Food) => void; onAnother: () => void; onGroups: () => void }) {
   const color = useColors();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [open, setOpen] = useState(false);
   const [country, setCountry] = useState<string | null | undefined>(undefined);
   useEffect(() => {
@@ -123,7 +123,7 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
     return () => { alive = false; };
   }, []);
   const [form, setForm] = useState<FormKind | null>(null);
-  const a = country === undefined ? null : amountsFor(food.id, country, form);
+  const a = country === undefined ? null : amountsFor(food.id, country, form, lang);
   const same = useMemo(() => FOODS.filter((f) => f.group === group).sort((x, y) => x.sub.localeCompare(y.sub) || x.name.localeCompare(y.name)), [group]);
   return (
     <ScrollView>
@@ -164,7 +164,7 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
                     <Text style={{ fontWeight: '700' }}>{`${t(`food.n.${r.nutrient}` as Key)} `}</Text>
                     {r.value === null ? t('food.notAvail') : `${r.value} ${t(r.nutrient === 'proteinG' ? 'food.unit.g' : 'food.unit.mg')}`}
                   </Text>
-                  {r.value !== null && r.cls ? <Text style={{ fontSize: font.body * 0.85, fontWeight: r.cls === 'review' ? '800' : '400', color: r.cls === 'review' ? color.text : color.muted }}>{t(`food.cls.${r.cls}` as Key)}</Text> : null}
+                  {r.value !== null && r.cls ? <Text style={{ fontSize: font.body * 0.85, fontWeight: r.cls === 'review' ? '800' : '400', color: r.cls === 'review' ? color.text : color.muted }}>{r.cls === 'review' ? t(`food.rv.${reviewReason(r.src)}` as Key) : t(`food.cls.${r.cls}` as Key)}</Text> : null}
                 </View>
               ))}
               <Body>{t('food.perServing')}</Body>

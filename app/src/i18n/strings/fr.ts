@@ -521,4 +521,9 @@ export const fr: Record<Key, string> = {
   "food.formMissing": "{form} : à vérifier. Aucune fiche officielle associée pour l’instant.",
   "food.formPick": "Afficher les quantités pour",
   "food.backShort": "Retour",
+  "food.rv.zero": "À vérifier : valeur supposée nulle",
+  "food.rv.prov": "À vérifier : valeur provisoire",
+  "food.rv.lit": "À vérifier : tirée de la littérature scientifique",
+  "food.rv.intl": "À vérifier : tirée d’une table alimentaire internationale",
+  "food.rv.other": "À vérifier",
 };

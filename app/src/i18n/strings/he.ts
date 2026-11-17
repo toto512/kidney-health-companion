@@ -521,4 +521,9 @@ export const he: Record<Key, string> = {
   "food.formMissing": "{form}: דורש בדיקה. עדיין אין רשומה רשמית תואמת.",
   "food.formPick": "הצג כמויות עבור",
   "food.backShort": "חזרה",
+  "food.rv.zero": "דורש בדיקה: מניחים אפס",
+  "food.rv.prov": "דורש בדיקה: ערך זמני",
+  "food.rv.lit": "דורש בדיקה: מהספרות המדעית",
+  "food.rv.intl": "דורש בדיקה: מטבלת מזון בינלאומית",
+  "food.rv.other": "דורש בדיקה",
 };

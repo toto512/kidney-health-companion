@@ -467,5 +467,8 @@ export const en = {
   "acct.errNotSetUp": "Account deletion is not switched on yet. Ask the person who runs this app.",
   "lab.readNote": "Read from the page. Please check it.",
   "lab.dateAmbig": "The page shows {raw}. Which date is right?",
+  "lab.dupWarn": "You already saved a report with these results on {date}.",
+  "lab.dupSave": "Save anyway",
+  "lab.dupSkip": "Don't save",
 } as const;
 export type Key = keyof typeof en;

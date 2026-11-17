@@ -468,4 +468,7 @@ export const he: Record<Key, string> = {
   "acct.errNotSetUp": "מחיקת חשבון עדיין לא הופעלה. פנו למי שמנהל את האפליקציה.",
   "lab.readNote": "נקרא מהדף. בדקו אותו.",
   "lab.dateAmbig": "בדף כתוב {raw}. איזה תאריך נכון?",
+  "lab.dupWarn": "כבר שמרתם דוח עם התוצאות האלה בתאריך {date}.",
+  "lab.dupSave": "לשמור בכל זאת",
+  "lab.dupSkip": "לא לשמור",
 };

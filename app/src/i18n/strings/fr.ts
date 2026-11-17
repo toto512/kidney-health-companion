@@ -468,4 +468,7 @@ export const fr: Record<Key, string> = {
   "acct.errNotSetUp": "La suppression du compte n'est pas encore activée. Demandez à la personne qui gère cette application.",
   "lab.readNote": "Lu sur la page. Veuillez le vérifier.",
   "lab.dateAmbig": "La page indique {raw}. Quelle date est la bonne ?",
+  "lab.dupWarn": "Vous avez déjà enregistré un rapport avec ces résultats le {date}.",
+  "lab.dupSave": "Enregistrer quand même",
+  "lab.dupSkip": "Ne pas enregistrer",
 };

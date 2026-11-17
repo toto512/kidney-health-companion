@@ -76,7 +76,7 @@ def tidy(lab):
     return {'250 ml': '1 cup', '125 ml': '\u00bd cup'}.get(lab, lab.replace(' ml', ' mL'))
 SMALL = {  # foods eaten by the spoon: the serving is a teaspoon, tablespoon or quarter cup, never a cup
     'tsp': ('culinary-herbs', 'spices', 'seasoning-blends', 'sugars-syrups', 'jams'),
-    'tbsp': ('oils', 'animal-fats', 'sauces-condiments', 'processed-blende', 'seeds-nut-butters', 'nut-seed-butters'),
+    'tbsp': ('oils', 'animal-fats', 'sauces-condiments', 'processed-blende', 'seeds-nut-butters', 'nut-seed-butters', 'cream-butter-frozen--butter', 'cream-butter-frozen--clarified', 'heavy-whipping-cream'),
     'quarter': ('gravies',),
 }
 def small_kind(fid):
@@ -195,6 +195,88 @@ for i, (cr, how) in matches.items():
         single = any(re.search(r'\bdry\b', r2['Food_Description_EN'].lower()) and core(re.sub(r'\bdry\b', ' ', r2['Food_Description_EN'])) == core(re.sub(r'\bdry\b', ' ', cr['Food_Description_EN'])) for r2 in cnf if r2['Food_Description_EN'].lower().split(',')[0] == cr['Food_Description_EN'].lower().split(',')[0])
     out[i] = {'how': how, **({'single': True} if single else {}), **({'variant': True} if (i in variant_keys or names_of[i] in variant_keys) else {}), 'default': [x['form'] for x in forms].index(main['form']), 'forms': forms}
 
+# Second pass: foods with no usable CNF record take a hand-picked USDA record directly (SR Legacy or Foundation), with the serving taken from its USDA portions.
+usda_by_name = _ovf.get('usdaByName', {}); usda_by_id = _ovf.get('usdaById', {})
+usda_all = {int(f['fdcId']): (f, 'Foundation Foods, 2026-10-29') for f in ff}
+usda_all.update({int(f['fdcId']): (f, 'SR Legacy, 2018-04') for f in sr})
+u_groups = collections.defaultdict(list)
+for fid_, (f_, file_) in usda_all.items():
+    d_ = f_['description']
+    if SALT.search(d_.lower()) or form_of(d_) == 'other' or len(pick(f_)) < 1: continue
+    u_groups[(file_, core(d_))].append(f_)
+def u_partner(f, file):
+    fo = form_of(f['description'])
+    if fo == 'other': return None
+    want = 'cooked' if fo == 'raw' else 'raw'
+    c = [r for r in u_groups.get((file, core(f['description'])), []) if form_of(r['description']) == want]
+    if not c: return None
+    if want == 'cooked':
+        c.sort(key=lambda r: (method_rank(r['description']), len(r['description'])))
+        best = [r for r in c if method_rank(r['description']) == method_rank(c[0]['description'])]
+        return best[0] if len(best) == 1 else None
+    return c[0] if len(c) == 1 else None
+def glabel(p):
+    unit = (p.get('measureUnit') or {}).get('name', '')
+    unit = '' if unit in ('undetermined', 'RACC') else unit
+    mod = re.sub(r'\s*\([^)]*\)', '', p.get('modifier') or '').split(' or ')[0].strip()
+    amt_ = p.get('amount') or p.get('value') or 1
+    frac = {0.25: '\u00bc', 0.33: '\u2153', 0.5: '\u00bd', 0.67: '\u2154', 0.75: '\u00be'}
+    amt_s = str(int(amt_)) if float(amt_).is_integer() else frac.get(round(float(amt_), 2), str(round(amt_, 2)))
+    return f"{amt_s} {unit} {mod}".replace('  ', ' ').strip(), (p.get('modifier') or '').lower(), unit.lower(), amt_
+def userving(f, fid):
+    ps = [p for p in f.get('foodPortions', []) if p.get('gramWeight')]
+    L = []
+    for p in ps:
+        lab, mod, unit, amt_ = glabel(p)
+        if 'nlea' in mod or 'racc' in mod or mod == '' and unit == '': continue
+        L.append((lab, mod, unit, amt_, float(p['gramWeight'])))
+    if not L: return None
+    if fid.startswith(('meat-poultry/', 'fish-seafood/')):
+        # Cuts and meats: a 3 or 4 oz serving only. Whole roasts, racks and the like are never a serving.
+        for lab, mod, unit, amt_, g in L:
+            if 80 <= g <= 130 and ('oz' in lab.lower() or 'serving' in lab.lower()): return f"{round(g / 28.35)} oz", g
+        for lab, mod, unit, amt_, g in L:
+            if (unit == 'oz' or mod.startswith('oz')) and amt_ == 1 and 25 <= g <= 30: return '3 oz', g * 3
+        return None
+    if any(u == 'liter' or m.startswith('liter') for _, m, u, _, _ in L) and fid.startswith('drinks/'):
+        return '1 cup', 250.0
+    kind = small_kind(fid)
+    def find(pred):
+        for lab, mod, unit, amt_, g in L:
+            if pred(lab.lower(), mod, unit, amt_): return tidy(lab), g
+    sp = {'tsp': lambda l, m, u, x: (u in ('teaspoon', 'tsp') or m.startswith('tsp')) and x == 1, 'tbsp': lambda l, m, u, x: (u in ('tablespoon', 'tbsp') or m.startswith('tbsp')) and x == 1,
+          'quarter': lambda l, m, u, x: u == 'cup' and x == 0.25}
+    if kind:
+        r = find(sp[kind]) or find(sp['tbsp' if kind == 'tsp' else 'tsp'])
+        if r: return r
+    for w in ('medium', 'slice', 'small', 'large'):
+        r = find(lambda l, m, u, x, w=w: (m.startswith(w) or l.startswith('1 ' + w)) and x == 1)
+        if r: return r
+    r = find(lambda l, m, u, x: (u == 'cup' or m.startswith('cup')) and x == 1)
+    if r: return r
+    r = find(lambda l, m, u, x: (u == 'oz' or m.startswith('oz')) and x in (1, 3))
+    if r: return r
+    return tidy(L[0][0]), L[0][4]
+def make_uform(f, file, fid):
+    d = pick(f); sv = userving(f, fid)
+    if not d or not sv: return None
+    return {'form': form_of(f['description']), 'servingG': num(sv[1]), 'servingLabel': sv[0],
+            'usda': {'fdcId': int(f['fdcId']), 'name': f['description'], 'file': file, 'per100': {k: num(v) for k, v in d.items()}}}
+u_skipped = []
+for i, nm in foods:
+    fidn = usda_by_id.get(i, usda_by_name.get(nm))
+    if fidn is None or i in out: continue
+    f, file = usda_all[int(fidn)]
+    main = make_uform(f, file, i)
+    if not main: u_skipped.append((i, f['description'])); continue
+    forms = [main]
+    pr = u_partner(f, file)
+    pf = make_uform(pr, file, i) if pr else None
+    if pf: forms.append(pf)
+    forms.sort(key=lambda x: {'raw': 0, 'cooked': 1, 'other': 2}[x['form']])
+    out[i] = {'how': 'usda', **({'variant': True} if (i in variant_keys or nm in variant_keys) else {}), 'default': [x['form'] for x in forms].index(main['form']), 'forms': forms}
+print('usda second pass skipped (no portion)', u_skipped)
+
 def fmt(o): return json.dumps(o, ensure_ascii=False, separators=(', ', ': '))
 lines = ["// Generated by scripts/build-food-nutrition.py from the Canadian Nutrient File 2026 (Health Canada) and USDA FoodData Central SR Legacy. Do not edit by hand.",
          "// Values are per 100 g, exactly as published. Serving amounts are calculated at display time. Foods missing here show \"Needs review\".",
@@ -204,11 +286,11 @@ lines = ["// Generated by scripts/build-food-nutrition.py from the Canadian Nutr
          "export type FormKind = 'raw' | 'cooked' | 'other';",
          "export type NutritionForm = {",
          "  form: FormKind; servingG: number; servingLabel: string;",
-         "  cnf: { code: number; name: string; per100: Per100; src: Partial<Record<Nutrient, number>>; cls: Partial<Record<Nutrient, NutrientClass>> };",
+         "  cnf?: { code: number; name: string; per100: Per100; src: Partial<Record<Nutrient, number>>; cls: Partial<Record<Nutrient, NutrientClass>> };",
          "  usda?: { fdcId: number; name: string; file: string; per100: Per100 };",
          "};",
          "// forms are sorted raw, cooked, other. default is the index of the form that matched the food name.",
-         "export type FoodNutrition = { how: 'name' | 'picked'; single?: boolean; variant?: boolean; default: number; forms: NutritionForm[] };",
+         "export type FoodNutrition = { how: 'name' | 'picked' | 'usda'; single?: boolean; variant?: boolean; default: number; forms: NutritionForm[] };",
          f"export const NUTRITION_CHECKED_ON = '{a.checked}';",
          "export const FOOD_NUTRITION: Record<string, FoodNutrition> = {"]
 for i in sorted(out): lines.append(f"  '{i}': {fmt(out[i])},")
@@ -216,4 +298,4 @@ lines.append("};")
 open(os.path.join(APP, 'foodNutrition.ts'), 'w', encoding='utf-8').write('\n'.join(lines) + '\n')
 print('matched', len(matches), 'loaded', len(out), 'skipped', skipped)
 print('foods with two forms', sum(1 for v in out.values() if len(v['forms']) == 2), collections.Counter(v['how'] for v in out.values()))
-print(collections.Counter(c for v in out.values() for f in v['forms'] for c in f['cnf']['cls'].values()))
+print(collections.Counter(c for v in out.values() for f in v['forms'] if 'cnf' in f for c in f['cnf']['cls'].values()))

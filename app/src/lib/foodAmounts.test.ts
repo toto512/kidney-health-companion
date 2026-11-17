@@ -10,11 +10,11 @@ describe('food amounts', () => {
   it('only holds numbers for foods that exist, with a match recorded', () => {
     for (const [id, n] of Object.entries(FOOD_NUTRITION)) {
       expect(ids.has(id)).toBe(true);
-      expect(['name', 'picked']).toContain(n.how);
+      expect(['name', 'picked', 'usda']).toContain(n.how);
       expect(n.forms.length).toBeGreaterThan(0);
       expect(n.default).toBeLessThan(n.forms.length);
       expect(new Set(n.forms.map((f) => f.form)).size).toBe(n.forms.length);
-      for (const f of n.forms) { expect(f.servingG).toBeGreaterThan(0); expect(f.cnf.code).toBeGreaterThan(0); expect(f.cnf.name.length).toBeGreaterThan(0); }
+      for (const f of n.forms) { expect(f.servingG).toBeGreaterThan(0); expect(f.cnf || f.usda).toBeTruthy(); if (f.cnf) { expect(f.cnf.code).toBeGreaterThan(0); expect(f.cnf.name.length).toBeGreaterThan(0); } }
     }
     expect(Object.keys(FOOD_NUTRITION).length).toBeGreaterThan(90);
   });
@@ -40,11 +40,11 @@ describe('food amounts', () => {
     expect(amountsFor(pears, 'US')!.rows.every((r) => r.cls === null)).toBe(true);
   });
   it('labels classes only with the approved four', () => {
-    for (const n of Object.values(FOOD_NUTRITION)) for (const f of n.forms) for (const c of Object.values(f.cnf.cls)) expect(['analysed', 'usda', 'calculated', 'review']).toContain(c);
+    for (const n of Object.values(FOOD_NUTRITION)) for (const f of n.forms) for (const c of Object.values(f.cnf?.cls ?? {})) expect(['analysed', 'usda', 'calculated', 'review']).toContain(c);
   });
   it('maps CNF source codes to the approved classes', () => {
-    for (const n of Object.values(FOOD_NUTRITION)) for (const f of n.forms) for (const [k, code] of Object.entries(f.cnf.src)) {
-      const cls = f.cnf.cls[k as 'sodiumMg'];
+    for (const n of Object.values(FOOD_NUTRITION)) for (const f of n.forms) for (const [k, code] of Object.entries(f.cnf?.src ?? {})) {
+      const cls = f.cnf!.cls[k as 'sodiumMg'];
       if (code === 3 || code === 7) expect(cls).toBe('analysed');
       else if (code === 0 || code === 1) expect(cls).toBe('usda');
       else if ([2, 4, 5, 15, 16, 17, 51].includes(code)) expect(cls).toBe('calculated');
@@ -87,5 +87,19 @@ describe('variant note', () => {
   });
   it('every variant food shows its official record name', () => {
     for (const [id, n] of Object.entries(FOOD_NUTRITION)) if (n.variant) expect(amountsFor(id, 'US')!.recordName.length).toBeGreaterThan(0);
+  });
+});
+
+describe('USDA-only foods', () => {
+  it('read from USDA for every country and name the file, record and a 3 oz style serving for meats', () => {
+    const a = amountsFor('fish-seafood/finfish-catfish', 'CA')!;
+    expect(a.source).toBe('usda');
+    expect(a.file).toMatch(/SR Legacy|Foundation/);
+    expect(a.url).toMatch(/^https:\/\/fdc\.nal\.usda\.gov\/food-details\/\d+\/nutrients$/);
+    expect(a.serving).toMatch(/^3 oz/);
+    expect(a.variant).toBe(true);
+  });
+  it('never uses a whole roast, rack or liter as a serving', () => {
+    for (const [id, n] of Object.entries(FOOD_NUTRITION)) if (n.how === 'usda' && /^(meat-poultry|fish-seafood)\//.test(id)) for (const f of n.forms) expect(f.servingG, id).toBeLessThanOrEqual(130);
   });
 });

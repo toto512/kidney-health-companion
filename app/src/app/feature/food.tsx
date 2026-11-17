@@ -178,8 +178,9 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
             </>
           ) : (
             <>
-              <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t('food.needsReview')}</Text>
-              <Body>{country === undefined ? '' : t('food.notChecked')}</Body>
+              <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t('food.noNumbers')}</Text>
+              <Body>{t('food.about', { name: food.name, group: t(`foodgrp.${group}` as Key), sub: food.sub })}</Body>
+              <Body>{t('food.notChecked')}</Body>
             </>
           )}
         </Panel>

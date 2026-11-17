@@ -476,6 +476,8 @@ export const en = {
   "food.amounts": "Amounts per serving",
   "food.notChecked": "Not checked against an official source yet.",
   "food.needsReview": "Needs review",
+  "food.noNumbers": "No official numbers yet.",
+  "food.about": "{name} is in the {group} group, under {sub}.",
   "food.step": "General information only. Ratings for your own conditions come in a later step.",
   "foodgrp.vegetables": "Vegetables",
   "foodgrp.fruit": "Fruit",

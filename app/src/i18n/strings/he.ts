@@ -477,6 +477,8 @@ export const he: Record<Key, string> = {
   "food.amounts": "כמויות למנה",
   "food.notChecked": "עדיין לא נבדק מול מקור רשמי.",
   "food.needsReview": "דורש בדיקה",
+  "food.noNumbers": "עדיין אין מספרים רשמיים.",
+  "food.about": "{name} נמצא בקבוצה {group}, תחת {sub}.",
   "food.step": "מידע כללי בלבד. דירוג לפי המצבים הרפואיים שלכם יגיע בשלב מאוחר יותר.",
   "foodgrp.vegetables": "ירקות",
   "foodgrp.fruit": "פירות",

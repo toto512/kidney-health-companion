@@ -37,10 +37,10 @@ export function amountsFor(foodId: string, country: string | null | undefined, w
   const order: ('cnf' | 'usda')[] = country === 'CA' ? ['cnf', 'usda'] : ['usda', 'cnf'];
   const source = order.find((s) => (s === 'cnf' ? !!n.cnf : !!n.usda));
   if (!source) return null;
-  const rec = source === 'cnf' ? n.cnf : n.usda!;
+  const rec = source === 'cnf' ? n.cnf! : n.usda!;
   const rows: AmountRow[] = NUTRIENTS.map((k) => {
     const v = rec.per100[k];
-    return { nutrient: k, value: v === undefined ? null : perServing(k, v, n.servingG), cls: source === 'cnf' ? n.cnf.cls[k] ?? null : null, src: source === 'cnf' ? n.cnf.src[k] ?? null : null };
+    return { nutrient: k, value: v === undefined ? null : perServing(k, v, n.servingG), cls: source === 'cnf' ? n.cnf!.cls[k] ?? null : null, src: source === 'cnf' ? n.cnf!.src[k] ?? null : null };
   });
   const forms = food.forms.map((f) => f.form);
   // The note only makes sense where people eat both forms: fruit, nuts and dried legumes are not flagged.
@@ -55,9 +55,9 @@ export function amountsFor(foodId: string, country: string | null | undefined, w
     serving: /\bg$/.test(n.servingLabel) ? n.servingLabel : `${n.servingLabel} (${Math.round(n.servingG)} g)`,
     rows,
     recordName: rec.name,
-    recordId: source === 'cnf' ? n.cnf.code : n.usda!.fdcId,
+    recordId: source === 'cnf' ? n.cnf!.code : n.usda!.fdcId,
     file: source === 'usda' ? n.usda!.file : undefined,
-    url: source === 'cnf' ? cnfUrl(n.cnf.code, lang) : usdaUrl(n.usda!.fdcId),
+    url: source === 'cnf' ? cnfUrl(n.cnf!.code, lang) : usdaUrl(n.usda!.fdcId),
     checkedOn: NUTRITION_CHECKED_ON,
   };
 }

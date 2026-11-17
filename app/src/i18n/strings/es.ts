@@ -477,6 +477,8 @@ export const es: Record<Key, string> = {
   "food.amounts": "Cantidades por porción",
   "food.notChecked": "Aún no verificado con una fuente oficial.",
   "food.needsReview": "Por revisar",
+  "food.noNumbers": "Aún no hay cifras oficiales.",
+  "food.about": "{name} está en el grupo {group}, dentro de {sub}.",
   "food.step": "Solo información general. Las valoraciones para sus propias enfermedades llegarán más adelante.",
   "foodgrp.vegetables": "Verduras",
   "foodgrp.fruit": "Frutas",

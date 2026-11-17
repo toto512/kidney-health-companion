@@ -1,6 +1,7 @@
 import { Link, Href } from 'expo-router';
 import { ReactNode, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, TextInputProps, useWindowDimensions, View } from 'react-native';
+import { badgeSize } from '@/lib/contactLayout';
 import { AccentName, font, mix, MIN_TOUCH, Palette, space, useColors } from '@/theme/tokens';
 import { useI18n } from '@/i18n/I18nProvider';
 
@@ -79,8 +80,9 @@ export function Tile({ label, icon, onPress }: { label: string; icon: string; bg
 }
 
 // Icon on a soft rounded square in the category colour.
-export function CategoryBadge({ icon, accent, size = 48 }: { icon: string; accent: AccentName; size?: number }) {
+export function CategoryBadge({ icon, accent, size: base = 48 }: { icon: string; accent: AccentName; size?: number }) {
   const color = useColors();
+  const size = badgeSize(base, useWindowDimensions().width);
   return (
     <View accessible={false} style={{ width: size, height: size, borderRadius: size * 0.3, alignItems: 'center', justifyContent: 'center', backgroundColor: mix(color.accent[accent], color.surface, 0.16) }}>
       <Text style={{ fontSize: size * 0.5 }}>{icon}</Text>

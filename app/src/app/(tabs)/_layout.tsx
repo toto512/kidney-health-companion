@@ -1,14 +1,15 @@
 import { Tabs } from 'expo-router';
-import { Text } from 'react-native';
+import { Text, useWindowDimensions } from 'react-native';
 import { useI18n } from '@/i18n/I18nProvider';
 import { useColors } from '@/theme/tokens';
 
-const icon = (e: string) => () => <Text style={{ fontSize: 26 }} accessible={false}>{e}</Text>;
+const makeIcon = (size: number) => (e: string) => () => <Text style={{ fontSize: size }} accessible={false}>{e}</Text>;
 
 // A floating rounded bar. Screens leave 120 px at the bottom so nothing hides behind it.
 export default function TabsLayout() {
   const color = useColors();
   const { t } = useI18n();
+  const icon = makeIcon(useWindowDimensions().width < 400 ? 22 : 26);
   return (
     <Tabs screenOptions={{
       headerShown: false,

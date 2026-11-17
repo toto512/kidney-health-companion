@@ -516,4 +516,8 @@ export const he: Record<Key, string> = {
   "food.srcUsda": "USDA FoodData Central, {file}. רשומה: {name}, מזהה FDC {id}. נבדק ב-{date}.",
   "food.refOnly": "מידע לעיון בלבד, לא ייעוץ רפואי. שאלו את צוות הטיפול מה מתאים לכם.",
   "food.perServing": "לכל מנה. הערכים מגיעים מטבלאות מזון רשמיות ומותאמים למשקל המנה.",
+  "food.form.raw": "נא",
+  "food.form.cooked": "מבושל",
+  "food.formMissing": "{form}: דורש בדיקה. לא נמצאה רשומה רשמית.",
+  "food.formPick": "הצג כמויות עבור",
 };

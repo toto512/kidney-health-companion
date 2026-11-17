@@ -515,5 +515,9 @@ export const en = {
   "food.srcUsda": "USDA FoodData Central, {file}. Record: {name}, FDC ID {id}. Checked {date}.",
   "food.refOnly": "Reference information only, not medical advice. Ask your care team what is right for you.",
   "food.perServing": "Per serving. Values come from official food tables, scaled to the serving weight.",
+  "food.form.raw": "Raw",
+  "food.form.cooked": "Cooked",
+  "food.formMissing": "{form}: Needs review. No official record found.",
+  "food.formPick": "Show amounts for",
 } as const;
 export type Key = keyof typeof en;

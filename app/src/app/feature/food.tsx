@@ -5,6 +5,7 @@ import { BigButton, Body, DisclaimerFooter, Field, H1, Panel, Screen } from '@/c
 import { Food, FOODS, FOOD_GROUPS, FoodGroup } from '@/content/foods';
 import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
+import type { FormKind } from '@/content/foodNutrition';
 import { amountsFor } from '@/lib/foodAmounts';
 import { searchFoods } from '@/lib/foodSearch';
 import { supabase } from '@/lib/supabase';
@@ -18,7 +19,7 @@ export default function FoodScreen() {
   const [selId, setSelId] = useState<string | null>(null);
   if (step.kind === 'groups') return <Groups onPick={(g) => { setSelId(null); setStep({ kind: 'wheel', group: g }); }} />;
   if (step.kind === 'wheel') return <Wheel group={step.group} selId={selId} setSelId={setSelId} onBack={() => setStep({ kind: 'groups' })} onOpen={(food) => setStep({ kind: 'detail', group: step.group, food })} />;
-  return <Detail group={step.group} food={step.food} onSwitch={(food) => { setSelId(food.id); setStep({ kind: 'detail', group: step.group, food }); }} onAnother={() => { setSelId(step.food.id); setStep({ kind: 'wheel', group: step.group }); }} onGroups={() => setStep({ kind: 'groups' })} />;
+  return <Detail key={step.food.id} group={step.group} food={step.food} onSwitch={(food) => { setSelId(food.id); setStep({ kind: 'detail', group: step.group, food }); }} onAnother={() => { setSelId(step.food.id); setStep({ kind: 'wheel', group: step.group }); }} onGroups={() => setStep({ kind: 'groups' })} />;
 }
 
 function Groups({ onPick }: { onPick: (g: FoodGroup) => void }) {
@@ -115,7 +116,8 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
     supabase.from('profiles').select('country_code').maybeSingle().then(({ data }) => { if (alive) setCountry(data?.country_code ?? null); }, () => { if (alive) setCountry(null); });
     return () => { alive = false; };
   }, []);
-  const a = country === undefined ? null : amountsFor(food.id, country);
+  const [form, setForm] = useState<FormKind | null>(null);
+  const a = country === undefined ? null : amountsFor(food.id, country, form);
   const same = useMemo(() => FOODS.filter((f) => f.group === group).sort((x, y) => x.sub.localeCompare(y.sub) || x.name.localeCompare(y.name)), [group]);
   return (
     <ScrollView>
@@ -126,6 +128,20 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
           {a ? (
             <>
               <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t('food.amounts')}</Text>
+              {a.forms.filter((f) => f !== 'other').length > 1 ? (
+                <View accessibilityRole="radiogroup" accessibilityLabel={t('food.formPick')} style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+                  {a.forms.filter((f) => f !== 'other').map((f) => {
+                    const on = f === a.form;
+                    return (
+                      <Pressable key={f} accessibilityRole="radio" accessibilityState={{ selected: on, checked: on }} onPress={() => setForm(f)}
+                        style={{ flex: 1, minWidth: 120, minHeight: 64, borderRadius: 14, borderWidth: 2, borderColor: color.primary, backgroundColor: on ? color.primary : color.surface, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: font.label, fontWeight: '800', color: on ? color.primaryText : color.primary }}>{t(`food.form.${f}` as Key)}</Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              ) : null}
+              {a.missing ? <Body>{t('food.formMissing', { form: t(`food.form.${a.missing}` as Key) })}</Body> : null}
               <Body>{t('food.serving', { serving: a.serving })}</Body>
               {a.rows.map((r) => (
                 <View key={r.nutrient} style={{ minHeight: 48, justifyContent: 'center' }}>

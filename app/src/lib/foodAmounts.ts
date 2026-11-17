@@ -1,4 +1,4 @@
-import { FOOD_NUTRITION, NUTRITION_CHECKED_ON, type Nutrient, type NutrientClass } from '../content/foodNutrition';
+import { FOOD_NUTRITION, NUTRITION_CHECKED_ON, type FormKind, type Nutrient, type NutrientClass } from '../content/foodNutrition';
 
 export const CNF_URL = 'https://www.canada.ca/en/health-canada/services/food-nutrition/healthy-eating/nutrient-data.html';
 export const usdaUrl = (fdcId: number) => `https://fdc.nal.usda.gov/fdc-app.html#/food-details/${fdcId}/nutrients`;
@@ -7,6 +7,9 @@ export const NUTRIENTS: Nutrient[] = ['sodiumMg', 'potassiumMg', 'phosphorusMg',
 export type AmountRow = { nutrient: Nutrient; value: number | null; cls: NutrientClass | null };
 export type ResolvedAmounts = {
   source: 'cnf' | 'usda';
+  form: FormKind; // the form shown
+  forms: FormKind[]; // forms that have an official record
+  missing: 'raw' | 'cooked' | null; // the other form, when the shown one is raw or cooked and no official record exists for the other
   serving: string;
   rows: AmountRow[];
   recordName: string;
@@ -17,9 +20,10 @@ export type ResolvedAmounts = {
 };
 
 // Canadian users read the Canadian Nutrient File first. Everyone else reads USDA first. The other source fills in when a food has only one.
-export function amountsFor(foodId: string, country: string | null | undefined): ResolvedAmounts | null {
-  const n = FOOD_NUTRITION[foodId];
-  if (!n) return null;
+export function amountsFor(foodId: string, country: string | null | undefined, wanted?: FormKind | null): ResolvedAmounts | null {
+  const food = FOOD_NUTRITION[foodId];
+  if (!food) return null;
+  const n = food.forms.find((f) => f.form === wanted) ?? food.forms[food.default];
   const order: ('cnf' | 'usda')[] = country === 'CA' ? ['cnf', 'usda'] : ['usda', 'cnf'];
   const source = order.find((s) => (s === 'cnf' ? !!n.cnf : !!n.usda));
   if (!source) return null;
@@ -28,8 +32,13 @@ export function amountsFor(foodId: string, country: string | null | undefined): 
     const v = rec.per100[k];
     return { nutrient: k, value: v === undefined ? null : perServing(k, v, n.servingG), cls: source === 'cnf' ? n.cnf.cls[k] ?? null : null };
   });
+  const forms = food.forms.map((f) => f.form);
+  const missing = n.form === 'other' ? null : forms.includes(n.form === 'raw' ? 'cooked' : 'raw') ? null : n.form === 'raw' ? 'cooked' : 'raw';
   return {
     source,
+    form: n.form,
+    forms,
+    missing,
     serving: `${n.servingLabel}${/\bg$/.test(n.servingLabel) ? '' : ` (${round1(n.servingG)} g)`}`,
     rows,
     recordName: rec.name,

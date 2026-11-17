@@ -516,4 +516,8 @@ export const fr: Record<Key, string> = {
   "food.srcUsda": "USDA FoodData Central, {file}. Fiche : {name}, ID FDC {id}. Vérifié le {date}.",
   "food.refOnly": "Information de référence seulement, pas un avis médical. Demandez à votre équipe de soins ce qui vous convient.",
   "food.perServing": "Par portion. Les valeurs viennent de tables alimentaires officielles, ajustées au poids de la portion.",
+  "food.form.raw": "Cru",
+  "food.form.cooked": "Cuit",
+  "food.formMissing": "{form} : à vérifier. Aucune fiche officielle trouvée.",
+  "food.formPick": "Afficher les quantités pour",
 };

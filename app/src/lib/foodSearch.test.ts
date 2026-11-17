@@ -41,6 +41,16 @@ describe('food data', () => {
     expect(new Set(FOODS.map((f) => f.id)).size).toBe(FOODS.length);
     for (const f of FOODS) expect(FOOD_GROUPS).toContain(f.group);
   });
+  it('has clean names: no sub-group header fragments from the taxonomy parse', () => {
+    for (const f of FOODS) {
+      expect(f.name, f.id).not.toMatch(/[|:]/);
+      expect(f.name, f.id).not.toMatch(/\.\s*$|\.\s/);
+      expect(f.name, f.id).toBe(f.name.trim());
+    }
+  });
+  it('finds the foods that had merged names', () => {
+    for (const n of ['Cheddar', 'Brie', 'Blue cheese', 'Halloumi', 'Cottage cheese', 'Tuna', 'Cod', 'Salmon', 'Oysters', 'Squid', 'Eel', 'Monkfish', 'Sablefish', 'Shark', 'Cockles']) expect(FOODS.map((f) => f.name), n).toContain(n);
+  });
   it('fills all 12 groups', () => {
     expect(FOOD_GROUPS).toHaveLength(12);
     for (const g of FOOD_GROUPS) expect(FOODS.some((f) => f.group === g)).toBe(true);

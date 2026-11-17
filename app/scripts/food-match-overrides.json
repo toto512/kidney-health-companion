@@ -437,7 +437,14 @@
     "fish-seafood/finfish-fatty-oily-fish-salmon": 3049,
     "fish-seafood/shellfish-bivalves-oysters": 3122,
     "fish-seafood/shellfish-cockles-cephalopods-gastropods-squid": 3125,
-    "fish-seafood/finfish-shark-other-fish-eel": 3004
+    "fish-seafood/finfish-shark-other-fish-eel": 3004,
+    "fish-seafood/finfish-monkfish-large-pelagic-fish-tuna": 3085,
+    "fish-seafood/finfish-sablefish-lean-white-fish-cod": 3194,
+    "fish-seafood/finfish-monkfish": 3201,
+    "fish-seafood/finfish-sablefish": 3047,
+    "fish-seafood/finfish-shark": 3060,
+    "fish-seafood/shellfish-cockles": 6404,
+    "milk-cheese/cheeses-blue-cheese": 18
   },
   "variants": [
     "100% orange juice",
@@ -538,8 +545,14 @@
     "Yellow split peas",
     "Yellow summer squash",
     "fish-seafood/finfish-fatty-oily-fish-salmon",
+    "fish-seafood/finfish-monkfish",
+    "fish-seafood/finfish-monkfish-large-pelagic-fish-tuna",
+    "fish-seafood/finfish-sablefish",
+    "fish-seafood/finfish-sablefish-lean-white-fish-cod",
+    "fish-seafood/finfish-shark",
     "fish-seafood/finfish-shark-other-fish-eel",
     "fish-seafood/shellfish-bivalves-oysters",
+    "fish-seafood/shellfish-cockles",
     "fish-seafood/shellfish-cockles-cephalopods-gastropods-squid",
     "meat-poultry/beef-offal-heart",
     "meat-poultry/beef-offal-kidney",
@@ -548,6 +561,7 @@
     "meat-poultry/chicken-drumstick",
     "meat-poultry/chicken-thigh",
     "meat-poultry/chicken-wing",
+    "milk-cheese/cheeses-blue-cheese",
     "milk-cheese/cheeses-blue-cheese-hard-aged-cheddar",
     "milk-cheese/cheeses-fresh-soft-cottage-cheese",
     "milk-cheese/cheeses-halloumi-semi-soft-ripened-brie"

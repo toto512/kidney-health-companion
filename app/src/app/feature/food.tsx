@@ -129,7 +129,16 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
     <ScrollView>
       <Screen>
         <Text style={{ fontSize: font.body, color: color.muted }}>{`${t(`foodgrp.${group}` as Key)} › ${food.sub}`}</Text>
-        <H1>{food.name}</H1>
+        {/* Name and a Back button on one row. A long name pushes the button under it; right-to-left languages flip the row. */}
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', columnGap: 12, rowGap: 8 }}>
+          <View style={{ flexGrow: 1, flexShrink: 1, flexBasis: 220, minWidth: 0 }}>
+            <H1>{food.name}</H1>
+          </View>
+          <Pressable accessibilityRole="button" accessibilityLabel={t('food.another')} onPress={onAnother}
+            style={{ minHeight: 56, minWidth: 96, paddingHorizontal: 18, borderRadius: 14, borderWidth: 2, borderColor: color.primary, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: font.label, fontWeight: '800', color: color.primary }}>{t('food.backShort')}</Text>
+          </Pressable>
+        </View>
         <Panel>
           {a ? (
             <>

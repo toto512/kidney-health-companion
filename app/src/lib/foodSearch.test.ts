@@ -62,3 +62,12 @@ describe('food data', () => {
     expect(all.some((n) => n.includes('infant formula') || n.includes('manoomin'))).toBe(false);
   });
 });
+
+describe('search across all groups', () => {
+  it('finds a food in any group from the front screen', () => {
+    const r = searchFoods(FOODS, 'cheddar', 'all');
+    expect(r.map((f) => f.name)).toContain('Cheddar');
+    expect(r[0].group).toBe('milk-cheese');
+    expect(searchFoods(FOODS, 'salmon', 'all').some((f) => f.group === 'fish-seafood')).toBe(true);
+  });
+});

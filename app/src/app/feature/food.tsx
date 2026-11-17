@@ -18,18 +18,37 @@ type Step = { kind: 'groups' } | { kind: 'wheel'; group: FoodGroup } | { kind: '
 export default function FoodScreen() {
   const [step, setStep] = useState<Step>({ kind: 'groups' });
   const [selId, setSelId] = useState<string | null>(null);
-  if (step.kind === 'groups') return <Groups onPick={(g) => { setSelId(null); setStep({ kind: 'wheel', group: g }); }} />;
+  if (step.kind === 'groups') return <Groups onPick={(g) => { setSelId(null); setStep({ kind: 'wheel', group: g }); }} onOpen={(food) => { setSelId(food.id); setStep({ kind: 'detail', group: food.group, food }); }} />;
   if (step.kind === 'wheel') return <Wheel group={step.group} selId={selId} setSelId={setSelId} onBack={() => setStep({ kind: 'groups' })} onOpen={(food) => setStep({ kind: 'detail', group: step.group, food })} />;
   return <Detail key={step.food.id} group={step.group} food={step.food} onSwitch={(food) => { setSelId(food.id); setStep({ kind: 'detail', group: step.group, food }); }} onAnother={() => { setSelId(step.food.id); setStep({ kind: 'wheel', group: step.group }); }} onGroups={() => setStep({ kind: 'groups' })} />;
 }
 
-function Groups({ onPick }: { onPick: (g: FoodGroup) => void }) {
+function Groups({ onPick, onOpen }: { onPick: (g: FoodGroup) => void; onOpen: (f: Food) => void }) {
   const color = useColors();
   const { t } = useI18n();
+  const [q, setQ] = useState('');
+  const searching = q.trim().length > 0;
+  const found = useMemo(() => (searching ? searchFoods(FOODS, q, 'all') : []), [q, searching]);
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps="handled">
       <Screen>
         <H1>{t('food.title')}</H1>
+        <Field label={t('food.searchAll')} placeholder={t('food.searchHint')} value={q} onChangeText={setQ} autoCorrect={false} autoCapitalize="none" returnKeyType="search" />
+        {searching ? (
+          <>
+            <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{t('food.choose', { n: String(found.length) })}</Text>
+            {found.length === 0 ? <Panel><Body>{t('food.noneInGroup')}</Body></Panel> : found.slice(0, 40).map((f) => (
+              <Pressable key={f.id} accessibilityRole="button" accessibilityLabel={`${f.name}, ${t(`foodgrp.${f.group}` as Key)}, ${f.sub}`} onPress={() => onOpen(f)}
+                style={{ minHeight: 64, justifyContent: 'center', paddingVertical: 8, paddingHorizontal: 14, borderRadius: 14, borderWidth: 2, borderColor: color.border, backgroundColor: color.surface }}>
+                <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{f.name}</Text>
+                <Text style={{ fontSize: font.body * 0.85, color: color.muted }}>{`${t(`foodgrp.${f.group}` as Key)} › ${f.sub}`}</Text>
+              </Pressable>
+            ))}
+            {found.length > 40 ? <Body>{t('food.moreHint')}</Body> : null}
+            <BigButton variant="secondary" label={t('food.clearSearch')} onPress={() => setQ('')} />
+          </>
+        ) : (
+        <>
         <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t('food.groupsQ')}</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
           {FOOD_GROUPS.map((g) => (
@@ -39,6 +58,8 @@ function Groups({ onPick }: { onPick: (g: FoodGroup) => void }) {
             </Pressable>
           ))}
         </View>
+        </>
+        )}
         <BigButton variant="secondary" label={t('profile.backHealth')} onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} />
         <DisclaimerFooter />
       </Screen>

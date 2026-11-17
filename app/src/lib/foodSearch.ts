@@ -1,4 +1,4 @@
-import type { Food, FoodCategory } from '../content/foods';
+import type { Food, FoodGroup } from '../content/foods';
 
 /** Lower case, no accents or punctuation, single spaces. */
 export function norm(s: string): string {
@@ -20,13 +20,13 @@ function distance(a: string, b: string): number {
   return prev[b.length];
 }
 
-// Score one query word against one word of a food name or synonym: 3 exact, 2 prefix, 1 close spelling (1 slip, 2 for long words), 0 none.
+// Score one query word against one word of a food name or synonym: 3 exact (or plural), 2 prefix or close spelling (1 slip, 2 for long words), 0 none.
 function wordScore(q: string, w: string): number {
-  if (q === w) return 3;
+  if (q === w || q + 's' === w || q === w + 's' || q + 'es' === w || q === w + 'es') return 3;
   if (q.length >= 2 && w.startsWith(q)) return 2;
   if (q.length >= 4) {
     const allow = q.length >= 8 ? 2 : 1;
-    if (distance(q, w) <= allow) return 1;
+    if (distance(q, w) <= allow || (w.endsWith('s') && distance(q, w.slice(0, -1)) <= allow)) return 2;
     // A slip inside a longer word's start ("bannana" for "bananas").
     if (w.length > q.length && distance(q, w.slice(0, q.length)) <= allow) return 1;
   }
@@ -34,7 +34,7 @@ function wordScore(q: string, w: string): number {
 }
 
 function foodScore(words: string[], f: Food): number {
-  const phrases = [f.name, ...f.synonyms].map(norm);
+  const phrases = [f.name, f.sub, ...(f.synonyms ?? [])].map(norm);
   let best = 0;
   for (const p of phrases) {
     const pw = p.split(' ');
@@ -49,15 +49,15 @@ function foodScore(words: string[], f: Food): number {
   return best;
 }
 
-/** Foods matching every typed word (typos tolerated), best first, then A to Z. An empty query returns the whole list A to Z. */
-export function searchFoods(foods: Food[], query: string, category: FoodCategory | 'all' = 'all'): Food[] {
-  const pool = category === 'all' ? foods : foods.filter((f) => f.category === category);
+/** Foods matching every typed word (typos tolerated), best first, then A to Z (the sub-group name also matches). An empty query returns the whole list A to Z. */
+export function searchFoods(foods: Food[], query: string, group: FoodGroup | 'all' = 'all'): Food[] {
+  const pool = group === 'all' ? foods : foods.filter((f) => f.group === group);
   const words = norm(query).split(' ').filter(Boolean);
   const byName = (a: Food, b: Food) => a.name.localeCompare(b.name);
   if (words.length === 0) return [...pool].sort(byName);
   return pool
     .map((f) => ({ f, s: foodScore(words, f) }))
     .filter((x) => x.s > 0)
-    .sort((a, b) => b.s - a.s || byName(a.f, b.f))
+    .sort((a, b) => b.s - a.s || a.f.name.length - b.f.name.length || byName(a.f, b.f))
     .map((x) => x.f);
 }

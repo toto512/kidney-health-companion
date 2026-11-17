@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Linking, Platform, Pressable, ScrollView, type ScrollViewInstance, Text, View } from 'react-native';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Panel, Screen } from '@/components/ui';
+import { UsdaLookup } from '@/components/UsdaLookup';
 import { Food, FOODS, FOOD_GROUPS, FoodGroup } from '@/content/foods';
 import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
@@ -181,6 +182,7 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
               <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t('food.noNumbers')}</Text>
               <Body>{t('food.about', { name: food.name, group: t(`foodgrp.${group}` as Key), sub: food.sub })}</Body>
               <Body>{t('food.notChecked')}</Body>
+              <UsdaLookup initial={food.name} />
               <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t('food.lookup.title')}</Text>
               {lookupLinks(food.name, country, lang).map((l) => (
                 <Pressable key={l.kind} accessibilityRole="link" onPress={() => Linking.openURL(l.url)} style={{ minHeight: 56, justifyContent: 'center' }}>

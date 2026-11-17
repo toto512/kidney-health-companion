@@ -3,3 +3,6 @@ project_id = "kidney-health-companion"
 
 [functions.delete-account]
 verify_jwt = true
+
+[functions.food-search]
+verify_jwt = true

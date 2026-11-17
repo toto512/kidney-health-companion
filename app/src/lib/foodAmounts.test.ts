@@ -79,3 +79,13 @@ describe('food amounts', () => {
     expect(perServing('proteinG', 3.4, 85)).toBe(2.9);
   });
 });
+
+describe('variant note', () => {
+  it('flags foods where one common variant was picked, and not exact matches', () => {
+    expect(amountsFor('grains-bread/true-cereal-grains-rice', 'US')?.variant).toBe(true);
+    expect(amountsFor('fruit/berries-blackberries', 'US')?.variant ?? false).toBe(false);
+  });
+  it('every variant food shows its official record name', () => {
+    for (const [id, n] of Object.entries(FOOD_NUTRITION)) if (n.variant) expect(amountsFor(id, 'US')!.recordName.length).toBeGreaterThan(0);
+  });
+});

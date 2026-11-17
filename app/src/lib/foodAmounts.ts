@@ -18,6 +18,7 @@ export type ResolvedAmounts = {
   source: 'cnf' | 'usda';
   form: FormKind; // the form shown
   forms: FormKind[]; // forms that have an official record
+  variant: boolean; // one common variant was picked from several official records: other types can differ
   missing: 'raw' | 'cooked' | null; // the other form, when the shown one is raw or cooked and no official record exists for the other
   serving: string;
   rows: AmountRow[];
@@ -50,6 +51,7 @@ export function amountsFor(foodId: string, country: string | null | undefined, w
     form: n.form,
     forms,
     missing,
+    variant: !!food.variant,
     serving: /\bg$/.test(n.servingLabel) ? n.servingLabel : `${n.servingLabel} (${Math.round(n.servingG)} g)`,
     rows,
     recordName: rec.name,

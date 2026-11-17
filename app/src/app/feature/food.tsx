@@ -158,6 +158,7 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
               ) : null}
               {a.missing ? <Body>{t('food.formMissing', { form: t(`food.form.${a.missing}` as Key) })}</Body> : null}
               <Body>{t('food.serving', { serving: a.serving })}</Body>
+              {a.variant ? <Body>{t('food.variant')}</Body> : null}
               {a.rows.map((r) => (
                 <View key={r.nutrient} style={{ minHeight: 48, justifyContent: 'center' }}>
                   <Text style={{ fontSize: font.body, color: color.text }}>

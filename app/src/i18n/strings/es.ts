@@ -519,6 +519,7 @@ export const es: Record<Key, string> = {
   "food.form.raw": "Crudo",
   "food.form.cooked": "Cocinado",
   "food.formMissing": "{form}: requiere revisión. Aún no hay un registro oficial asociado.",
+  "food.variant": "Otros tipos de este alimento pueden tener cantidades diferentes.",
   "food.formPick": "Mostrar cantidades para",
   "food.backShort": "Atrás",
   "food.rv.zero": "Requiere revisión: se supone cero",

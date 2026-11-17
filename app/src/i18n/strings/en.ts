@@ -518,6 +518,7 @@ export const en = {
   "food.form.raw": "Raw",
   "food.form.cooked": "Cooked",
   "food.formMissing": "{form}: Needs review. No matched official record yet.",
+  "food.variant": "Other types of this food can have different amounts.",
   "food.formPick": "Show amounts for",
   "food.backShort": "Back",
   "food.rv.zero": "Needs review: assumed zero",

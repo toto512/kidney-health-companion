@@ -30,7 +30,7 @@ export function validIso(y: number, m: number, d: number, today: Date): string |
 
 type Found = { kind: 'iso'; value: string; raw: string } | { kind: 'ambiguous'; raw: string; dayFirst: string; monthFirst: string };
 
-function datesInLine(line: string, today: Date): Found[] {
+export function datesInLine(line: string, today: Date): Found[] {
   const out: Found[] = [];
   let m: RegExpExecArray | null;
   const ymd = /(?<!\d)(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})(?!\d)/g;

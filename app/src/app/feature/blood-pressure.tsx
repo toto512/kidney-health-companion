@@ -1,3 +1,5 @@
+import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
@@ -8,6 +10,7 @@ import { useI18n } from '@/i18n/I18nProvider';
 import { dateTimeText } from '@/i18n/bpText';
 import { trError } from '@/i18n/labels';
 import { BP_LIMITS, checkReading, parseReading } from '@/lib/bp';
+import { FILE_EXT, MAX_BYTES } from '@/lib/labData';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
 
@@ -71,6 +74,24 @@ export default function BloodPressure() {
     await load();
   }
 
+  // Pick or photograph a page, then read it on the next screen. The picture is not uploaded or stored.
+  function scan(asset: { uri: string; mimeType?: string | null; fileSize?: number | null } | undefined) {
+    if (!asset) return;
+    const mime = asset.mimeType ?? '';
+    if (!FILE_EXT[mime]) { setErr(t('lab.errFileType')); return; }
+    if (asset.fileSize && asset.fileSize > MAX_BYTES) { setErr(t('lab.errFileSize')); return; }
+    setErr('');
+    router.push({ pathname: '/feature/scan-blood-pressure', params: { uri: asset.uri, mime } });
+  }
+  async function pickFile() {
+    const res = await DocumentPicker.getDocumentAsync({ type: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'], copyToCacheDirectory: true, multiple: false });
+    if (!res.canceled) scan(res.assets[0]);
+  }
+  async function camera() {
+    const res = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 0.8 });
+    if (!res.canceled) scan(res.assets[0]);
+  }
+
   async function remove(id: string) {
     const { error } = await supabase.from('bp_readings').delete().eq('id', id);
     if (error) { setErr(t('bp.errDelete')); return; }
@@ -92,6 +113,12 @@ export default function BloodPressure() {
           <Select label={t('bp.pulseOpt')} value={pulse} options={pulseOptions} onChange={setPulse} placeholder="--" searchLabel={t('bp.number')} width={SMALL} valueSize={24} />
           {err ? <Body tone="danger">{err}</Body> : null}
           <BigButton label={busy ? t('profile.saving') : t('bp.saveReading')} onPress={save} disabled={busy || !sys || !dia} />
+        </Panel>
+        <Panel>
+          <SectionHeader icon="📄" accent="red">{t('bp.scan.title')}</SectionHeader>
+          <Body>{t('bp.scan.hint')}</Body>
+          <BigButton label={t('lab.pickFile')} variant="secondary" onPress={() => void pickFile()} />
+          <BigButton label={t('lab.takePhoto')} variant="secondary" onPress={() => void camera()} />
         </Panel>
         <Panel>
           <SectionHeader icon="📈" accent="red">{t('bp.chart')}</SectionHeader>

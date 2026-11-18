@@ -189,11 +189,11 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'uk-schiz': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/mental-health/conditions/schizophrenia/treatment/', dateText: 'Page last reviewed: 13 April 2023', nextReviewDue: '2026-04-13', checkedOn: C },
   'ca-hlbc-schiz': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/schizophrenia', dateText: 'Current as of: October 20, 2022', checkedOn: C },
   'uk-acne': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/acne/', dateText: 'Page last reviewed: 22 September 2026', nextReviewDue: '2029-09-22', checkedOn: C },
-  'us-niams-acne': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/acne/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
+  'us-niams-acne': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/acne/diagnosis-treatment-and-steps-to-take', dateText: 'Last Reviewed July 2023', checkedOn: C },
   'ca-hlbc-acne': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/acne', dateText: 'Current as of: March 22, 2023', checkedOn: C },
   'uk-hives': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/hives/', dateText: 'Page last reviewed: 26 April 2024', nextReviewDue: '2027-04-26', checkedOn: C },
   'uk-mecfs': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/chronic-fatigue-syndrome-cfs/', dateText: 'Page last reviewed: 28 May 2024', nextReviewDue: '2027-05-28', checkedOn: C },
-  'us-cdc-mecfs': { country: 'US', publisher: 'CDC (US Centers for Disease Control and Prevention)', type: 'government', url: 'https://www.cdc.gov/me-cfs/treatment/index.html', dateText: null, checkedOn: C },
+  'us-cdc-mecfs': { country: 'US', publisher: 'CDC (US Centers for Disease Control and Prevention)', type: 'government', url: 'https://www.cdc.gov/me-cfs/management/index.html', dateText: 'Last Reviewed May 10, 2024', checkedOn: C },
 };
 
 type Tiles = Partial<Record<TileKey, TileItem[]>>;
@@ -2077,12 +2077,13 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
   },
   mecfs: {
     US: {
-      avoid: [it('us-mecfs-exercise', 'Exercise right before going to bed', 'us-cdc-mecfs', ['Avoid exercise right before going to bed.'])],
       activity: [
-        it('us-mecfs-bed', 'Go to bed at the same time each night', 'us-cdc-mecfs', ['Go to bed at same time each night and wake up at same time each morning.']),
-        it('us-mecfs-memory', 'Memory aids, like organizers and calendars', 'us-cdc-mecfs', ['Memory aids, like organizers and calendars, can help with memory problems.']),
+        it('us-mecfs-sleep', 'Sleep habits', 'us-cdc-mecfs', ['Good sleep habits are important for all people, including those with ME/CFS.']),
+        it('us-mecfs-pacing', 'Plan activity and rest to stay within those limits', 'us-cdc-mecfs', ['Then, they need to plan activity and rest to stay within those limits.']),
+        it('us-mecfs-easier', 'Finding ways to make activities easier', 'us-cdc-mecfs', ['Finding ways to make activities easier may be helpful.']),
+        it('us-mecfs-memory', 'Organizers and calendars for memory', 'us-cdc-mecfs', ['Tools like organizers and calendars can help people manage memory problems.']),
       ],
-      meds: [it('us-mecfs-provider', 'Talk to their healthcare provider before trying any medication', 'us-cdc-mecfs', ['Patients should always talk to their healthcare provider before trying any medication.'])],
+      meds: [it('us-mecfs-provider', 'Talk to their healthcare provider before trying any medication', 'us-cdc-mecfs', ['People with ME/CFS should always talk to their healthcare provider before trying any medication.'])],
     },
     GB: {
       activity: [

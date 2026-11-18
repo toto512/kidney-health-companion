@@ -3,6 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { Image, Pressable, ScrollView, Text, View } from 'react-native';
+import { UploadButtons } from '@/components/UploadButtons';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Panel, Screen } from '@/components/ui';
 import { useI18n } from '@/i18n/I18nProvider';
 import { trError } from '@/i18n/labels';
@@ -161,9 +162,7 @@ export default function ChooseMedicines() {
           <Field label={t('meds.name')} value={own} onChangeText={(t) => { setOwn(t); setOwnErr(''); }} placeholder={t('meds.typeName')} maxLength={100} onSubmitEditing={addOwn} />
           {ownErr ? <Body tone="danger">{ownErr}</Body> : null}
           <BigButton variant="secondary" label={t('meds.addName')} onPress={addOwn} disabled={!own.trim()} />
-          <Body>{t('meds.scan.hint')}</Body>
-          {!scan ? <BigButton variant="secondary" label={t('lab.pickFile')} onPress={() => void pickFile()} /> : null}
-          {!scan ? <BigButton variant="secondary" label={t('lab.takePhoto')} onPress={() => void camera()} /> : null}
+          {!scan ? <UploadButtons onFile={() => void pickFile()} onCamera={() => void camera()} /> : null}
           {scan?.step === 'reading' ? <Body>{t('meds.scan.reading', { n: Math.round(progress * 100) })}</Body> : null}
           {scan?.step === 'check' ? (
             <View style={{ gap: 8 }}>

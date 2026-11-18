@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { useMemo, useRef, useState } from 'react';
 import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { Select } from '@/components/Select';
+import { UploadButtons } from '@/components/UploadButtons';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Panel, Screen } from '@/components/ui';
 import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
@@ -114,8 +115,7 @@ export default function AddBloodTest() {
         {step === 'choose' ? (
           <Panel>
             <Body>{t('lab.intro')}</Body>
-            <BigButton label={t('lab.pickFile')} onPress={() => void pickFile()} />
-            <BigButton label={t('lab.takePhoto')} variant="secondary" onPress={() => void camera()} />
+            <UploadButtons onFile={() => void pickFile()} onCamera={() => void camera()} />
             <BigButton label={t('lab.typeIt')} variant="secondary" onPress={typeIt} />
             {err ? <Body tone="danger">{err}</Body> : null}
           </Panel>

@@ -12,3 +12,15 @@ describe('svg shapes carry no event handlers', () => {
     for (const t of tags) expect(t).not.toMatch(/\bon[A-Z]\w*=/);
   });
 });
+
+describe('upload buttons', () => {
+  it('icons are decorative (hidden from screen readers) and carry no event handlers; the buttons have full spoken labels', () => {
+    const src = readFileSync(new URL('./UploadButtons.tsx', import.meta.url), 'utf8');
+    const tags = src.match(/<(Svg|Circle|Rect|Path)\b[^>]*>/g) ?? [];
+    expect(tags.length).toBeGreaterThanOrEqual(6);
+    for (const t of tags) expect(t).not.toMatch(/\bon[A-Z]\w*=/);
+    expect(src.match(/importantForAccessibility="no-hide-descendants"/g)?.length).toBe(2);
+    expect(src).toContain("t('upload.fileA11y')");
+    expect(src).toContain("t('upload.photoA11y')");
+  });
+});

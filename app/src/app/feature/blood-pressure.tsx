@@ -6,6 +6,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Select } from '@/components/Select';
 import { BigButton, Body, DisclaimerFooter, H1, Panel, Screen, SectionHeader } from '@/components/ui';
 import { BpChart } from '@/components/BpChart';
+import { UploadButtons } from '@/components/UploadButtons';
 import { useI18n } from '@/i18n/I18nProvider';
 import { dateTimeText } from '@/i18n/bpText';
 import { trError } from '@/i18n/labels';
@@ -115,10 +116,7 @@ export default function BloodPressure() {
           <BigButton label={busy ? t('profile.saving') : t('bp.saveReading')} onPress={save} disabled={busy || !sys || !dia} />
         </Panel>
         <Panel>
-          <SectionHeader icon="📄" accent="red">{t('bp.scan.title')}</SectionHeader>
-          <Body>{t('bp.scan.hint')}</Body>
-          <BigButton label={t('lab.pickFile')} variant="secondary" onPress={() => void pickFile()} />
-          <BigButton label={t('lab.takePhoto')} variant="secondary" onPress={() => void camera()} />
+          <UploadButtons onFile={() => void pickFile()} onCamera={() => void camera()} />
         </Panel>
         <Panel>
           <SectionHeader icon="📈" accent="red">{t('bp.chart')}</SectionHeader>

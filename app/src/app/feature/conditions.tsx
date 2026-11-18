@@ -1,9 +1,11 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Linking, Pressable, ScrollView, Text } from 'react-native';
+import { ConditionTiles } from '@/components/ConditionTiles';
 import { ReferenceBlock } from '@/components/ReferenceBlock';
 import { BigButton, Body, DisclaimerFooter, H1, Panel, Screen, SectionHeader } from '@/components/ui';
 import { CONDITIONS, EXTRAS, sourceReviewOverdue } from '@/content/conditions';
+import { hasTiles } from '@/content/conditionTiles';
 import { useI18n } from '@/i18n/I18nProvider';
 import { countryLabel } from '@/i18n/labels';
 import { countryName, isSupported } from '@/lib/profile';
@@ -53,6 +55,7 @@ export default function Conditions() {
                     <Text style={{ fontSize: font.label, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>{t('cond.openPage')}</Text>
                   </Pressable>
                   <ReferenceBlock country={country} condition={c.id} accent={ACCENT[c.id] ?? 'blue'} />
+                  {hasTiles(c.id, country) ? <ConditionTiles country={country} condition={c.id} conditionLabel={c.label} accent={ACCENT[c.id] ?? 'blue'} /> : null}
                 </Panel>
               );
             })}

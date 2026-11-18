@@ -88,7 +88,7 @@ console.log(`\nOK ${ok}, MANUAL ${manual}, NOT FOUND ${bad}`);
 
 // DATE CHECK: reads the live page's own review dates and compares them with the stored dateText / nextReviewDue (display is not changed by this).
 // The 5-year rule for medicine items depends on these dates, so any mismatch or missing date must be looked at.
-const DATE_RE = /(page last reviewed|last reviewed|last updated on|last updated|current as of|adaptation date|date last reviewed|revised|next review due)\s*:?\s*(\d{1,2}\s+[a-z]+\s+\d{4}|[a-z]+\s+\d{1,2},?\s+\d{4}|[a-z]+\s+\d{4}|\d{1,2}\/\d{1,2}\/\d{4}|\d{4})/g;
+const DATE_RE = /(page last reviewed|last reviewed on|last reviewed|reviewed on|last updated on|last updated|current as of|adaptation date|date last reviewed|revised|next review due)\s*:?\s*(\d{1,2}\s+[a-z]+\s+\d{4}|[a-z]+\s+\d{1,2},?\s+\d{4}|[a-z]+\s+\d{4}|\d{1,2}\/\d{1,2}\/\d{4}|\d{4})/g;
 const iso = (d) => (d ? d.toISOString().slice(0, 10) : null);
 const dateIssues = [];
 let unreadable = 0;

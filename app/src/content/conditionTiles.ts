@@ -166,11 +166,11 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'ca-hlbc-cts': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/carpal-tunnel-syndrome', dateText: 'Current as of: November 9, 2022', checkedOn: C },
   'uk-pf': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/plantar-fasciitis/', dateText: 'Page last reviewed: 14 February 2025', nextReviewDue: '2028-02-14', checkedOn: C },
   'ca-hlbc-pf': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/plantar-fasciitis', dateText: 'Current as of: November 9, 2022', checkedOn: C },
-  'uk-ptsd': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/post-traumatic-stress-disorder-ptsd/', dateText: 'Page last reviewed: 08 April 2026', nextReviewDue: '2029-04-08', checkedOn: C },
+  'uk-ptsd': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/mental-health/conditions/ptsd-post-traumatic-stress-disorder/', dateText: 'Page last reviewed: 08 April 2026', nextReviewDue: '2029-04-08', checkedOn: C },
   'ca-hlbc-ptsd': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/post-traumatic-stress-disorder', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
   'uk-bipolar': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/mental-health/conditions/bipolar-disorder/', dateText: 'Page last reviewed: 28 October 2024', nextReviewDue: '2027-10-28', checkedOn: C },
   'ca-hlbc-bipolar': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/bipolar-disorder', dateText: 'Current as of: October 20, 2022', checkedOn: C },
-  'uk-adhd': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/', dateText: 'Page last reviewed: 19 March 2025', nextReviewDue: '2028-03-19', checkedOn: C },
+  'uk-adhd': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/adhd-adults/', dateText: 'Page last reviewed: 19 March 2025', nextReviewDue: '2028-03-19', checkedOn: C },
   'us-niddk-cirrhosis': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/liver-disease/cirrhosis/eating-diet-nutrition', dateText: 'Last Reviewed June 2023', checkedOn: C },
   'uk-cirrhosis': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/cirrhosis/', dateText: 'Page last reviewed: 10 February 2025', nextReviewDue: '2028-02-10', checkedOn: C },
   'ca-hlbc-cirrhosis': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/cirrhosis', dateText: 'Current as of: March 22, 2023', checkedOn: C },
@@ -1793,7 +1793,7 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       activity: [
         it('gb-ptsd-active', 'Stay active', 'uk-ptsd', ['stay active']),
         it('gb-ptsd-talk', "Talk to someone about how you're feeling", 'uk-ptsd', ["talk to someone about how you're feeling, either a friend or family member, or through an online support group"]),
-        it('gb-ptsd-diary', 'Keep a diary to help spot things that can trigger flashbacks', 'uk-ptsd', ['Keep a diary to help spot the things that can trigger flashbacks, such as certain smells or sounds.']),
+        it('gb-ptsd-diary', 'Keep a diary to help spot things that can trigger flashbacks', 'uk-ptsd', ['Keep a diary to help spot the things that can trigger flashbacks, such as certain smells or sounds']),
       ],
       meds: [it('gb-ptsd-medicine', 'Do not stop taking your PTSD medicine', 'uk-ptsd', ['Do not stop taking your PTSD medicine unless you are told to by a doctor, even if you feel better.'])],
     },
@@ -1831,6 +1831,12 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
   adhd: {
     US: {},
     GB: {
+      avoid: [it('gb-adhd-bedtime', 'Screens, caffeine, sugar and alcohol close to bedtime', 'uk-adhd', ['Try to avoid screens, caffeine, sugar and alcohol close to bedtime.'])],
+      activity: [
+        it('gb-adhd-routine', 'Regular bedtime and a quiet dark bedroom', 'uk-adhd', ['Having a regular bedtime and a quiet dark bedroom can help.']),
+        it('gb-adhd-sleep', 'Get enough sleep', 'uk-adhd', ["It's important to get enough sleep."]),
+        it('gb-adhd-support', 'ADHD support groups locally and online', 'uk-adhd', ['There are ADHD support groups locally and online.']),
+      ],
       meds: [it('gb-adhd-medicines', 'ADHD medicines', 'uk-adhd', ['ADHD medicines must be started and monitored by an ADHD specialist.'])],
     },
     CA: {},

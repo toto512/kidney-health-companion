@@ -208,7 +208,6 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'uk-lyme': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/lyme-disease/', dateText: 'Page last reviewed: 03 June 2025', checkedOn: C },
   'ca-hlbc-lyme': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/lyme-disease', dateText: 'Current as of: October 31, 2022', checkedOn: C },
   'uk-hiv': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/hiv-and-aids/', dateText: 'Page last reviewed: 09 July 2025', checkedOn: C },
-  'us-nih-hiv': { country: 'US', publisher: 'NIH (US National Institutes of Health)', type: 'government', url: 'https://hivinfo.nih.gov/understanding-hiv/fact-sheets/hiv-and-aids-basics', dateText: 'Last Reviewed: May 28, 2025', checkedOn: C },
   'uk-hearing': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/hearing-loss/', dateText: 'Page last reviewed: 30 May 2025', checkedOn: C },
   'uk-cancer': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/cancer/', dateText: 'Page last reviewed: 27 May 2025', checkedOn: C },
 };
@@ -2254,9 +2253,6 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
     },
   },
   hiv: {
-    US: {
-      meds: [it('us-hiv-pills', 'Medicines taken every day', 'us-nih-hiv', ['are typically a combination of medicines taken every day (as one or more pills)'])],
-    },
     GB: {
       meds: [it('gb-hiv-daily', 'Taking tablets every day', 'uk-hiv', ["You'll start by taking tablets every day."])],
     },
@@ -2324,7 +2320,7 @@ export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) 
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
 export const PENDING_SOURCES: string[] = [
   'us-nimh-autism', 'uk-fibro', 'us-niams-fibro', 'ca-hlbc-fibro', 'uk-neck', 'ca-hlbc-neck', 'uk-tendon', 'uk-scoliosis',
-  'uk-sickle', 'ca-hlbc-sickle', 'uk-hepc', 'uk-lyme', 'ca-hlbc-lyme', 'uk-hiv', 'us-nih-hiv', 'uk-hearing', 'uk-cancer',
+  'uk-sickle', 'ca-hlbc-sickle', 'uk-hepc', 'uk-lyme', 'ca-hlbc-lyme', 'uk-hiv', 'uk-hearing', 'uk-cancer',
 ];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);

@@ -1,4 +1,5 @@
 import type { Lang } from './core';
+import type { TemplateKey, TimeOfDay } from '../lib/myDayLogic';
 import type { Key } from './strings/en';
 
 type T = (k: Key, v?: Record<string, string | number>) => string;
@@ -34,12 +35,26 @@ const ERR: Record<string, Key> = {
   'Use 60 letters or fewer for the name.': 'err.contactNameLong',
   'Choose who they are to you.': 'err.contactRole',
   'Check the phone number. Include the area code, or start with + and the country code.': 'err.contactPhone',
+  'Choose a time of day.': 'err.mydayTime',
+  'Choose at least one day.': 'err.mydayDays',
+  'Choose a task from the list.': 'err.mydayTemplate',
+  'Type what you want to do.': 'err.mydayTitle',
+  'Use 60 letters or fewer for the task.': 'err.mydayTitleLong',
 };
 export const trError = (t: T, msg: string) => {
   if (ERR[msg]) return t(ERR[msg]);
   const m = /^Use (\d+) characters or fewer\.$/.exec(msg);
   return m ? t('err.chars', { n: m[1] }) : msg;
 };
+
+// My day: menu task names and the four times of day.
+const TPL: Record<TemplateKey, Key> = {
+  medicines: 'myday.tpl.medicines', 'blood-pressure': 'myday.tpl.blood-pressure', meal: 'myday.tpl.meal', water: 'myday.tpl.water', walk: 'myday.tpl.walk',
+  call: 'myday.tpl.call', bed: 'myday.tpl.bed', pillbox: 'myday.tpl.pillbox', mail: 'myday.tpl.mail', groceries: 'myday.tpl.groceries', laundry: 'myday.tpl.laundry', appointments: 'myday.tpl.appointments',
+};
+export const templateName = (t: T, k: TemplateKey) => t(TPL[k]);
+const TIME: Record<TimeOfDay, Key> = { morning: 'myday.time.morning', midday: 'myday.time.midday', evening: 'myday.time.evening', bedtime: 'myday.time.bedtime' };
+export const timeLabel = (t: T, v: TimeOfDay) => t(TIME[v]);
 
 // Country names in the chosen language where the device supports it, else the English name.
 export function countryLabel(code: string, lang: Lang, fallback: string): string {

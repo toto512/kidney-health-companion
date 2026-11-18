@@ -5,6 +5,8 @@ import { BigButton, Card, CardNote, CardValue, DisclaimerFooter, H1, H2, Screen,
 import { ContactRow } from '@/components/ContactRow';
 import { TrackingSuggestions } from '@/components/TrackingSuggestions';
 import { useAuth } from '@/lib/auth';
+import { loadDone, loadTasks } from '@/lib/myDay';
+import { localDateKey, progress } from '@/lib/myDayLogic';
 import { dismiss, wasDismissed } from '@/lib/suggestions';
 import { takeFlash } from '@/lib/flash';
 import { useI18n } from '@/i18n/I18nProvider';
@@ -16,6 +18,7 @@ import { emergencyDialFor } from '@/content/emergencyDial';
 import { dialText } from '@/i18n/dialText';
 import { font, space, useColors } from '@/theme/tokens';
 
+type MyDayState = { done: number; total: number; any: boolean } | null | 'error';
 type Latest = { systolic: number; diastolic: number; taken_at: string } | null | 'error';
 
 export default function Today() {
@@ -31,6 +34,7 @@ export default function Today() {
   const [people, setPeople] = useState<Contact[] | null>(null);
   const [country, setCountry] = useState<string | null | undefined>(undefined);
   const [flash, setFlashMsg] = useState<string | null>(null);
+  const [myDay, setMyDay] = useState<MyDayState>(null);
 
   // A confirmation from the screen the person just came from (for example "Profile saved."), shown for 6 seconds.
   useFocusEffect(useCallback(() => {
@@ -49,6 +53,17 @@ export default function Today() {
     supabase.from('profiles').select('country_code').maybeSingle().then(({ data }) => { if (alive) setCountry(data?.country_code ?? null); });
     return () => { alive = false; };
   }, [uid]));
+
+  // "3 of 8 done today": only the tasks due today count.
+  useFocusEffect(useCallback(() => {
+    let alive = true;
+    const n = new Date();
+    void Promise.all([loadTasks(), loadDone(localDateKey(n))]).then(([tk, dn]) => {
+      if (!alive) return;
+      setMyDay(!tk || !dn ? 'error' : { ...progress(tk, dn, n), any: tk.length > 0 });
+    });
+    return () => { alive = false; };
+  }, []));
 
   useFocusEffect(useCallback(() => {
     let alive = true;
@@ -89,6 +104,9 @@ export default function Today() {
             <CardNote>{people && people.length ? t('today.peopleNoteSome') : t('today.peopleNoteNone')}</CardNote>
           </Card>
           {people?.map((c) => <ContactRow key={c.id} c={c} />)}
+          <Card title={t('myday.title')} icon="✅" accent="green" onPress={() => router.push('/feature/my-day')}>
+            <CardNote>{myDay === null ? t('myday.cardLoading') : myDay === 'error' ? t('myday.cardError') : !myDay.any ? t('myday.cardNone') : myDay.total === 0 ? t('myday.cardNoneToday') : t('myday.progress', { done: myDay.done, total: myDay.total })}</CardNote>
+          </Card>
           <Card title={t('today.bpTitle')} icon="❤️" accent="red" onPress={() => router.push('/feature/blood-pressure')}>
             {bp && bp !== 'error' ? (
               <>

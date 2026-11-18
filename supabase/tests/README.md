@@ -11,3 +11,5 @@ Migration 0008 (user_medications): after the stub, run `psql -f ../migrations/00
 Migration 0009 (medication strength): after the stub and 0008, run `psql -f ../migrations/0009_medication_strength.sql && psql -f 0009_medication_strength.test.sql`. It checks the strength rules, that only strength can be updated, and that other users and enrolled aal1 sessions cannot change rows.
 
 Migration 0010 (emergency_contacts, "My people"): after the stub, run `psql -f ../migrations/0010_emergency_contacts.sql && psql -f 0010_emergency_contacts.test.sql`. It checks owner-only rows, the E.164 phone format, the name and relationship checks, the five-contact limit, that only name, relationship and phone can be updated, the two-step rule and that anon is blocked.
+
+Migration 0013 (my_day_tasks and my_day_done, "My day"): after the stub, run `psql -f ../migrations/0013_my_day.sql && psql -f 0013_my_day.test.sql`. It checks owner-only rows, one name per task (menu or typed), each menu task once, the 20-task limit, the tick day window (today plus or minus 2 days), that only title, time and days can be updated, the two-step rule and that anon is blocked.

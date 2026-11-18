@@ -30,6 +30,12 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'us-niddk-phosphorus-tips': { country: 'US', publisher: 'NIDDK (US National Institutes of Health), "Phosphorus Tips for People with Chronic Kidney Disease"', type: 'government', url: 'https://www.niddk.nih.gov/-/media/Files/Health-Information/Health-Professionals/Kidney-Disease/PhosphorusTipsforPeopleCKD_EN.pdf', dateText: null, checkedOn: C },
   'us-niddk-ckd-children-nutrition': { country: 'US', publisher: 'NIDDK (US National Institutes of Health), page for children with kidney disease', type: 'government', url: 'https://www.niddk.nih.gov/health-information/kidney-disease/children/helping-child-adapt-life-chronic-kidney-disease/nutrition-chronic-kidney-disease', dateText: null, checkedOn: C },
   'ca-hlbc-ckd-diet': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/kidney-disease-changing-your-diet', dateText: null, checkedOn: C },
+  'us-niddk-managing-diabetes': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/diabetes/overview/managing-diabetes', dateText: 'Last Reviewed October 2023', checkedOn: C },
+  'uk-diabetes': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/diabetes/', dateText: 'Page last reviewed: 26 June 2025', nextReviewDue: '2028-06-26', checkedOn: C },
+  'ca-hlbc-t2d': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/type-2-diabetes', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
+  'us-nhlbi-chd': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/coronary-heart-disease/treatment', dateText: 'Last updated on December 27, 2024', checkedOn: C },
+  'uk-chd-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/coronary-heart-disease/treatment/', dateText: 'Page last reviewed: 17 January 2024', nextReviewDue: '2027-01-17', checkedOn: C },
+  'ca-hlbc-cad': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/coronary-artery-disease-0', dateText: 'Current as of: September 7, 2022', checkedOn: C },
   'us-niams-gout': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/gout/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
   'uk-gout-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/gout/treatment/', dateText: 'Page last reviewed: 24 August 2023', nextReviewDue: '2026-08-24', checkedOn: C },
   'ca-hlbc-gout': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gout', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
@@ -218,6 +224,84 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
         it('gb-hbp-weight', 'Lose weight', 'uk-hbp', ["lose weight if you're overweight"]),
         it('gb-hbp-smoking', 'Do not smoke', 'uk-hbp', ['do not smoke']),
         it('gb-hbp-bp-home', 'Blood pressure monitor at home', 'uk-hbp', ['use a blood pressure monitor at home to check your blood pressure regularly over the next few days']),
+      ],
+    },
+  },
+  // Batch 2 (read 2026-11-18). Diabetes: NIDDK, NHS and HealthLink BC type 2 diabetes pages. Heart disease: NHLBI, NHS and HealthLink BC coronary pages.
+  // Empty tiles mean no usable official line (the NIDDK and NHS diabetes pages name no foods to limit; no page names a home remedy).
+  diabetes: {
+    US: {
+      activity: [
+        it('us-dm-activity', 'Physical activity', 'us-niddk-managing-diabetes', ['Try to get at least 150 minutes of moderate-intensity physical activity, such as brisk walking, each week.']),
+        it('us-dm-weight', 'Weight', 'us-niddk-managing-diabetes', ['If you are overweight or have obesity, ask your health care team how you can manage your weight.']),
+        it('us-dm-smoking', 'If you smoke', 'us-niddk-managing-diabetes', ['If you smoke, vape, or use other tobacco products, stop.']),
+        it('us-dm-sleep', 'About 7 to 8 hours each night', 'us-niddk-managing-diabetes', ['Most adults should aim for about 7 to 8 hours each night.']),
+        it('us-dm-home-glucose', 'Checking blood glucose at home', 'us-niddk-managing-diabetes', ['Even if you do not use insulin, checking your blood glucose level at home can help you manage your diabetes.']),
+      ],
+      meds: [
+        it('us-dm-glucagon', 'Glucagon', 'us-niddk-managing-diabetes', ['Glucagon—a hormone that raises blood glucose levels—is the best way to treat severely low blood glucose.']),
+      ],
+    },
+    GB: {
+      meds: [
+        it('gb-dm-metformin', 'Metformin or insulin', 'uk-diabetes', ['sometimes medicines, such as metformin or insulin'], ['metformin']),
+      ],
+    },
+    CA: {
+      moderate: [
+        it('ca-dm-alcohol', 'Alcohol', 'ca-hlbc-t2d', ['If you drink alcohol, try to drink less.']),
+      ],
+      activity: [
+        it('ca-dm-activity', 'Moderate to vigorous activity', 'ca-hlbc-t2d', ['Try to do moderate to vigorous activity for at least 2½ hours a week.']),
+        it('ca-dm-smoking', 'Do not smoke', 'ca-hlbc-t2d', ['Do not smoke.']),
+        it('ca-dm-glucose', 'Check your blood sugar', 'ca-hlbc-t2d', ['Check your blood sugar as often as your doctor recommends.']),
+      ],
+      meds: [
+        it('ca-dm-pills', 'Pills: metformin, canagliflozin, linagliptin, pioglitazone', 'ca-hlbc-t2d', ['Ones that you take as pills include metformin, canagliflozin, linagliptin, and pioglitazone.'], ['metformin']),
+        it('ca-dm-shots', 'Shots: dulaglutide, exenatide, liraglutide', 'ca-hlbc-t2d', ['Ones that you take as shots include dulaglutide, exenatide, and liraglutide.'], ['dulaglutide']),
+      ],
+    },
+  },
+  heart: {
+    US: {
+      moderate: [
+        it('us-hd-fats', 'Saturated fats', 'us-nhlbi-chd', ['A heart-healthy eating plan includes fruits, vegetables, and whole grains and limits saturated fats']),
+      ],
+      activity: [
+        it('us-hd-activity', 'Physical activity', 'us-nhlbi-chd', ['Before starting any exercise program, ask your provider what level of physical activity is right for you.']),
+        it('us-hd-weight', 'Weight loss plan', 'us-nhlbi-chd', ['You can work with your provider to create a weight loss plan that is right for you.']),
+        it('us-hd-sleep', 'Sleep', 'us-nhlbi-chd', ['The recommended amount for adults is 7 to 9 hours of sleep a night.']),
+      ],
+      meds: [
+        it('us-hd-ace', 'ACE inhibitors and beta blockers', 'us-nhlbi-chd', ['ACE inhibitors, beta blockers, and angiotensin-receptor blockers help lower blood pressure.']),
+        it('us-hd-ccb', 'Calcium channel blockers', 'us-nhlbi-chd', ['Calcium channel blockers lower blood pressure by allowing blood vessels to relax.']),
+        it('us-hd-nitrates', 'Nitrates', 'us-nhlbi-chd', ['Nitrates, such as nitroglycerin, dilate your coronary arteries and relieve or prevent angina (chest pain).']),
+        it('us-hd-statins', 'Atorvastatin and rosuvastatin', 'us-nhlbi-chd', ['such as atorvastatin and rosuvastatin, can help control high blood cholesterol and slow plaque buildup.'], ['atorvastatin']),
+      ],
+    },
+    GB: {
+      activity: [
+        it('gb-hd-exercise', 'Regular exercise', 'uk-chd-treat', ['doing regular exercise, will also reduce your future risk of heart disease']),
+        it('gb-hd-smoking', 'Stopping smoking', 'uk-chd-treat', ['stopping smoking after a heart attack quickly reduces your risk']),
+      ],
+      meds: [
+        it('gb-hd-statins', 'Statins', 'uk-chd-treat', ['Most people start with atorvastatin but other statins include:'], ['atorvastatin']),
+        it('gb-hd-ace', 'Ramipril and lisinopril', 'uk-chd-treat', ['Examples include ramipril and lisinopril.'], ['ramipril', 'lisinopril']),
+        it('gb-hd-ccb', 'Amlodipine, verapamil and diltiazem', 'uk-chd-treat', ['Examples include amlodipine, verapamil and diltiazem.'], ['amlodipine']),
+      ],
+    },
+    CA: {
+      moderate: [
+        it('ca-hd-alcohol', 'Alcohol', 'ca-hlbc-cad', ['Drink alcohol in moderation, if you drink. Ask your doctor how much, if any, is okay for you.']),
+      ],
+      activity: [
+        it('ca-hd-exercise', 'Exercise program', 'ca-hlbc-cad', ["Start an exercise program (if your doctor says it's safe)."]),
+        it('ca-hd-walking', 'Walking, swimming, biking, or jogging', 'ca-hlbc-cad', ['Try walking, swimming, biking, or jogging for at least 30 minutes on most, if not all, days of the week.']),
+        it('ca-hd-smoking', 'Quitting smoking', 'ca-hlbc-cad', ['Quitting smoking is the best thing you can do to reduce your risk of future problems.']),
+        it('ca-hd-weight', 'Weight', 'ca-hlbc-cad', ['Being active and eating healthy foods can help you stay at a healthy weight or lose weight if you need to.']),
+      ],
+      meds: [
+        it('ca-hd-ezetimibe', 'Ezetimibe with a statin', 'ca-hlbc-cad', ['Other cholesterol medicines, such as ezetimibe, may be used along with a statin.']),
       ],
     },
   },

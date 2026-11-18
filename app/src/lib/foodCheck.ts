@@ -6,7 +6,7 @@ import { CONDITIONS } from '../content/conditions';
 // each with its quote, link and check date) that NAMES this food. A food is "named" only when its words are exactly the words of one food the page
 // names (plural or singular, a bracketed preparation word like "(cooked)" ignored). Nothing is inferred from nutrient numbers, no verdict is made.
 // The tile data keys conditions by tile id; the picker calls high blood pressure "hypertension".
-const TILE_ID: Record<string, string> = { hypertension: 'hbp' };
+const TILE_ID: Record<string, string> = { hypertension: 'hbp', 'type-2-diabetes': 'diabetes', 'ischemic-heart-disease': 'heart', 'coronary-artery-disease': 'heart' };
 const LABEL = (tileId: string) => CONDITIONS.find((c) => c.id === tileId)?.label ?? tileId;
 
 const stem = (w: string) => (w.endsWith('ies') && w.length > 4 ? `${w.slice(0, -3)}y` : w.endsWith('oes') ? w.slice(0, -2) : w.endsWith('ses') || w.endsWith('ches') || w.endsWith('shes') ? w.slice(0, -2) : w.endsWith('s') && !w.endsWith('ss') ? w.slice(0, -1) : w);

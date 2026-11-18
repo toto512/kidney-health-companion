@@ -95,7 +95,7 @@ describe('batch 1 coverage', () => {
   });
   it('a checked country with nothing found has empty tiles, never a stand-in from another country', () => {
     for (const t of TILE_KEYS) expect(tileItems('hbp', 'CA', t)).toEqual([]);
-    expect(hasTiles('diabetes', 'CA')).toBe(false);
+    expect(hasTiles('asthma', 'CA')).toBe(false);
   });
   it('home remedy tiles list only what the page says to do at home', () => {
     for (const { tile, item } of all.filter((a) => a.tile === 'home')) expect(item.quotes.join(' '), item.id).toMatch(/ice|rest|raise|prop|elevat|cool|water|bedclothes|cold/i);
@@ -108,5 +108,11 @@ describe('unverified items', () => {
       expect(all.some((a) => a.item.id === id.split('@')[0]), id).toBe(true);
       for (const { cond, country, tile } of all) expect(tileItems(cond, country as 'US', tile as 'avoid').some((i) => i.id === id)).toBe(false);
     }
+  });
+});
+
+describe('batch 2 coverage', () => {
+  it('Diabetes and Heart disease are checked for all three countries', () => {
+    for (const c of ['diabetes', 'heart'] as const) for (const k of ['US', 'GB', 'CA'] as const) expect(hasTiles(c, k), `${c} ${k}`).toBe(true);
   });
 });

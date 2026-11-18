@@ -85,6 +85,21 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'us-niams-ra': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/rheumatoid-arthritis/diagnosis-treatment-and-steps-to-take', dateText: 'Last Reviewed November 2022', checkedOn: C },
   'uk-ra-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/rheumatoid-arthritis/treatment/', dateText: 'Page last reviewed: 08 March 2023', nextReviewDue: '2026-03-08', checkedOn: C },
   'ca-hlbc-ra': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/rheumatoid-arthritis', dateText: 'Current as of: September 8, 2022', checkedOn: C },
+  'us-niddk-ibs-eat': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome/eating-diet-nutrition', dateText: 'Last Reviewed November 2017', checkedOn: C },
+  'us-niddk-ibs-treat': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome/treatment', dateText: 'Last Reviewed November 2017', checkedOn: C },
+  'uk-ibs-diet': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/irritable-bowel-syndrome-ibs/diet-lifestyle-and-medicines/', dateText: 'Page last reviewed: 17 March 2025', nextReviewDue: '2028-03-17', checkedOn: C },
+  'ca-hlbc-ibs': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/irritable-bowel-syndrome-ibs', dateText: 'Current as of: March 22, 2023', checkedOn: C },
+  'us-nhlbi-insomnia': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/insomnia/treatment', dateText: 'Last updated on March 24, 2022', checkedOn: C },
+  'uk-insomnia': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/insomnia/', dateText: 'Page last reviewed: 19 March 2024', nextReviewDue: '2027-03-19', checkedOn: C },
+  'us-niams-back': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/back-pain/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
+  'uk-back-pain': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/back-pain/', dateText: 'Page last reviewed: 05 March 2026', nextReviewDue: '2029-03-05', checkedOn: C },
+  'ca-hlbc-back': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/low-back-pain', dateText: 'Current as of: November 9, 2022', checkedOn: C },
+  'us-niddk-hypo': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/endocrine-diseases/hypothyroidism', dateText: 'Last Reviewed March 2021', checkedOn: C },
+  'uk-thyroid': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/underactive-thyroid-hypothyroidism/', dateText: 'Page last reviewed: 28 April 2025', nextReviewDue: '2028-04-28', checkedOn: C },
+  'ca-hlbc-hypo': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/hypothyroidism', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
+  'us-ninds-pd': { country: 'US', publisher: 'NINDS (US National Institutes of Health)', type: 'government', url: 'https://www.ninds.nih.gov/health-information/disorders/parkinsons-disease', dateText: 'Last Reviewed July 23, 2026', checkedOn: C },
+  'uk-pd-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/parkinsons-disease/treatment/', dateText: 'Page last reviewed: 03 November 2022', nextReviewDue: '2025-11-03', checkedOn: C },
+  'ca-hlbc-pd': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/parkinsons-disease', dateText: 'Current as of: August 25, 2022', checkedOn: C },
   'us-niams-gout': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/gout/diagnosis-treatment-and-steps-to-take', dateText: 'Last Reviewed December 2023', checkedOn: C },
   'uk-gout-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/gout/', dateText: 'Page last reviewed: 24 August 2023', nextReviewDue: '2026-08-24', checkedOn: C },
   'ca-hlbc-gout': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gout', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
@@ -907,6 +922,169 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       ],
     },
   },
+  // Batch 7 (read 2026-11-18): irritable bowel syndrome, insomnia, low back pain, underactive thyroid, Parkinson's disease. Canada insomnia: the HealthLink BC page read has no usable line. All new sources are in PENDING_SOURCES until the verify script says OK.
+  ibs: {
+    US: {
+      moderate: [
+        it('us-ibs-fodmap', 'Low FODMAP diet', 'us-niddk-ibs-eat', ['Your doctor may suggest that you try the low FODMAP diet for a few weeks to see if it helps with your symptoms.'], undefined, [
+          { src: 'us-niddk-ibs-eat', quote: 'Examples of foods that contain FODMAPs include', list: true, foods: ['honey and foods with high-fructose corn syrup', 'dairy products such as milk, milk products, soft cheeses, yogurt, custard, and ice cream'] },
+        ]),
+        it('us-ibs-fiber-much', 'Too much fiber at once', 'us-niddk-ibs-eat', ['Too much fiber at once can cause gas, which can trigger IBS symptoms.']),
+      ],
+      activity: [
+        it('us-ibs-fiber-slowly', 'Add fiber a little at a time', 'us-niddk-ibs-eat', ['To help your body get used to more fiber, add foods with fiber to your diet a little at a time.']),
+        it('us-ibs-active', 'Increasing your physical activity', 'us-niddk-ibs-treat', ['increasing your physical activity']),
+        it('us-ibs-stress', 'Reducing stressful life situations', 'us-niddk-ibs-treat', ['reducing stressful life situations as much as possible']),
+        it('us-ibs-sleep', 'Getting enough sleep', 'us-niddk-ibs-treat', ['getting enough sleep']),
+      ],
+      meds: [
+        it('us-ibs-fibersupp', 'Fiber supplements', 'us-niddk-ibs-treat', ["fiber supplements, when increasing fiber in your diet doesn't help"]),
+        it('us-ibs-antidep', 'Low-dose antidepressants', 'us-niddk-ibs-treat', ['such as low doses of tricyclic antidepressants and selective serotonin reuptake inhibitors']),
+      ],
+    },
+    GB: {
+      moderate: [
+        it('gb-ibs-caffeine', 'Tea, coffee or other caffeinated drink', 'uk-ibs-diet', ['do not drink more than 3 cups of tea, coffee or any other caffeinated drink a day']),
+        it('gb-ibs-alcohol', 'Alcohol or fizzy drinks', 'uk-ibs-diet', ['do not drink lots of alcohol or fizzy drinks']),
+        it('gb-ibs-fatty', 'Fatty, spicy or processed foods', 'uk-ibs-diet', ['do not eat lots of fatty, spicy or processed foods']),
+        it('gb-ibs-fibre', 'High-fibre foods', 'uk-ibs-diet', ['cut down on high-fibre foods like wholegrain foods (such as brown bread and brown rice), nuts and seeds']),
+      ],
+      activity: [
+        it('gb-ibs-meals', 'Do not delay or skip meals', 'uk-ibs-diet', ['do not delay or skip meals']),
+        it('gb-ibs-quickly', 'Do not eat too quickly', 'uk-ibs-diet', ['do not eat too quickly']),
+        it('gb-ibs-exercise', 'Plenty of exercise', 'uk-ibs-diet', ['get plenty of exercise']),
+      ],
+      meds: [
+        it('gb-ibs-buscopan', 'Buscopan or peppermint oil', 'uk-ibs-diet', ['ask a pharmacist about medicines that can help, like Buscopan or peppermint oil']),
+        it('gb-ibs-loperamide', 'Loperamide (Imodium)', 'uk-ibs-diet', ['ask a pharmacist about medicines that can help, like loperamide (Imodium)']),
+        it('gb-ibs-laxatives', 'Laxatives, like Fybogel', 'uk-ibs-diet', ['ask a pharmacist about medicines that can help (laxatives), like Fybogel']),
+      ],
+    },
+    CA: {
+      activity: [
+        it('ca-ibs-fibre', 'Slowly increase fibre', 'ca-hlbc-ibs', ['Slowly increase the amount of fibre you eat.']),
+        it('ca-ibs-time', 'Plenty of time to eat', 'ca-hlbc-ibs', ['Give yourself plenty of time to eat, rather than eating on the go.']),
+        it('ca-ibs-exercise', 'Exercise every day', 'ca-hlbc-ibs', ['Get some exercise every day.']),
+      ],
+      meds: [it('ca-ibs-fibresupp', 'Fibre supplement', 'ca-hlbc-ibs', ['Take a fibre supplement, such as Benefibre or Metamucil, every day if needed.'])],
+    },
+  },
+  insomnia: {
+    US: {
+      avoid: [
+        it('us-ins-caffeine', 'Caffeine, nicotine, and alcohol', 'us-nhlbi-insomnia', ['Avoid caffeine, nicotine, and alcohol close to your bedtime.']),
+        it('us-ins-naps', 'Naps', 'us-nhlbi-insomnia', ['Avoid naps, especially in the afternoon.']),
+        it('us-ins-screens', 'TV or electronic devices', 'us-nhlbi-insomnia', ['Avoid watching TV or looking at electronic devices, as the light from these sources can disrupt your sleep-wake cycle.']),
+      ],
+      moderate: [it('us-ins-exercise', 'Exercising close to bedtime', 'us-nhlbi-insomnia', ['Exercising close to bedtime can make it harder to fall asleep.'])],
+      activity: [it('us-ins-routine', 'Routine before bed', 'us-nhlbi-insomnia', ['Follow a routine that helps you wind down and relax before bed.'])],
+      home: [it('us-ins-bedroom', 'Cool, quiet, dark place', 'us-nhlbi-insomnia', ['Sleep in a cool, quiet, dark place.'])],
+      meds: [it('us-ins-meds', 'Insomnia medicines', 'us-nhlbi-insomnia', ['Talk to your doctor about the benefits and side effects of insomnia medicines.'])],
+    },
+    GB: {
+      moderate: [
+        it('gb-ins-substances', 'Alcohol, tea or coffee before going to bed', 'uk-insomnia', ['do not smoke or drink alcohol, tea or coffee at least 6 hours before going to bed']),
+        it('gb-ins-exercise-late', 'Exercise before bed', 'uk-insomnia', ['do not exercise at least 4 hours before bed']),
+        it('gb-ins-screens', 'Television or devices before going to bed', 'uk-insomnia', ['do not watch television or use devices, like smartphones, right before going to bed']),
+      ],
+      activity: [
+        it('gb-ins-nap', 'Do not nap during the day', 'uk-insomnia', ['do not nap during the day']),
+        it('gb-ins-exercise', 'Exercise regularly during the day', 'uk-insomnia', ['exercise regularly during the day']),
+        it('gb-ins-relax', 'Relax before bed', 'uk-insomnia', ['relax at least 1 hour before bed – for example, take a bath or read a book']),
+      ],
+      home: [it('gb-ins-bedroom', 'Dark and quiet bedroom', 'uk-insomnia', ['make sure your bedroom is dark and quiet – use curtains, blinds, an eye mask or ear plugs if needed'])],
+      meds: [it('gb-ins-check', 'Check with your doctor before taking anything for sleep problems', 'uk-insomnia', ['Check with your doctor before taking anything for your sleep problems.'])],
+    },
+    CA: {},
+  },
+  'low-back-pain': {
+    US: {
+      avoid: [it('us-back-bedrest', 'Bedrest', 'us-niams-back', ['Avoid bedrest; instead, limit activities or exercise that cause pain.'])],
+      activity: [
+        it('us-back-gradual', 'Gradually increase physical activity', 'us-niams-back', ['Gradually increase physical activity as tolerated.']),
+        it('us-back-exercise', 'Regular exercise', 'us-niams-back', ['Perform regular exercise that keeps your back muscles strong.']),
+      ],
+      meds: [
+        it('us-back-antiinflam', 'Anti-inflammatory drugs', 'us-niams-back', ['Anti-inflammatory drugs taken by mouth to relieve pain and inflammation.']),
+        it('us-back-relaxants', 'Muscle relaxants', 'us-niams-back', ['Muscle relaxants for some types of chronic back pain from muscle tension.']),
+      ],
+    },
+    GB: {
+      moderate: [it('gb-back-bed', 'Bed for long periods of time', 'uk-back-pain', ['do not stay in bed for long periods of time'])],
+      activity: [
+        it('gb-back-active', 'Stay active', 'uk-back-pain', ['stay active and try to continue with your daily activities']),
+        it('gb-back-stretches', 'Exercises and stretches', 'uk-back-pain', ['try doing some exercises and stretches for back pain']),
+      ],
+      home: [
+        it('gb-back-ice', 'Ice pack', 'uk-back-pain', ['use an ice pack (or bag of frozen peas) wrapped in a tea towel to reduce pain and swelling']),
+        it('gb-back-heat', 'Heat pack', 'uk-back-pain', ['use a heat pack (or hot water bottle) wrapped in a tea towel to relieve joint stiffness or muscle spasms']),
+      ],
+      meds: [it('gb-back-paracetamol', 'Paracetamol on its own', 'uk-back-pain', ['paracetamol on its own is not recommended for back pain but it may be used with another painkiller'])],
+    },
+    CA: {
+      activity: [
+        it('ca-back-walk', 'Gentle exercise, such as walking', 'ca-hlbc-back', ['Get gentle exercise, such as walking.']),
+        it('ca-back-active', 'Exercise and be active', 'ca-hlbc-back', ['Exercise and be active to keep your back healthy and strong.']),
+      ],
+      home: [it('ca-back-heat', 'Heat or ice', 'ca-hlbc-back', ['Using heat or ice and taking over-the-counter pain medicine also can help while your body heals.'])],
+      meds: [
+        it('ca-back-nsaids', 'NSAIDs: ibuprofen and naproxen', 'ca-hlbc-back', ['Non-steroidal anti-inflammatory drugs (NSAIDs) such as ibuprofen and naproxen.']),
+        it('ca-back-acet', 'Acetaminophen', 'ca-hlbc-back', ["But if you can't take NSAIDs, you can try acetaminophen instead."]),
+      ],
+    },
+  },
+  'underactive-thyroid': {
+    US: {
+      meds: [
+        it('us-hypo-levo', 'Levothyroxine', 'us-niddk-hypo', ['You will take levothyroxine, a thyroid hormone medicine identical to a hormone a healthy thyroid makes.']),
+        it('us-hypo-morning', 'Taking the medicine in the morning', 'us-niddk-hypo', ['Your doctor may recommend taking the medicine in the morning before eating.']),
+        it('us-hypo-stop', 'Never stop taking your medicine', 'us-niddk-hypo', ['Never stop taking your medicine without talking with your doctor first.']),
+      ],
+    },
+    GB: {
+      meds: [
+        it('gb-hypo-levo', 'Levothyroxine tablets', 'uk-thyroid', ['This medicine is usually levothyroxine tablets.']),
+        it('gb-hypo-life', 'Take them for the rest of your life', 'uk-thyroid', ["You'll usually need to take them for the rest of your life to prevent your symptoms returning."]),
+      ],
+    },
+    CA: {
+      activity: [it('ca-hypo-care', 'Get enough sleep and regular exercise', 'ca-hlbc-hypo', ['Take care of yourself. Eat a healthy diet, get enough sleep, and get regular exercise.'])],
+      meds: [
+        it('ca-hypo-levo', 'Levothyroxine', 'ca-hlbc-hypo', ['Your doctor will treat your low thyroid level with the thyroid pills levothyroxine.']),
+        it('ca-hypo-breakfast', 'Medicine before breakfast', 'ca-hlbc-hypo', ['Take the medicine 30 minutes before breakfast, and do not take it with calcium, vitamins, or iron.']),
+      ],
+    },
+  },
+  parkinsons: {
+    US: {
+      moderate: [it('us-pd-protein', 'Too much protein', 'us-ninds-pd', ["Too much protein may limit a person's ability to absorb PD medicines like carbidopa-levodopa."])],
+      activity: [
+        it('us-pd-exercise', 'Exercise', 'us-ninds-pd', ['Exercise can improve flexibility, balance, strength, and the ability to move.']),
+        it('us-pd-fiber', 'Fiber-rich diet and plenty of fluids', 'us-ninds-pd', ['Eating a fiber-rich diet and drinking plenty of fluids can help with constipation.']),
+      ],
+      meds: [it('us-pd-levodopa', 'Levodopa', 'us-ninds-pd', ['Once in the brain, levodopa is converted to dopamine.'])],
+    },
+    GB: {
+      activity: [
+        it('gb-pd-physio', 'Physiotherapist', 'uk-pd-treat', ['The physiotherapist aims to make moving easier and improve your walking and flexibility.']),
+        it('gb-pd-diet', 'Dietary changes', 'uk-pd-treat', ["For some people with Parkinson's disease, making dietary changes can help improve some symptoms."]),
+      ],
+      meds: [
+        it('gb-pd-levodopa', 'Levodopa', 'uk-pd-treat', ["Most people with Parkinson's disease eventually need a medication called levodopa."]),
+        it('gb-pd-comt', 'COMT inhibitors', 'uk-pd-treat', ["Catechol-O-methyltransferase (COMT) inhibitors are prescribed for people in later stages of Parkinson's disease."]),
+      ],
+    },
+    CA: {
+      activity: [
+        it('ca-pd-exercise', 'Exercise', 'ca-hlbc-pd', ['Exercise is an important treatment for this condition.']),
+        it('ca-pd-therapists', 'Therapists', 'ca-hlbc-pd', ['Therapists may help you improve your walking and reduce your risk of falling.']),
+      ],
+      meds: [
+        it('ca-pd-levodopa', 'Levodopa', 'ca-hlbc-pd', ['Levodopa works best to control movement symptoms.']),
+        it('ca-pd-agonists', 'Dopamine agonists', 'ca-hlbc-pd', ['Dopamine agonists also help movement symptoms.']),
+      ],
+    },
+  },
 };
 
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
@@ -940,7 +1118,7 @@ export const pageIsOld = (srcId: string, now: Date = new Date()): boolean => {
 export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !!i.medIds?.length;
 export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
-export const PENDING_SOURCES: string[] = ['uk-osteo-treat', 'uk-gad-selfhelp'];
+export const PENDING_SOURCES: string[] = ['us-niddk-ibs-eat', 'us-niddk-ibs-treat', 'uk-ibs-diet', 'ca-hlbc-ibs', 'us-nhlbi-insomnia', 'uk-insomnia', 'us-niams-back', 'uk-back-pain', 'ca-hlbc-back', 'us-niddk-hypo', 'uk-thyroid', 'ca-hlbc-hypo', 'us-ninds-pd', 'uk-pd-treat', 'ca-hlbc-pd'];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);
 export const visibleGroups = (i: TileItem) => (i.foodGroups ?? []).filter((g) => groupShown(i.id, g));

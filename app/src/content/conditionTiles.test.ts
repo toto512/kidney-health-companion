@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { MED_LIST } from './medList';
 import { CONDITIONS } from './conditions';
 import { CONDITION_LIST } from './conditionList';
-import { UNVERIFIED, hasTiles, TILE_KEYS, TILE_SOURCES, TILES, tileItems, type TileItem } from './conditionTiles';
+import { UNVERIFIED, hasTiles, reviewDate, pageIsOld, hiddenAsOld, TILE_KEYS, TILE_SOURCES, TILES, tileItems, type TileItem } from './conditionTiles';
 
 const all: { cond: string; country: string; tile: string; item: TileItem }[] = [];
 for (const [cond, byCountry] of Object.entries(TILES)) for (const [country, tiles] of Object.entries(byCountry)) for (const [tile, items] of Object.entries(tiles ?? {})) for (const item of items ?? []) all.push({ cond, country, tile, item });
@@ -96,7 +96,7 @@ describe('batch 1 coverage', () => {
   });
   it('a checked country with nothing found has empty tiles, never a stand-in from another country', () => {
     for (const t of TILE_KEYS) expect(tileItems('hbp', 'CA', t)).toEqual([]);
-    expect(hasTiles('asthma', 'CA')).toBe(false);
+    expect(hasTiles('adhd', 'CA')).toBe(false);
   });
   it('home remedy tiles list only what the page says to do at home', () => {
     for (const { tile, item } of all.filter((a) => a.tile === 'home')) expect(item.quotes.join(' '), item.id).toMatch(/ice|rest|raise|prop|elevat|cool|water|bedclothes|cold/i);
@@ -115,5 +115,37 @@ describe('unverified items', () => {
 describe('batch 2 coverage', () => {
   it('Diabetes and Heart disease are checked for all three countries', () => {
     for (const c of ['diabetes', 'heart'] as const) for (const k of ['US', 'GB', 'CA'] as const) expect(hasTiles(c, k), `${c} ${k}`).toBe(true);
+  });
+});
+
+describe('old-page rule (medicines on pages reviewed more than 5 years ago)', () => {
+  const now = new Date(Date.UTC(2026, 10, 18));
+  it('reads review dates in every format the sources use', () => {
+    expect(reviewDate('Last Reviewed October 2016')?.toISOString().slice(0, 10)).toBe('2016-10-31');
+    expect(reviewDate('Current as of: March 1, 2023')?.toISOString().slice(0, 10)).toBe('2023-03-01');
+    expect(reviewDate('Adaptation Date: 6/14/2023')?.toISOString().slice(0, 10)).toBe('2023-06-14');
+    expect(reviewDate('Page last reviewed: 22 March 2023')?.toISOString().slice(0, 10)).toBe('2023-03-22');
+    expect(reviewDate('Last updated on December 27, 2024')?.toISOString().slice(0, 10)).toBe('2024-12-27');
+    expect(reviewDate(null)).toBeNull();
+  });
+  it('every dated source has a readable date', () => {
+    for (const [id, s] of Object.entries(TILE_SOURCES)) if (s.dateText) expect(reviewDate(s.dateText), id).not.toBeNull();
+  });
+  it('pages with no date are never old', () => {
+    for (const [id, s] of Object.entries(TILE_SOURCES)) if (!s.dateText) expect(pageIsOld(id, now), id).toBe(false);
+  });
+  it('hides medicine items only, only on old pages', () => {
+    const med = { id: 'x', title: 't', quotes: ['q'], src: 'us-niddk-ckd-manage', medIds: ['m'] } as TileItem;
+    const plain = { id: 'y', title: 't', quotes: ['q'], src: 'us-niddk-ckd-manage' } as TileItem;
+    const fresh = { id: 'z', title: 't', quotes: ['q'], src: 'uk-diabetes', medIds: ['m'] } as TileItem;
+    expect(hiddenAsOld(med, 'home', now)).toBe(true);
+    expect(hiddenAsOld(plain, 'meds', now)).toBe(true);
+    expect(hiddenAsOld(plain, 'activity', now)).toBe(false);
+    expect(hiddenAsOld(fresh, 'meds', now)).toBe(false);
+  });
+  it('no visible Medicines item comes from a page older than 5 years today', () => {
+    for (const c of Object.keys(TILES)) for (const k of ['US', 'GB', 'CA'] as const) for (const key of TILE_KEYS) for (const i of tileItems(c, k, key)) {
+      if (key === 'meds' || i.medIds?.length) expect(pageIsOld(i.src), i.id).toBe(false);
+    }
   });
 });

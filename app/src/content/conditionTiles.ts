@@ -58,6 +58,19 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'ca-hlbc-af': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/atrial-fibrillation', dateText: 'Adaptation Date: 9/19/2023', checkedOn: C },
   'us-niddk-adpkd': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/kidney-disease/polycystic-kidney-disease/autosomal-dominant-pkd', dateText: 'Last Reviewed January 2017', checkedOn: C },
   'uk-adpkd-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/autosomal-dominant-polycystic-kidney-disease-adpkd/treatment/', dateText: 'Page last reviewed: 23 February 2023', nextReviewDue: '2026-02-23', checkedOn: C },
+  'us-nhlbi-copd': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/copd/treatment', dateText: 'Last updated on October 6, 2024', checkedOn: C },
+  'uk-copd-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/chronic-obstructive-pulmonary-disease-copd/treatment/', dateText: 'Page last reviewed: 2 November 2026', nextReviewDue: '2029-11-02', checkedOn: C },
+  'ca-hlbc-copd': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/copd-chronic-obstructive-pulmonary-disease', dateText: 'Current as of: November 14, 2022', checkedOn: C },
+  'us-nhlbi-asthma': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/asthma/treatment-action-plan', dateText: 'Last updated on April 17, 2024', checkedOn: C },
+  'uk-asthma': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/asthma/', dateText: 'Page last reviewed: 07 April 2025', nextReviewDue: '2028-04-07', checkedOn: C },
+  'ca-hlbc-asthma': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/asthma-teenagers-and-adults', dateText: 'Adaptation Date: 9/13/2023', checkedOn: C },
+  'us-nhlbi-sleepapnea': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/sleep-apnea/treatment', dateText: 'Last updated on January 9, 2025', checkedOn: C },
+  'ca-hlbc-sleepapnea': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/sleep-apnea', dateText: 'Current as of: November 7, 2022', checkedOn: C },
+  'us-niams-oa': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/osteoarthritis/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
+  'uk-oa-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/osteoarthritis/treatment/', dateText: 'Page last reviewed: 20 March 2023', nextReviewDue: '2026-03-20', checkedOn: C },
+  'ca-hlbc-oa': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/osteoarthritis', dateText: 'Current as of: November 9, 2022', checkedOn: C },
+  'us-nimh-depression': { country: 'US', publisher: 'NIMH (US National Institutes of Health)', type: 'government', url: 'https://www.nimh.nih.gov/health/publications/depression', dateText: 'Revised 2024', checkedOn: C },
+  'uk-depression-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/mental-health/conditions/depression-in-adults/treatment/', dateText: 'Page last reviewed: 5 July 2023', nextReviewDue: '2026-07-05', checkedOn: C },
   'us-niams-gout': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/gout/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
   'uk-gout-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/gout/treatment/', dateText: 'Page last reviewed: 24 August 2023', nextReviewDue: '2026-08-24', checkedOn: C },
   'ca-hlbc-gout': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gout', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
@@ -578,16 +591,184 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
     },
     CA: {},
   },
+  // Batch 5 (read 2026-11-18): COPD, asthma, sleep apnea, osteoarthritis, depression. UK sleep apnea: no national NHS page read. Canada depression: the page has no usable line.
+  copd: {
+    US: {
+      meds: [
+        it('us-copd-broncho', 'Bronchodilators and steroids', 'us-nhlbi-copd', ['Medicines to treat COPD symptoms include bronchodilators and steroids or nonsteroid medicines that reduce inflammation.']),
+        it('us-copd-antibiotics', 'Antibiotics', 'us-nhlbi-copd', ['Antibiotics may be used to treat flare-ups caused by an infection.']),
+      ],
+    },
+    GB: {
+      activity: [
+        it('gb-copd-exercise', 'Regular, gentle exercise', 'uk-copd-treat', ['try to increase your activity levels with regular, gentle exercise, such as walking, cycling, yoga and tai chi']),
+        it('gb-copd-smoking', 'Quit smoking', 'uk-copd-treat', ["quit smoking if you smoke – it's the main thing you can do to improve COPD"]),
+        it('gb-copd-vaccines', 'Flu and COVID vaccinations', 'uk-copd-treat', ['have your flu and COVID vaccinations']),
+        it('gb-copd-diary', 'Keep a diary', 'uk-copd-treat', ['keep a diary of things that can cause flare-ups – this can help you avoid triggers']),
+      ],
+      meds: [it('gb-copd-inhalers', 'Bronchodilator inhalers', 'uk-copd-treat', ['inhalers that contain medicines to help widen your airways (bronchodilators)'])],
+    },
+    CA: {
+      activity: [
+        it('ca-copd-exercise', 'Regular exercise', 'ca-hlbc-copd', ['Get regular exercise to stay as strong as you can.']),
+        it('ca-copd-smoking', 'Stop smoking', 'ca-hlbc-copd', ["It's very important to stop smoking."]),
+        it('ca-copd-flu', 'Flu vaccine', 'ca-hlbc-copd', ['If you have COPD, you need to get a flu vaccine every year.']),
+        it('ca-copd-weight', 'Losing weight', 'ca-hlbc-copd', ['If you are losing weight, ask your doctor or dietitian about ways to make it easier to get the calories you need.']),
+        it('ca-copd-irritants', 'Things that irritate your lungs', 'ca-hlbc-copd', ['Avoid things that can irritate your lungs, such as smoke and air pollution.']),
+      ],
+      meds: [it('ca-copd-roflumilast', 'Roflumilast', 'ca-hlbc-copd', ['The only PDE4 inhibitor available is roflumilast (Daxas).'])],
+    },
+  },
+  asthma: {
+    US: {
+      avoid: [it('us-as-allergens', 'Allergens that trigger your asthma', 'us-nhlbi-asthma', ['Avoiding the allergens that trigger your asthma can help control your symptoms and prevent flare-ups.'])],
+      activity: [it('us-as-warmup', 'Warming up before you exercise', 'us-nhlbi-asthma', ['Training regularly and warming up before you exercise can also help prevent symptoms.'])],
+      meds: [
+        it('us-as-saba', 'Short-acting beta2-agonists', 'us-nhlbi-asthma', ['Inhaled short-acting beta2-agonists (SABAs) open the airways so air can flow through.']),
+        it('us-as-oral', 'Oral corticosteroids', 'us-nhlbi-asthma', ['Oral corticosteroids reduce swelling in your airways.']),
+        it('us-as-leuko', 'Leukotriene modifiers', 'us-nhlbi-asthma', ['Leukotriene modifiers reduce swelling and keep your airways open.']),
+      ],
+    },
+    GB: {
+      avoid: [it('gb-as-triggers', 'Things that trigger your asthma', 'uk-asthma', ['try to avoid things that trigger your asthma symptoms, such as air pollution, smoke, pollen or animals'])],
+      activity: [
+        it('gb-as-exercise', 'Regular exercise', 'uk-asthma', ['exercise regularly – get advice from your doctor or nurse about exercising safely if exercise triggers your asthma symptoms']),
+        it('gb-as-weight', 'Weight', 'uk-asthma', ['keep to a healthy weight']),
+        it('gb-as-smoke', 'Do not smoke', 'uk-asthma', ['do not smoke – get help to quit smoking if you need it']),
+        it('gb-as-vaccines', 'Vaccinations', 'uk-asthma', ['have vaccinations such as the flu vaccine – viruses such as flu can make asthma symptoms worse']),
+        it('gb-as-inhaler', 'Your inhaler', 'uk-asthma', ['always have your inhaler with you']),
+      ],
+    },
+    CA: {
+      avoid: [
+        it('ca-as-smoke', 'Smoke', 'ca-hlbc-asthma', ["Don't smoke, and try to avoid being around others when they smoke."]),
+        it('ca-as-cold', 'Exercising outdoors in cold weather', 'ca-hlbc-asthma', ['Avoid exercising outdoors in cold weather.']),
+      ],
+      moderate: [
+        it('ca-as-foods', 'After eating or drinking', 'ca-hlbc-asthma', ['Some people have symptoms after eating processed potatoes, shrimp, nuts, and dried fruit, or after drinking beer or wine.'], undefined, [
+          { src: 'ca-hlbc-asthma', quote: 'Some people have symptoms after eating processed potatoes, shrimp, nuts, and dried fruit, or after drinking beer or wine.', foods: ['processed potatoes', 'shrimp', 'nuts', 'dried fruit', 'beer', 'wine'] },
+        ]),
+      ],
+      activity: [
+        it('ca-as-plan', 'Asthma action plan', 'ca-hlbc-asthma', ['In general, you can take care of symptoms at home by following your asthma action plan.']),
+        it('ca-as-diary', 'Asthma diary', 'ca-hlbc-asthma', ['Use an asthma diary to help manage your asthma.']),
+      ],
+      meds: [
+        it('ca-as-inhaled', 'Beclomethasone, budesonide, fluticasone, mometasone', 'ca-hlbc-asthma', ['They include beclomethasone, budesonide, fluticasone, and mometasone.']),
+        it('ca-as-quick', 'Quick-relief medicines', 'ca-hlbc-asthma', ['These quick-relief medicines include salbutamol and terbutaline.']),
+      ],
+    },
+  },
+  'sleep-apnea': {
+    US: {
+      activity: [it('us-sa-pap', 'PAP machines', 'us-nhlbi-sleepapnea', ['PAP machines often work best when they are paired with healthy lifestyle changes.'])],
+      meds: [
+        it('us-sa-apap', 'Auto-adjusting PAP (APAP) machine', 'us-nhlbi-sleepapnea', ['An auto-adjusting PAP (APAP) machine automatically adjusts the air pressure you receive during sleep.']),
+        it('us-sa-mouthpieces', 'Mandibular repositioning mouthpieces', 'us-nhlbi-sleepapnea', ['Mandibular repositioning mouthpieces cover the upper and lower teeth and hold the lower jaw in place.']),
+      ],
+    },
+    CA: {
+      avoid: [it('ca-sa-alcohol-avoid', 'Alcohol and sedatives before bed', 'ca-hlbc-sleepapnea', ['You could try to lose weight, sleep on your side, and avoid alcohol and medicines like sedatives before bed.'])],
+      moderate: [it('ca-sa-alcohol', 'Alcohol before sleep', 'ca-hlbc-sleepapnea', ['Drinking alcohol or taking certain medicines before going to sleep can increase the risk for sleep apnea.'])],
+      activity: [
+        it('ca-sa-weight', 'Weight loss', 'ca-hlbc-sleepapnea', ['Weight loss should be part of managing sleep apnea.']),
+        it('ca-sa-back', 'Sleeping on your back', 'ca-hlbc-sleepapnea', ['Sleeping on your back may make sleep apnea worse.']),
+        it('ca-sa-exercise', 'Exercise', 'ca-hlbc-sleepapnea', ['Eat sensibly, exercise, and stay at a healthy weight.']),
+      ],
+      home: [it('ca-sa-prop', 'Prop up the head of your bed', 'ca-hlbc-sleepapnea', ['Prop up the head of your bed.'])],
+      meds: [
+        it('ca-sa-cpap', 'Continuous positive airway pressure (CPAP)', 'ca-hlbc-sleepapnea', ['Continuous positive airway pressure (CPAP) is nearly always the first medical treatment for sleep apnea.']),
+        it('ca-sa-oral', 'Oral devices', 'ca-hlbc-sleepapnea', ['Oral devices (also called oral appliances) are sometimes used to treat obstructive sleep apnea.']),
+      ],
+    },
+  },
+  osteoarthritis: {
+    US: {
+      activity: [
+        it('us-oa-exercising', 'Exercising', 'us-niams-oa', ['Exercising, which can reduce joint pain and stiffness and increase flexibility, muscle strength, and endurance.']),
+        it('us-oa-weight', 'Managing your weight', 'us-niams-oa', ['Managing your weight can help reduce the stress on joints.']),
+        it('us-oa-slowly', 'Start exercise slowly', 'us-niams-oa', ['Remember to start any exercise program slowly and take the time to adjust to the new level of activity.']),
+      ],
+      home: [it('us-oa-heatcold', 'Heat and cold therapies', 'us-niams-oa', ['Heat and cold therapies can reduce joint pain.'])],
+    },
+    GB: {
+      activity: [
+        it('gb-oa-exercise', 'Exercise', 'uk-oa-treat', ['Exercise is one of the most important treatments for people with osteoarthritis, whatever your age or level of fitness.']),
+        it('gb-oa-weight', 'Weight', 'uk-oa-treat', ['Being overweight or obese often makes osteoarthritis worse, as it places extra strain on some of your joints.']),
+      ],
+      home: [it('gb-oa-packs', 'Hot or cold packs', 'uk-oa-treat', ['Applying hot or cold packs to the joints can relieve the pain and symptoms of osteoarthritis in some people.'])],
+      meds: [
+        it('gb-oa-paracetamol', 'Paracetamol', 'uk-oa-treat', ['If you have pain caused by osteoarthritis, your GP might suggest you consider taking paracetamol for short-term pain relief.']),
+        it('gb-oa-nsaid', 'NSAID', 'uk-oa-treat', ['A GP may prescribe a non-steroidal anti-inflammatory drug (NSAID).']),
+        it('gb-oa-capsaicin', 'Capsaicin cream', 'uk-oa-treat', ['Capsaicin cream works by blocking the nerves that send pain messages in the treated area.']),
+        it('gb-oa-steroid', 'Steroid injections', 'uk-oa-treat', ["Some people with osteoarthritis may be offered steroid injections when other treatments haven't worked."]),
+      ],
+    },
+    CA: {
+      activity: [
+        it('ca-oa-swim', 'Swimming or walking', 'ca-hlbc-oa', ["Try exercises that don't put a lot of stress on your joints, such as swimming or walking."]),
+        it('ca-oa-weight', 'Losing weight', 'ca-hlbc-oa', ['Losing weight can decrease the symptoms of arthritis and allow you to be more active.']),
+        it('ca-oa-sleep', 'Sleep', 'ca-hlbc-oa', ['Good sleep can help your mood and help you cope with pain.']),
+      ],
+      home: [it('ca-oa-compress', 'Warm compresses or cold packs', 'ca-hlbc-oa', ['For example, you might try warm compresses or cold packs.'])],
+      meds: [
+        it('ca-oa-nsaids', 'NSAIDs, such as ibuprofen or naproxen', 'ca-hlbc-oa', ['These include non-steroidal anti-inflammatory drugs (NSAIDs), such as ibuprofen (Advil or Motrin) or naproxen (Aleve).'], ['ibuprofen']),
+        it('ca-oa-acetaminophen', 'Acetaminophen', 'ca-hlbc-oa', ['Acetaminophen, such as Tylenol, may also help.']),
+        it('ca-oa-tramadol', 'Tramadol', 'ca-hlbc-oa', ['Pain medicine called tramadol.']),
+      ],
+    },
+  },
+  depression: {
+    US: {
+      avoid: [it('us-dep-alcohol', 'Alcohol, nicotine, or drugs', 'us-nimh-depression', ['Avoid using alcohol, nicotine, or drugs, including medications not prescribed for you.'])],
+      activity: [
+        it('us-dep-activity', 'Physical activity', 'us-nimh-depression', ['Try to get physical activity.']),
+        it('us-dep-bedtime', 'Regular bedtime and wake-up time', 'us-nimh-depression', ['Try to maintain a regular bedtime and wake-up time.']),
+      ],
+      meds: [it('us-dep-antidepressants', 'Antidepressants', 'us-nimh-depression', ['Antidepressants are medications commonly used to treat depression.'])],
+    },
+    GB: {
+      activity: [it('gb-dep-exercise', 'Exercise', 'uk-depression-treat', ["There's evidence that exercise can help depression, and it's one of the main treatments for mild depression."])],
+      meds: [it('gb-dep-tcas', 'TCAs: imipramine and amitriptyline', 'uk-depression-treat', ['TCAs, including imipramine (Imipramil) and amitriptyline, have been around for longer than SSRIs.'])],
+    },
+    CA: {},
+  },
 };
 
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
 // An entry is an item id, or "itemId@sourceId" to hide only that item's food group from one source.
 // The two NIDDK PDFs cannot be read by the script: the lines were read by hand-run page fetch on 2026-11-18 and stay hidden until James confirms them in the PDF.
-export const UNVERIFIED: string[] = ['us-ckd-phosphorus', 'us-ckd-meat-dairy@us-niddk-potassium-tips'];
-const shown = (i: TileItem) => !UNVERIFIED.includes(i.id);
+export const UNVERIFIED: string[] = ['us-ckd-phosphorus', 'us-ckd-meat-dairy@us-niddk-potassium-tips', 'gb-pad-walking', 'gb-pad-smoking', 'gb-pad-list', 'gb-pad-naftidrofuryl'];
+// Old-page rule (James, 2026-11-18, option 3): an item that names a medicine or dose (every item in the Medicines tile, and any item with medIds) is hidden
+// when its page's last review date is more than 5 years before today. Pages with no date, and old pages that name no medicines, stay visible.
+const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+// Reads the date out of a page's own date text ("Last Reviewed October 2016", "Current as of: March 1, 2023", "Adaptation Date: 6/14/2023", "22 March 2023").
+// A month-only date counts as the last day of that month (a year-only date, 31 December), so a page is never hidden early. Returns null when no date can be read.
+export const reviewDate = (dateText: string | null): Date | null => {
+  if (!dateText) return null;
+  const t = dateText.toLowerCase();
+  const num = t.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (num) return new Date(Date.UTC(+num[3], +num[1] - 1, +num[2]));
+  const m = MONTHS.findIndex((n) => t.includes(n));
+  const y = t.match(/\b(19|20)\d{2}\b/);
+  if (!y) return null;
+  if (m < 0) return new Date(Date.UTC(+y[0], 11, 31)); // year only: the last day of that year
+  const day = t.match(new RegExp(`(\\d{1,2})\\s+${MONTHS[m]}|${MONTHS[m]}\\s+(\\d{1,2})\\b`));
+  return day ? new Date(Date.UTC(+y[0], m, +(day[1] ?? day[2]))) : new Date(Date.UTC(+y[0], m + 1, 0));
+};
+export const OLD_PAGE_YEARS = 5;
+export const pageIsOld = (srcId: string, now: Date = new Date()): boolean => {
+  const d = reviewDate(TILE_SOURCES[srcId]?.dateText ?? null);
+  if (!d) return false;
+  const cutoff = new Date(Date.UTC(now.getUTCFullYear() - OLD_PAGE_YEARS, now.getUTCMonth(), now.getUTCDate()));
+  return d < cutoff;
+};
+export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !!i.medIds?.length;
+export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
+const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`);
 export const visibleGroups = (i: TileItem) => (i.foodGroups ?? []).filter((g) => groupShown(i.id, g));
 
 // True once a condition has been checked for the country, even when every tile came out empty (the tiles then say so).
 export const hasTiles = (conditionId: string, country: Country) => !!TILES[conditionId]?.[country];
-export const tileItems = (conditionId: string, country: Country, key: TileKey): TileItem[] => (TILES[conditionId]?.[country]?.[key] ?? []).filter(shown);
+export const tileItems = (conditionId: string, country: Country, key: TileKey): TileItem[] => (TILES[conditionId]?.[country]?.[key] ?? []).filter((i) => shown(i, key));

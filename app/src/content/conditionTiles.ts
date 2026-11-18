@@ -177,6 +177,14 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'us-nhlbi-ipf': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/idiopathic-pulmonary-fibrosis/treatment', dateText: 'Last updated on March 24, 2022', checkedOn: C },
   'uk-ipf': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/idiopathic-pulmonary-fibrosis/', dateText: 'Page last reviewed: 27 August 2026', nextReviewDue: '2029-08-27', checkedOn: C },
   'ca-hlbc-pulmfib': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/pulmonary-fibrosis', dateText: 'Current as of: November 14, 2022', checkedOn: C },
+  'uk-gastritis': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/gastritis/', dateText: 'Page last reviewed: 05 August 2026', nextReviewDue: '2029-08-05', checkedOn: C },
+  'ca-hlbc-gastritis': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gastritis', dateText: 'Current as of: March 22, 2023', checkedOn: C },
+  'uk-lupus': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/lupus/', dateText: 'Page last reviewed: 19 July 2023', nextReviewDue: '2026-07-19', checkedOn: C },
+  'us-niams-lupus': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/lupus/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
+  'uk-varicose': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/varicose-veins/', dateText: 'Page last reviewed: 01 July 2024', nextReviewDue: '2027-07-01', checkedOn: C },
+  'uk-pancreatitis': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/pancreatitis/', dateText: 'Page last reviewed: 11 March 2026', nextReviewDue: '2029-03-11', checkedOn: C },
+  'us-niddk-pancreatitis': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/digestive-diseases/pancreatitis/eating-diet-nutrition', dateText: 'Last Reviewed November 2017', checkedOn: C },
+  'uk-as': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/ankylosing-spondylitis/', dateText: 'Page last reviewed: 05 January 2023', nextReviewDue: '2026-01-05', checkedOn: C },
 };
 
 type Tiles = Partial<Record<TileKey, TileItem[]>>;
@@ -1896,6 +1904,93 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       meds: [it('ca-ipf-oxygen', 'Medicines and oxygen', 'ca-hlbc-pulmfib', ['Treatment includes medicines and oxygen to ease shortness of breath.'])],
     },
   },
+  // Batch 14 (read 2026-11-18): gastritis, lupus, leg vein problems (venous insufficiency), chronic pancreatitis, ankylosing spondylitis. Substituted for OCD and schizophrenia (NHS pages for both load as menus without usable lines). Gaps: venous insufficiency has only the NHS varicose veins page (no US or Canadian page readable); NHS pancreatitis page covers pancreatitis in general; ankylosing spondylitis has one UK line; HealthLink BC lupus, pancreatitis, venous and ankylosing spondylitis pages gave nothing usable. All new sources are in PENDING_SOURCES until the verify script says OK.
+  gastritis: {
+    US: {},
+    GB: {
+      moderate: [
+        it('gb-gas-caffeine', 'Drinks that contain caffeine', 'uk-gastritis', ['reduce the amount of drinks you have that contain caffeine, such as tea, coffee, cola and energy drinks']),
+        it('gb-gas-acidic', "Food or drink that's acidic, fizzy, spicy or fatty", 'uk-gastritis', ["do not have food or drink that's acidic (such as orange juice), fizzy, spicy or fatty"]),
+      ],
+      activity: [
+        it('gb-gas-alcohol', 'Do not drink alcohol', 'uk-gastritis', ['do not drink alcohol']),
+        it('gb-gas-smoke', 'Do not smoke', 'uk-gastritis', ['do not smoke']),
+        it('gb-gas-bed', 'Do not eat before going to bed', 'uk-gastritis', ['do not eat 3 to 4 hours before going to bed']),
+      ],
+      meds: [
+        it('gb-gas-antacids', 'Antacids and alginates', 'uk-gastritis', ['medicines to help stop stomach acid from irritating your stomach and oesophagus, such as antacids and alginates']),
+        it('gb-gas-ppi', 'Proton pump inhibitors', 'uk-gastritis', ['medicines that reduce the amount of acid your stomach makes, such as proton pump inhibitors']),
+      ],
+    },
+    CA: {
+      avoid: [it('ca-gas-caffeine', 'Foods and drinks that have caffeine', 'ca-hlbc-gastritis', ['Or you may need to avoid foods and drinks that have caffeine.'])],
+      moderate: [it('ca-gas-alcohol', 'Limiting how much alcohol you drink', 'ca-hlbc-gastritis', ['This may include changes to your diet, such as limiting how much alcohol you drink.'])],
+      meds: [it('ca-gas-acid', 'Medicines to reduce stomach acid', 'ca-hlbc-gastritis', ['Taking medicines to help reduce stomach acid and ease discomfort.'])],
+    },
+  },
+  lupus: {
+    US: {
+      activity: [
+        it('us-lup-help', 'Ask for help when you need it', 'us-niams-lupus', ['Ask for help when you need it.']),
+        it('us-lup-smoke', 'If you smoke, quit', 'us-niams-lupus', ['If you smoke, quit.']),
+        it('us-lup-exercise', 'Exercise to help keep your body strong', 'us-niams-lupus', ['Exercise to help keep your body strong; however, talk to your doctor before starting an exercise program.']),
+      ],
+      meds: [it('us-lup-never', 'Never stop your medicines or treatments', 'us-niams-lupus', ['Never stop your medicines or treatments without speaking to your doctor.'])],
+    },
+    GB: {
+      avoid: [it('gb-lup-tired', 'Getting too tired', 'uk-lupus', ['learn to pace yourself to avoid getting too tired'])],
+      activity: [
+        it('gb-lup-relax', 'Relaxation techniques to manage stress', 'uk-lupus', ['try relaxation techniques to manage stress']),
+        it('gb-lup-help', 'Ask for help from family, friends and health professionals', 'uk-lupus', ['ask for help from family, friends and health professionals']),
+        it('gb-lup-sun', 'Do not sit in direct sunlight', 'uk-lupus', ['do not sit in direct sunlight or spend a lot of time in rooms with fluorescent lights']),
+        it('gb-lup-smoke', 'Stop smoking', 'uk-lupus', ["smoking makes lupus worse so it's important to stop smoking"]),
+        it('gb-lup-active', 'Stay active', 'uk-lupus', ['try to stay active, even on a bad day']),
+      ],
+      meds: [
+        it('gb-lup-hcq', 'Hydroxychloroquine', 'uk-lupus', ['hydroxychloroquine for fatigue and skin and joint problems']),
+        it('gb-lup-immuno', 'Immunosuppressant or biological medicines', 'uk-lupus', ['Immunosuppressant or biological medicines are sometimes used to treat severe lupus.']),
+      ],
+    },
+    CA: {},
+  },
+  'venous-insufficiency': {
+    US: {},
+    GB: {
+      moderate: [
+        it('gb-ven-stand', 'Stand for long periods', 'uk-varicose', ['do not stand for long periods']),
+        it('gb-ven-sit', 'Sit for long periods', 'uk-varicose', ['do not sit for long periods, unless your feet are raised']),
+      ],
+      activity: [
+        it('gb-ven-legs', 'Put your legs up', 'uk-varicose', ['put your legs up when possible']),
+        it('gb-ven-exercise', 'Exercise regularly, such as running or walking', 'uk-varicose', ['exercise regularly, such as running or walking, to improve blood flow']),
+        it('gb-ven-smoke', 'Do not smoke', 'uk-varicose', ['do not smoke, as it damages your veins']),
+        it('gb-ven-injure', 'Try not to injure your legs', 'uk-varicose', ['try not to injure your legs, to help prevent bleeding']),
+      ],
+      home: [
+        it('gb-ven-moisturise', 'Moisturising cream or lotion', 'uk-varicose', ['use a moisturising cream or lotion if you have dry, flaky or itchy skin']),
+        it('gb-ven-stockings', 'Compression stockings', 'uk-varicose', ['Compression stockings work by putting pressure on your lower legs.']),
+      ],
+    },
+    CA: {},
+  },
+  'chronic-pancreatitis': {
+    US: {
+      moderate: [it('us-pan-caffeine', 'Limit caffeine', 'us-niddk-pancreatitis', ['If you have pancreatitis, drink plenty of fluids and limit caffeine.'])],
+      activity: [it('us-pan-fluids', 'Drink plenty of fluids', 'us-niddk-pancreatitis', ['If you have pancreatitis, drink plenty of fluids and limit caffeine.'])],
+    },
+    GB: {
+      moderate: [it('gb-pan-alcohol', 'Drink less alcohol, or not drink any alcohol at all', 'uk-pancreatitis', ['drink less alcohol, or not drink any alcohol at all'])],
+      activity: [it('gb-pan-smoke', 'Stop smoking', 'uk-pancreatitis', ['stop smoking'])],
+    },
+    CA: {},
+  },
+  'ankylosing-spondylitis': {
+    US: {},
+    GB: {
+      activity: [it('gb-as-stop', 'Stop the exercise if you feel any pain or become unwell', 'uk-as', ['Stop the exercise immediately if you feel any pain or become unwell.'])],
+    },
+    CA: {},
+  },
 };
 
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
@@ -1930,7 +2025,7 @@ export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !
 export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
 export const PENDING_SOURCES: string[] = [
-  'uk-ptsd', 'ca-hlbc-ptsd', 'uk-bipolar', 'ca-hlbc-bipolar', 'uk-adhd', 'us-niddk-cirrhosis', 'uk-cirrhosis', 'ca-hlbc-cirrhosis', 'us-nhlbi-ipf', 'uk-ipf', 'ca-hlbc-pulmfib',
+  'uk-gastritis', 'ca-hlbc-gastritis', 'uk-lupus', 'us-niams-lupus', 'uk-varicose', 'uk-pancreatitis', 'us-niddk-pancreatitis', 'uk-as',
 ];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);

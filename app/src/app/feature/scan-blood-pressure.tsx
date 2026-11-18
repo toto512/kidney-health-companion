@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, Text } from 'react-native';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Panel, Screen } from '@/components/ui';
 import { useI18n } from '@/i18n/I18nProvider';
-import { checkReading, parseReading } from '@/lib/bp';
+import { HelpLine } from '@/components/HelpLine';
+import { checkReading, needsHelpLine, parseReading } from '@/lib/bp';
 import { readBpText, takenAtFrom } from '@/lib/bpReader';
 import { ocrSupported, readTextFromFile } from '@/lib/ocr';
 import { supabase } from '@/lib/supabase';
@@ -101,6 +102,7 @@ export default function ScanBloodPressure() {
                   <Field label={t('bp.scan.time')} value={r.time} onChangeText={(v) => setRow(r.key, { time: v, dateMissing: false })} placeholder="08:30" inputMode="numeric" autoComplete="off" maxLength={5} />
                   {r.read && !r.dateMissing ? <Body>{t('lab.readNote')}</Body> : null}
                   {r.dateMissing && (!r.date || !r.time) ? <Body>{t('bp.scan.typeIt')}</Body> : null}
+                  {needsHelpLine(r.sys, r.dia, r.pulse) ? <HelpLine /> : null}
                   {p && p.ok && checkReading(p.value) ? <Body tone="danger">{t('bp.scan.lookAgain')}</Body> : null}
                   <Pressable accessibilityRole="button" accessibilityLabel={t('bp.scan.remove')} onPress={() => { setErr(''); setChecked(''); setRows((rs) => rs.filter((x) => x.key !== r.key)); }} style={{ minHeight: 44, justifyContent: 'center' }}>
                     <Text style={{ fontSize: font.body, fontWeight: '700', color: color.danger }}>{t('bp.scan.remove')}</Text>

@@ -11,6 +11,7 @@ describe('parseReading', () => {
   it('rejects out-of-range and non-numeric values', () => {
     expect(parseReading('30', '80', '').ok).toBe(false);
     expect(parseReading('120', '10', '').ok).toBe(false);
+    expect(parseReading('120', '80', '25').ok).toBe(false);
     expect(parseReading('abc', '80', '').ok).toBe(false);
     expect(parseReading('120', '80', '300').ok).toBe(false);
     expect(parseReading('12.5', '80', '').ok).toBe(false);
@@ -21,14 +22,14 @@ describe('parseReading', () => {
   });
 });
 
-import { BP_LIMITS } from './bp';
-describe('BP_LIMITS', () => {
+import { BP_LIMITS, ENTRY_LIMITS, needsHelpLine } from './bp';
+describe('ENTRY_LIMITS', () => {
   it('matches what parseReading accepts at both ends', () => {
-    expect(parseReading(String(BP_LIMITS.systolic.max), String(BP_LIMITS.diastolic.min), String(BP_LIMITS.pulse.min)).ok).toBe(true);
-    expect(parseReading(String(BP_LIMITS.systolic.min + 1), String(BP_LIMITS.diastolic.min), String(BP_LIMITS.pulse.max)).ok).toBe(true);
-    expect(parseReading(String(BP_LIMITS.systolic.max + 1), '80', '').ok).toBe(false);
-    expect(parseReading('120', String(BP_LIMITS.diastolic.min - 1), '').ok).toBe(false);
-    expect(parseReading('120', '80', String(BP_LIMITS.pulse.max + 1)).ok).toBe(false);
+    expect(parseReading(String(ENTRY_LIMITS.systolic.max), String(ENTRY_LIMITS.diastolic.min), String(ENTRY_LIMITS.pulse.min)).ok).toBe(true);
+    expect(parseReading(String(ENTRY_LIMITS.systolic.min + 1), String(ENTRY_LIMITS.diastolic.min), String(ENTRY_LIMITS.pulse.max)).ok).toBe(true);
+    expect(parseReading(String(ENTRY_LIMITS.systolic.max + 1), '80', '').ok).toBe(false);
+    expect(parseReading('120', String(ENTRY_LIMITS.diastolic.min - 1), '').ok).toBe(false);
+    expect(parseReading('120', '80', String(ENTRY_LIMITS.pulse.max + 1)).ok).toBe(false);
   });
 });
 
@@ -44,5 +45,33 @@ describe('checkReading', () => {
     expect(checkReading(v(120, 80))).toBeNull();
     expect(checkReading(v(95, 60))).toBeNull();
     expect(checkReading(v(170, 100))).toBeNull();
+  });
+});
+
+describe('blocked low entries and the contact line', () => {
+  it('blocks top below 70, bottom below 40 and pulse below 30 (including 40/21 with pulse 21)', () => {
+    expect(parseReading('69', '50', '').ok).toBe(false);
+    expect(parseReading('120', '39', '').ok).toBe(false);
+    expect(parseReading('120', '80', '29').ok).toBe(false);
+    expect(parseReading('40', '21', '21').ok).toBe(false);
+    expect(parseReading('70', '40', '30').ok).toBe(true);
+  });
+  it('keeps the database limits wider than the entry limits', () => {
+    expect(BP_LIMITS.systolic.min).toBeLessThan(ENTRY_LIMITS.systolic.min);
+    expect(BP_LIMITS.diastolic.min).toBeLessThan(ENTRY_LIMITS.diastolic.min);
+    expect(BP_LIMITS.pulse.min).toBeLessThan(ENTRY_LIMITS.pulse.min);
+    expect(BP_LIMITS.systolic.max).toBe(ENTRY_LIMITS.systolic.max);
+  });
+  it('adds the contact line only for very low or very high numbers', () => {
+    expect(needsHelpLine('40', '21', '21')).toBe(true);
+    expect(needsHelpLine('69', '', '')).toBe(true);
+    expect(needsHelpLine('120', '39', '')).toBe(true);
+    expect(needsHelpLine('260', '90', '')).toBe(true);
+    expect(needsHelpLine('140', '151', '')).toBe(true);
+    expect(needsHelpLine('120', '80', '29')).toBe(true);
+    expect(needsHelpLine('120', '80', '70')).toBe(false);
+    expect(needsHelpLine('170', '100', '')).toBe(false);
+    expect(needsHelpLine('', '', '')).toBe(false);
+    expect(needsHelpLine('abc', '', '')).toBe(false);
   });
 });

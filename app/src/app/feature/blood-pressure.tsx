@@ -5,11 +5,12 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Select } from '@/components/Select';
 import { BigButton, Body, DisclaimerFooter, H1, Panel, Screen, SectionHeader } from '@/components/ui';
 import { BpChart } from '@/components/BpChart';
+import { HelpLine } from '@/components/HelpLine';
 import { UploadButtons } from '@/components/UploadButtons';
 import { useI18n } from '@/i18n/I18nProvider';
 import { dateTimeText } from '@/i18n/bpText';
 import { trError } from '@/i18n/labels';
-import { BP_LIMITS, checkReading, parseReading } from '@/lib/bp';
+import { checkReading, ENTRY_LIMITS, needsHelpLine, parseReading } from '@/lib/bp';
 import { FILE_EXT, MAX_BYTES } from '@/lib/labData';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
@@ -45,9 +46,9 @@ export default function BloodPressure() {
   const [confirm, setConfirm] = useState('');
   const [confirmDel, setConfirmDel] = useState('');
 
-  const sysOptions = useMemo(() => range(BP_LIMITS.systolic), []);
-  const diaOptions = useMemo(() => range(BP_LIMITS.diastolic), []);
-  const pulseOptions = useMemo(() => range(BP_LIMITS.pulse), []);
+  const sysOptions = useMemo(() => range(ENTRY_LIMITS.systolic), []);
+  const diaOptions = useMemo(() => range(ENTRY_LIMITS.diastolic), []);
+  const pulseOptions = useMemo(() => range(ENTRY_LIMITS.pulse), []);
 
   const load = useCallback(async () => {
     const { data, error } = await supabase.from('bp_readings').select('id,systolic,diastolic,pulse,taken_at').order('taken_at', { ascending: false }).limit(200);
@@ -108,6 +109,7 @@ export default function BloodPressure() {
           </View>
           <Select label={t('bp.pulseOpt')} value={pulse} options={pulseOptions} onChange={setPulse} placeholder="--" searchLabel={t('bp.number')} width={SMALL} valueSize={24} />
           {err ? <Body tone="danger">{err}</Body> : null}
+          {needsHelpLine(sys, dia, pulse) ? <HelpLine /> : null}
           <BigButton label={busy ? t('profile.saving') : t('bp.saveReading')} onPress={save} disabled={busy || !sys || !dia} />
         </Panel>
         <UploadButtons onFile={() => void pickFile()} onAsset={scan} />

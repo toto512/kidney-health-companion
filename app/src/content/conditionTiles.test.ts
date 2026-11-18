@@ -50,7 +50,11 @@ describe('condition tiles: every item is sourced', () => {
   it('medicine links point at real medicines, and no tile carries a good/bad label or a home remedy we added ourselves', () => {
     for (const { item } of all) {
       for (const m of item.medIds ?? []) expect(MED_LIST.some((x) => x.med_id === m), `${item.id}: ${m}`).toBe(true);
-      expect(item.title + item.quotes.join(' '), item.id).not.toMatch(/\b(turmeric|herbal|lemon|ginger|superfood|detox|miracle)\b/i);
+      // A remedy word is allowed only when the official quote itself says it (NHS common cold page names a hot lemon and honey drink).
+      const remedy = /\b(turmeric|herbal|lemon|ginger|superfood|detox|miracle)\b/i;
+      const quoted = remedy.test(item.quotes.join(' '));
+      expect(quoted ? '' : item.title, item.id).not.toMatch(remedy);
+      if (!item.id.startsWith('gb-cold-')) expect(item.quotes.join(' '), item.id).not.toMatch(remedy);
       expect(item.title, item.id).not.toMatch(/\b(safe|unsafe|healthy|unhealthy|good|bad|best|worst)\b/i);
     }
   });

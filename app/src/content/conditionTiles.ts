@@ -118,6 +118,18 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'ca-hlbc-gout': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gout', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
   'us-nhlbi-hbp': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/high-blood-pressure/treatment', dateText: 'Last updated on April 30, 2024', checkedOn: C },
   'uk-hbp': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/high-blood-pressure/', dateText: 'Page last reviewed: 19 July 2024', nextReviewDue: '2027-07-19', checkedOn: C },
+  'uk-pneumonia': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/pneumonia/', dateText: 'Page last reviewed: 17 July 2026', nextReviewDue: '2029-07-17', checkedOn: C },
+  'uk-cold': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/common-cold/', dateText: 'Page last reviewed: 22 March 2024', nextReviewDue: '2027-03-22', checkedOn: C },
+  'uk-hayfever': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/hay-fever/', dateText: 'Page last reviewed: 21 March 2024', nextReviewDue: '2027-03-21', checkedOn: C },
+  'uk-migraine': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/migraine/', dateText: 'Page last reviewed: 10 March 2026', nextReviewDue: '2029-03-10', checkedOn: C },
+  'uk-dvt': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/deep-vein-thrombosis-dvt/', dateText: 'Page last reviewed: 30 April 2026', nextReviewDue: '2029-04-30', checkedOn: C },
+  'us-nhlbi-pneumonia': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/pneumonia/treatment', dateText: 'Last updated on March 24, 2022', checkedOn: C },
+  'us-cdc-cold': { country: 'US', publisher: 'CDC (US Centers for Disease Control and Prevention)', type: 'government', url: 'https://www.cdc.gov/common-cold/treatment/index.html', dateText: 'Last Reviewed April 24, 2024', checkedOn: C },
+  'us-ninds-migraine': { country: 'US', publisher: 'NINDS (US National Institutes of Health)', type: 'government', url: 'https://www.ninds.nih.gov/health-information/disorders/migraine', dateText: 'Last reviewed on August 10, 2026', checkedOn: C },
+  'us-nhlbi-vte': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/venous-thromboembolism/recovery', dateText: 'Last updated on September 20, 2022', checkedOn: C },
+  'ca-hlbc-pneumonia': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/pneumonia-0', dateText: 'Current as of: October 31, 2022', checkedOn: C },
+  'ca-hlbc-cold': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/colds', dateText: 'Current as of: October 31, 2022', checkedOn: C },
+  'ca-hlbc-dvt': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/deep-vein-thrombosis', dateText: 'Current as of: December 19, 2022', checkedOn: C },
 };
 
 type Tiles = Partial<Record<TileKey, TileItem[]>>;
@@ -1196,6 +1208,156 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
     },
     CA: {},
   },
+  // Batch 9 (read 2026-11-18): pneumonia, common cold, hay fever, migraine and headache, blood clot in a leg vein. Gaps: no US or Canadian hay fever page with usable lines; HealthLink BC migraine page has no usable line. Canada pneumonia pages say little beyond antibiotics. All new sources are in PENDING_SOURCES until the verify script says OK.
+  pneumonia: {
+    US: {
+      meds: [
+        it('us-pn-antibiotics', 'Antibiotic treatment', 'us-nhlbi-pneumonia', ['Most people begin to feel better after one to three days of antibiotic treatment.']),
+        it('us-pn-cough', 'Cough or cold medicine', 'us-nhlbi-pneumonia', ['Talk to your provider before taking cough or cold medicine.']),
+        it('us-pn-otc', 'Over-the-counter medicines', 'us-nhlbi-pneumonia', ['Over-the-counter medicines may be recommended to treat your fever and muscle pain or help you breathe easier.']),
+      ],
+    },
+    GB: {
+      activity: [
+        it('gb-pn-fluids', 'Drink plenty of fluids', 'uk-pneumonia', ['drink plenty of fluids']),
+        it('gb-pn-smoke', 'Do not smoke', 'uk-pneumonia', ['do not smoke']),
+        it('gb-pn-hands', 'Wash your hands regularly with water and soap', 'uk-pneumonia', ['wash your hands regularly with water and soap']),
+        it('gb-pn-vaccines', 'Vaccines', 'uk-pneumonia', ['There are several vaccines available to help protect you or your child from infections that can cause pneumonia']),
+      ],
+      meds: [
+        it('gb-pn-pain', 'Paracetamol or ibuprofen', 'uk-pneumonia', ['take paracetamol or ibuprofen']),
+        it('gb-pn-cough', 'Cough medicine', 'uk-pneumonia', ['do not take cough medicine']),
+        it('gb-pn-antibiotics', 'Antibiotics', 'uk-pneumonia', ["If you have pneumonia caused by bacteria, you'll usually be given antibiotics."]),
+      ],
+    },
+    CA: {
+      meds: [it('ca-pn-antibiotics', 'Antibiotics', 'ca-hlbc-pneumonia', ['Antibiotics are used to treat pneumonia caused by bacteria.'])],
+    },
+  },
+  'common-cold': {
+    US: {
+      activity: [
+        it('us-cold-rest', 'Get plenty of rest', 'us-cdc-cold', ['Get plenty of rest.']),
+        it('us-cold-fluids', 'Drink plenty of fluids', 'us-cdc-cold', ['Drink plenty of fluids.']),
+      ],
+      meds: [it('us-cold-antibiotics', 'Antibiotics', 'us-cdc-cold', ["Antibiotics don't work against viruses and won't help you feel better."])],
+    },
+    GB: {
+      activity: [
+        it('gb-cold-rest', 'Get plenty of rest', 'uk-cold', ['get plenty of rest']),
+        it('gb-cold-fluids', 'Drink lots of fluid, such as water', 'uk-cold', ['drink lots of fluid, such as water, to avoid dehydration']),
+        it('gb-cold-smoke', 'Do not smoke', 'uk-cold', ['do not smoke as it can make your symptoms worse']),
+      ],
+      home: [
+        it('gb-cold-salt', 'Gargle salt water', 'uk-cold', ['gargle salt water to soothe a sore throat (not suitable for children)']),
+        it('gb-cold-lemon', 'Hot lemon and honey drink', 'uk-cold', ['drink a hot lemon and honey drink to soothe a sore throat']),
+        it('gb-cold-steam', 'Breathe in steam', 'uk-cold', ['breathe in steam to ease a blocked nose']),
+      ],
+      meds: [
+        it('gb-cold-pain', 'Paracetamol or ibuprofen', 'uk-cold', ['medicines like paracetamol or ibuprofen to ease aches or lower a temperature']),
+        it('gb-cold-antibiotics', 'Antibiotics', 'uk-cold', ['Antibiotics only work if you have a bacterial infection, but colds are caused by viruses.']),
+        it('gb-cold-aspirin', 'Aspirin for children under 16', 'uk-cold', ['do not give aspirin to children under the age of 16']),
+      ],
+    },
+    CA: {
+      activity: [
+        it('ca-cold-fluids', 'Drink plenty of fluids', 'ca-hlbc-cold', ['To prevent dehydration, drink plenty of fluids.']),
+        it('ca-cold-rest', 'Get plenty of rest', 'ca-hlbc-cold', ['Get plenty of rest.']),
+        it('ca-cold-smoke', 'Do not smoke', 'ca-hlbc-cold', ['Do not smoke or allow others to smoke around you.']),
+      ],
+      home: [
+        it('ca-cold-saline', 'Saline nasal washes', 'ca-hlbc-cold', ['Use saline (saltwater) nasal washes to help keep your nasal passages open and wash out mucus and allergens.']),
+        it('ca-cold-humidifier', 'Vaporizer or humidifier', 'ca-hlbc-cold', ['Use a vaporizer or humidifier to add moisture to your bedroom.']),
+      ],
+      meds: [
+        it('ca-cold-aspirin', 'Aspirin', 'ca-hlbc-cold', ['No one younger than 18 should take aspirin.']),
+        it('ca-cold-tylenol', 'Cold or flu medicines and Tylenol', 'ca-hlbc-cold', ['Be careful when taking over-the-counter cold or influenza (flu) medicines and Tylenol at the same time.']),
+      ],
+    },
+  },
+  'hay-fever': {
+    US: {},
+    GB: {
+      moderate: [it('gb-hf-outside', 'Too much time outside', 'uk-hayfever', ['do not spend too much time outside'])],
+      activity: [
+        it('gb-hf-grass', 'Do not cut grass or walk on grass', 'uk-hayfever', ['do not cut grass or walk on grass']),
+        it('gb-hf-clothes', 'Do not dry clothes outside', 'uk-hayfever', ['do not dry clothes outside']),
+        it('gb-hf-smoke', 'Do not smoke or be around smoke', 'uk-hayfever', ['do not smoke or be around smoke']),
+        it('gb-hf-sunglasses', 'Wraparound sunglasses, a mask or a wide-brimmed hat', 'uk-hayfever', ['wear wraparound sunglasses, a mask or a wide-brimmed hat to stop pollen getting into your nose and eyes']),
+      ],
+      home: [
+        it('gb-hf-jelly', 'Petroleum jelly around your nostrils', 'uk-hayfever', ['put petroleum jelly (such as Vaseline) around your nostrils to trap pollen']),
+        it('gb-hf-shower', 'Shower and change your clothes', 'uk-hayfever', ['shower and change your clothes after you have been outside to wash pollen off']),
+        it('gb-hf-windows', 'Keep windows and doors shut', 'uk-hayfever', ['keep windows and doors shut as much as possible']),
+        it('gb-hf-vacuum', 'Vacuum regularly and dust with a damp cloth', 'uk-hayfever', ['vacuum regularly and dust with a damp cloth']),
+      ],
+      meds: [
+        it('gb-hf-pharmacist', 'Speak to a pharmacist', 'uk-hayfever', ['Speak to a pharmacist if you have hay fever.']),
+        it('gb-hf-antihistamine', 'Antihistamine drops, tablets or nasal sprays', 'uk-hayfever', ['antihistamine drops, tablets or nasal sprays']),
+        it('gb-hf-steroid', 'Steroid nasal sprays', 'uk-hayfever', ['steroid nasal sprays']),
+      ],
+    },
+    CA: {},
+  },
+  'migraine-headache': {
+    US: {
+      activity: [it('us-mig-rest', 'Napping or resting in a quiet, dark room', 'us-ninds-migraine', ['Napping or resting in a quiet, dark room'])],
+      home: [it('us-mig-caffeine', 'Small amounts of caffeine', 'us-ninds-migraine', ["Small amounts of caffeine may help relieve symptoms during a migraine episode's early stages."])],
+      meds: [
+        it('us-mig-acute', 'Acute short-term medicines', 'us-ninds-migraine', ['Acute (short-term) medicines are taken as soon as symptoms begin.']),
+        it('us-mig-supplements', 'Dietary supplements', 'us-ninds-migraine', ['Dietary supplements are marketed to relieve migraine symptoms, but many have not been thoroughly tested by researchers.']),
+      ],
+    },
+    GB: {
+      avoid: [it('gb-mig-triggers', 'Things you know trigger your migraine attacks', 'uk-migraine', ['try to avoid things you know trigger your migraine attacks'])],
+      moderate: [it('gb-mig-caffeine', 'Caffeine and alcohol', 'uk-migraine', ['stay well hydrated, and limit how much caffeine and alcohol you drink'])],
+      activity: [
+        it('gb-mig-dark', 'Sleeping or lying down in a darkened room', 'uk-migraine', ['try sleeping or lying down in a darkened room during a migraine attack']),
+        it('gb-mig-exercise', 'Get regular exercise', 'uk-migraine', ['get regular exercise']),
+        it('gb-mig-sleep', 'Get plenty of sleep', 'uk-migraine', ['get plenty of sleep']),
+        it('gb-mig-meals', 'Eat meals at regular times', 'uk-migraine', ['eat meals at regular times']),
+        it('gb-mig-stress', 'Manage your stress', 'uk-migraine', ['try to manage your stress']),
+        it('gb-mig-diary', 'Keep a migraine diary', 'uk-migraine', ['It can help to keep a migraine diary to help you work out what might trigger your migraine attacks.']),
+      ],
+      meds: [it('gb-mig-painkillers', 'Painkillers', 'uk-migraine', ["If you're taking painkillers, take them as soon as your headache starts."])],
+    },
+    CA: {},
+  },
+  'leg-blood-clot': {
+    US: {
+      activity: [it('us-dvt-moving', 'Keep moving regularly', 'us-nhlbi-vte', ['It is important to keep moving regularly while you are healing.'])],
+      meds: [
+        it('us-dvt-prescribed', 'Take all medicines as prescribed', 'us-nhlbi-vte', ['Take all medicines as prescribed.']),
+        it('us-dvt-stockings', 'Compression stockings', 'us-nhlbi-vte', ['Your provider may prescribe compression stockings to give you relief.']),
+        it('us-dvt-alcohol', 'Alcohol and blood-thinning medicine', 'us-nhlbi-vte', ['Alcohol can also be dangerous if you are taking blood-thinning medicine.']),
+      ],
+    },
+    GB: {
+      moderate: [it('gb-dvt-alcohol', 'Do not drink lots of alcohol', 'uk-dvt', ['do not drink lots of alcohol'])],
+      activity: [
+        it('gb-dvt-walk', 'Walk regularly', 'uk-dvt', ['walk regularly if you can']),
+        it('gb-dvt-raised', 'Keep your affected leg raised', 'uk-dvt', ["keep your affected leg raised when you're sitting"]),
+        it('gb-dvt-sit', 'Do not sit still for long periods', 'uk-dvt', ['do not sit still for long periods of time']),
+        it('gb-dvt-fluids', 'Drink plenty of fluids', 'uk-dvt', ['drink plenty of fluids to avoid dehydration']),
+        it('gb-dvt-smoke', 'Do not smoke', 'uk-dvt', ['do not smoke']),
+        it('gb-dvt-flights', 'Delay flights or long journeys', 'uk-dvt', ['delay any flights or long journeys until at least 2 weeks after you start taking blood-thinning medicine']),
+      ],
+      meds: [it('gb-dvt-thinners', 'Blood-thinning medicines', 'uk-dvt', ['DVT (deep vein thrombosis) is treated with blood-thinning medicines.'])],
+    },
+    CA: {
+      activity: [
+        it('ca-dvt-walk', 'Walk several times a day', 'ca-hlbc-dvt', ['Walk several times a day, if possible.']),
+        it('ca-dvt-bed', 'Get out of bed as soon as you can', 'ca-hlbc-dvt', ['Get out of bed as soon as you can after an illness or surgery.']),
+        it('ca-dvt-elevate', 'Elevate your leg or arm', 'ca-hlbc-dvt', ['Elevate your leg or arm.']),
+        it('ca-dvt-trips', 'Take breaks on long trips', 'ca-hlbc-dvt', ['Take breaks when you are on long trips.']),
+      ],
+      home: [it('ca-dvt-stockings', 'Compression stockings', 'ca-hlbc-dvt', ['Wear compression stockings if your doctor recommends them.'])],
+      meds: [
+        it('ca-dvt-anticoag', 'Anticoagulant medicines', 'ca-hlbc-dvt', ['Anticoagulant medicines, also called blood thinners, are used to prevent and treat DVT.']),
+        it('ca-dvt-nsaid', 'NSAID', 'ca-hlbc-dvt', ["Do not take an NSAID unless your doctor tells you that it's safe for you."]),
+      ],
+    },
+  },
 };
 
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
@@ -1229,7 +1391,9 @@ export const pageIsOld = (srcId: string, now: Date = new Date()): boolean => {
 export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !!i.medIds?.length;
 export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
-export const PENDING_SOURCES: string[] = [];
+export const PENDING_SOURCES: string[] = [
+  'uk-pneumonia', 'uk-cold', 'uk-hayfever', 'uk-migraine', 'uk-dvt', 'us-nhlbi-pneumonia', 'us-cdc-cold', 'us-ninds-migraine', 'us-nhlbi-vte', 'ca-hlbc-pneumonia', 'ca-hlbc-cold', 'ca-hlbc-dvt',
+];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);
 export const visibleGroups = (i: TileItem) => (i.foodGroups ?? []).filter((g) => groupShown(i.id, g));

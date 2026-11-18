@@ -1118,7 +1118,7 @@ export const pageIsOld = (srcId: string, now: Date = new Date()): boolean => {
 export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !!i.medIds?.length;
 export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
-export const PENDING_SOURCES: string[] = ['us-niddk-ibs-eat', 'us-niddk-ibs-treat', 'uk-ibs-diet', 'ca-hlbc-ibs', 'us-nhlbi-insomnia', 'uk-insomnia', 'us-niams-back', 'uk-back-pain', 'ca-hlbc-back', 'us-niddk-hypo', 'uk-thyroid', 'ca-hlbc-hypo', 'us-ninds-pd', 'uk-pd-treat', 'ca-hlbc-pd'];
+export const PENDING_SOURCES: string[] = [];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);
 export const visibleGroups = (i: TileItem) => (i.foodGroups ?? []).filter((g) => groupShown(i.id, g));

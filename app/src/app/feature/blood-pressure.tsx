@@ -110,9 +110,7 @@ export default function BloodPressure() {
           {err ? <Body tone="danger">{err}</Body> : null}
           <BigButton label={busy ? t('profile.saving') : t('bp.saveReading')} onPress={save} disabled={busy || !sys || !dia} />
         </Panel>
-        <Panel>
-          <UploadButtons onFile={() => void pickFile()} onAsset={scan} />
-        </Panel>
+        <UploadButtons onFile={() => void pickFile()} onAsset={scan} />
         <Panel>
           <SectionHeader icon="📈" accent="red">{t('bp.chart')}</SectionHeader>
           <BpChart rows={rows} />

@@ -166,6 +166,17 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'ca-hlbc-cts': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/carpal-tunnel-syndrome', dateText: 'Current as of: November 9, 2022', checkedOn: C },
   'uk-pf': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/plantar-fasciitis/', dateText: 'Page last reviewed: 14 February 2025', nextReviewDue: '2028-02-14', checkedOn: C },
   'ca-hlbc-pf': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/plantar-fasciitis', dateText: 'Current as of: November 9, 2022', checkedOn: C },
+  'uk-ptsd': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/post-traumatic-stress-disorder-ptsd/', dateText: 'Page last reviewed: 08 April 2026', nextReviewDue: '2029-04-08', checkedOn: C },
+  'ca-hlbc-ptsd': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/post-traumatic-stress-disorder', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
+  'uk-bipolar': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/mental-health/conditions/bipolar-disorder/', dateText: 'Page last reviewed: 28 October 2024', nextReviewDue: '2027-10-28', checkedOn: C },
+  'ca-hlbc-bipolar': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/bipolar-disorder', dateText: 'Current as of: October 20, 2022', checkedOn: C },
+  'uk-adhd': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/', dateText: 'Page last reviewed: 19 March 2025', nextReviewDue: '2028-03-19', checkedOn: C },
+  'us-niddk-cirrhosis': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/liver-disease/cirrhosis/eating-diet-nutrition', dateText: 'Last Reviewed June 2023', checkedOn: C },
+  'uk-cirrhosis': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/cirrhosis/', dateText: 'Page last reviewed: 10 February 2025', nextReviewDue: '2028-02-10', checkedOn: C },
+  'ca-hlbc-cirrhosis': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/cirrhosis', dateText: 'Current as of: March 22, 2023', checkedOn: C },
+  'us-nhlbi-ipf': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/idiopathic-pulmonary-fibrosis/treatment', dateText: 'Last updated on March 24, 2022', checkedOn: C },
+  'uk-ipf': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/idiopathic-pulmonary-fibrosis/', dateText: 'Page last reviewed: 27 August 2026', nextReviewDue: '2029-08-27', checkedOn: C },
+  'ca-hlbc-pulmfib': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/pulmonary-fibrosis', dateText: 'Current as of: November 14, 2022', checkedOn: C },
 };
 
 type Tiles = Partial<Record<TileKey, TileItem[]>>;
@@ -1774,6 +1785,111 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       home: [it('ca-pf-ice', 'Resting and icing your heel', 'ca-hlbc-pf', ['First, try resting and icing your heel.'])],
     },
   },
+  // Batch 13 (read 2026-11-18): PTSD, bipolar disorder, ADHD, cirrhosis, pulmonary fibrosis. Gaps: NIMH pages for PTSD and bipolar disorder have no self-care or medicine line I could quote; no US or Canadian ADHD page read (NHS ADHD page is mostly about children). Bipolar Canada exercise line left out because it names a 30 minute target. All new sources are in PENDING_SOURCES until the verify script says OK.
+  ptsd: {
+    US: {},
+    GB: {
+      moderate: [it('gb-ptsd-alcohol', 'Too much alcohol', 'uk-ptsd', ['do not drink too much alcohol'])],
+      activity: [
+        it('gb-ptsd-active', 'Stay active', 'uk-ptsd', ['stay active']),
+        it('gb-ptsd-talk', "Talk to someone about how you're feeling", 'uk-ptsd', ["talk to someone about how you're feeling, either a friend or family member, or through an online support group"]),
+        it('gb-ptsd-diary', 'Keep a diary to help spot things that can trigger flashbacks', 'uk-ptsd', ['Keep a diary to help spot the things that can trigger flashbacks, such as certain smells or sounds.']),
+      ],
+      meds: [it('gb-ptsd-medicine', 'Do not stop taking your PTSD medicine', 'uk-ptsd', ['Do not stop taking your PTSD medicine unless you are told to by a doctor, even if you feel better.'])],
+    },
+    CA: {
+      activity: [
+        it('ca-ptsd-exercise', 'Exercise and be active', 'ca-hlbc-ptsd', ['Exercise and be active to reduce how tense you feel.']),
+        it('ca-ptsd-things', 'Things to do to ease your memories and reactions', 'ca-hlbc-ptsd', ['Find things to do to ease your memories and reactions.']),
+      ],
+      meds: [it('ca-ptsd-medicine', 'Take medicine exactly as prescribed', 'ca-hlbc-ptsd', ['If you are using medicine, take it exactly as prescribed.'])],
+    },
+  },
+  bipolar: {
+    US: {},
+    GB: {
+      moderate: [it('gb-bip-alcohol', 'Too much alcohol', 'uk-bipolar', ['do not drink too much alcohol'])],
+      activity: [
+        it('gb-bip-routine', 'Have a regular routine', 'uk-bipolar', ['try to have a regular routine']),
+        it('gb-bip-sleep', 'Get plenty of sleep', 'uk-bipolar', ['get plenty of sleep']),
+        it('gb-bip-exercise', 'Exercise regularly', 'uk-bipolar', ['exercise regularly']),
+      ],
+      meds: [it('gb-bip-medicine', 'Do not stop taking your bipolar disorder medicine', 'uk-bipolar', ['Do not stop taking your bipolar disorder medicine unless you are told to by a doctor, even if you feel better.'])],
+    },
+    CA: {
+      avoid: [it('ca-bip-alcohol', 'Alcohol, cannabis, and illegal drugs', 'ca-hlbc-bipolar', ['Avoid alcohol, cannabis, and illegal drugs.'])],
+      activity: [
+        it('ca-bip-sleep', 'Get enough sleep', 'ca-hlbc-bipolar', ['Get enough sleep.']),
+        it('ca-bip-bed', 'Go to bed at the same time every night', 'ca-hlbc-bipolar', ['And try to go to bed at the same time every night.']),
+      ],
+      meds: [
+        it('ca-bip-daily', 'Take your medicine every day as prescribed', 'ca-hlbc-bipolar', ['Take your medicine every day as prescribed.']),
+        it('ca-bip-regular', 'Take your medicines regularly', 'ca-hlbc-bipolar', ["You must take your medicines regularly, even if you're feeling better."]),
+      ],
+    },
+  },
+  adhd: {
+    US: {},
+    GB: {
+      meds: [it('gb-adhd-medicines', 'ADHD medicines', 'uk-adhd', ['ADHD medicines must be started and monitored by an ADHD specialist.'])],
+    },
+    CA: {},
+  },
+  cirrhosis: {
+    US: {
+      avoid: [it('us-cirr-raw', 'Raw or undercooked shellfish, fish, and meat, and unpasteurized milk', 'us-niddk-cirrhosis', ['Avoid eating raw or undercooked shellfish, fish, and meat, and unpasteurized milk and milk products.'])],
+      moderate: [it('us-cirr-sodium', 'Limiting sodium in foods and drinks', 'us-niddk-cirrhosis', ['Your doctor may recommend limiting sodium in foods and drinks.'])],
+      activity: [
+        it('us-cirr-alcohol', 'Stop drinking alcohol', 'us-niddk-cirrhosis', ['You should completely stop drinking alcohol because it can cause more liver damage.']),
+        it('us-cirr-dietitian', 'Registered dietitian', 'us-niddk-cirrhosis', ['Your doctor may refer you to a registered dietitian to help create healthy meal plans that fit your nutrition needs.']),
+      ],
+      meds: [it('us-cirr-supplements', 'Talk with your doctor before taking dietary supplements', 'us-niddk-cirrhosis', ['talk with your doctor before taking dietary supplements'])],
+    },
+    GB: {
+      activity: [
+        it('gb-cirr-alcohol', 'Do not drink alcohol', 'uk-cirrhosis', ['do not drink alcohol']),
+        it('gb-cirr-smoke', 'Do not smoke', 'uk-cirrhosis', ['do not smoke']),
+        it('gb-cirr-vaccines', 'Stay up to date with vaccinations', 'uk-cirrhosis', ['stay up to date with vaccinations, such as the flu vaccine and pneumococcal vaccine']),
+        it('gb-cirr-diet', 'Have a balanced diet', 'uk-cirrhosis', ['have a healthy, balanced diet']),
+      ],
+    },
+    CA: {
+      avoid: [
+        it('ca-cirr-sedatives', 'Sedative medicines', 'ca-hlbc-cirrhosis', ['Avoid sedative medicines, such as sleeping pills, medicines for anxiety, and opioids.']),
+        it('ca-cirr-natural', 'Most natural health products', 'ca-hlbc-cirrhosis', ['In general, you should avoid most natural health products.']),
+      ],
+      moderate: [it('ca-cirr-salt', 'Limit the amount of salt', 'ca-hlbc-cirrhosis', ['You may need to limit the amount of salt you eat.'])],
+      activity: [
+        it('ca-cirr-alcohol', 'Do not drink any alcohol', 'ca-hlbc-cirrhosis', ['Do not drink any alcohol.']),
+        it('ca-cirr-flu', 'Flu vaccine every year', 'ca-hlbc-cirrhosis', ['Get a flu vaccine every year.']),
+      ],
+      meds: [
+        it('ca-cirr-ask', 'Talk to your doctor or pharmacist about medicines', 'ca-hlbc-cirrhosis', ['Talk to your doctor or pharmacist about what medicines are safe for you.']),
+        it('ca-cirr-acetaminophen', 'Acetaminophen', 'ca-hlbc-cirrhosis', ['For example, acetaminophen (such as Tylenol) can speed up liver damage.']),
+      ],
+    },
+  },
+  'pulmonary-fibrosis': {
+    US: {
+      meds: [
+        it('us-ipf-antifibrotics', 'Nintedanib or pirfenidone', 'us-nhlbi-ipf', ['Nintedanib or pirfenidone can help your lungs work better.']),
+        it('us-ipf-antacids', 'Antacids', 'us-nhlbi-ipf', ['Antacids may help prevent stomach acid from getting into the lungs from reflux, making IPF worse.']),
+        it('us-ipf-oxygen', 'Oxygen therapy', 'us-nhlbi-ipf', ['Oxygen therapy to decrease shortness of breath and improve the ability to exercise']),
+      ],
+    },
+    GB: {
+      activity: [
+        it('gb-ipf-smoke', 'Stop smoking', 'uk-ipf', ['stop smoking if you smoke']),
+        it('gb-ipf-exercise', 'Exercise regularly and stay as fit as you can', 'uk-ipf', ['exercise regularly and stay as fit as you can']),
+        it('gb-ipf-vaccines', 'Annual flu vaccine, pneumococcal vaccine and RSV vaccine', 'uk-ipf', ["get the annual flu vaccine, pneumococcal vaccine and RSV vaccine if you're eligible"]),
+      ],
+      meds: [it('gb-ipf-oxygen', 'Oxygen therapy', 'uk-ipf', ['oxygen therapy to improve breathlessness and help you to be more active'])],
+    },
+    CA: {
+      avoid: [it('ca-ipf-smoke', 'Smoke, dirty air, and sick children and adults', 'ca-hlbc-pulmfib', ['You can help prevent lung infections by avoiding smoke, dirty air, and sick children and adults.'])],
+      meds: [it('ca-ipf-oxygen', 'Medicines and oxygen', 'ca-hlbc-pulmfib', ['Treatment includes medicines and oxygen to ease shortness of breath.'])],
+    },
+  },
 };
 
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
@@ -1808,7 +1924,7 @@ export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !
 export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
 export const PENDING_SOURCES: string[] = [
-  'uk-bronchitis', 'ca-hlbc-bronchitis', 'uk-sinusitis', 'ca-hlbc-sinusitis', 'uk-bronchiectasis', 'ca-hlbc-bronchiectasis', 'us-niams-cts', 'uk-cts', 'ca-hlbc-cts', 'uk-pf', 'ca-hlbc-pf',
+  'uk-ptsd', 'ca-hlbc-ptsd', 'uk-bipolar', 'ca-hlbc-bipolar', 'uk-adhd', 'us-niddk-cirrhosis', 'uk-cirrhosis', 'ca-hlbc-cirrhosis', 'us-nhlbi-ipf', 'uk-ipf', 'ca-hlbc-pulmfib',
 ];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);

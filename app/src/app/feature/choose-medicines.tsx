@@ -1,16 +1,21 @@
+import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Panel, Screen } from '@/components/ui';
 import { useI18n } from '@/i18n/I18nProvider';
 import { trError } from '@/i18n/labels';
 import { groupMeds, medById, medLabel, searchMeds } from '@/content/medList';
 import { toggleId } from '@/lib/conditionSelection';
+import { FILE_EXT, MAX_BYTES } from '@/lib/labData';
+import { matchMed, readMedLabel } from '@/lib/medLabelReader';
+import { ocrSupported, readTextFromFile } from '@/lib/ocr';
 import { addCustom, customKey, listKey, MAX_STRENGTH, normalizeStrength } from '@/lib/medSelection';
 import { emptyMeds, loadMyMeds, MyMeds, saveMyMeds } from '@/lib/userMedications';
 import { font, mix, useColors } from '@/theme/tokens';
 
-// Optional strength typed by the person, as on their label. The app never suggests one.
+// Optional strength: typed by the person, or suggested from a picture of the label and confirmed by them.
 function StrengthField({ label, value, onChange }: { label: string; value: string; onChange: (t: string) => void }) {
   const { t } = useI18n();
   return (
@@ -39,6 +44,52 @@ export default function ChooseMedicines() {
   const groups = useMemo(() => groupMeds(searchMeds(q)), [q]);
   const searching = q.trim() !== '';
   const total = ids.length + custom.length;
+
+  // Read a bottle or pharmacy label on this device. Only suggestions: the person checks them beside the original and presses Add. The picture is never saved.
+  const [scan, setScan] = useState<null | { step: 'reading' | 'check'; uri: string; mime: string; name: string; strength: string; msg: string; read: boolean }>(null);
+  const [progress, setProgress] = useState(0);
+  const [scanErr, setScanErr] = useState('');
+
+  async function startScan(asset: { uri: string; mimeType?: string | null; fileSize?: number | null } | undefined) {
+    if (!asset) return;
+    const mime = asset.mimeType ?? '';
+    if (!FILE_EXT[mime]) { setScanErr(t('lab.errFileType')); return; }
+    if (asset.fileSize && asset.fileSize > MAX_BYTES) { setScanErr(t('lab.errFileSize')); return; }
+    setScanErr(''); setProgress(0);
+    const base = { uri: asset.uri, mime, name: '', strength: '', read: false };
+    if (!ocrSupported) { setScan({ ...base, step: 'check', msg: t('lab.unsupported') }); return; }
+    setScan({ ...base, step: 'reading', msg: '' });
+    const r = await readTextFromFile(asset.uri, mime, setProgress);
+    if (!r.ok) { setScan({ ...base, step: 'check', msg: t('lab.readFailed') }); return; }
+    const got = readMedLabel(r.text);
+    setScan({ ...base, step: 'check', name: got.name ?? '', strength: got.strength ?? '', read: !!(got.name || got.strength), msg: got.name ? '' : t('meds.scan.none') });
+  }
+  async function pickFile() {
+    const res = await DocumentPicker.getDocumentAsync({ type: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'], copyToCacheDirectory: true, multiple: false });
+    if (!res.canceled) await startScan(res.assets[0]);
+  }
+  async function camera() {
+    const res = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 0.8 });
+    if (!res.canceled) await startScan(res.assets[0]);
+  }
+  const scanMatch = scan && scan.step === 'check' ? matchMed(scan.name) : null;
+
+  function addScanned() {
+    if (!scan) return;
+    const st = normalizeStrength(scan.strength);
+    if (st.error) { setScanErr(t('meds.errStrength', { error: trError(t, st.error) })); return; }
+    if (scanMatch) {
+      // A clear match to the official list: choose that medicine, so its official links show.
+      if (!ids.includes(scanMatch.med_id)) setIds([...ids, scanMatch.med_id]);
+      if (st.value) setStrengths({ ...strengths, [listKey(scanMatch.med_id)]: st.value });
+    } else {
+      const r = addCustom(custom, scan.name);
+      if (r.error) { setScanErr(trError(t, r.error)); return; }
+      setCustom(r.list);
+      if (st.value) setStrengths({ ...strengths, [customKey(scan.name.replace(/\s+/g, ' ').trim())]: st.value });
+    }
+    setScan(null); setScanErr('');
+  }
 
   function addOwn() {
     const r = addCustom(custom, own);
@@ -110,6 +161,29 @@ export default function ChooseMedicines() {
           <Field label={t('meds.name')} value={own} onChangeText={(t) => { setOwn(t); setOwnErr(''); }} placeholder={t('meds.typeName')} maxLength={100} onSubmitEditing={addOwn} />
           {ownErr ? <Body tone="danger">{ownErr}</Body> : null}
           <BigButton variant="secondary" label={t('meds.addName')} onPress={addOwn} disabled={!own.trim()} />
+          <Body>{t('meds.scan.hint')}</Body>
+          {!scan ? <BigButton variant="secondary" label={t('lab.pickFile')} onPress={() => void pickFile()} /> : null}
+          {!scan ? <BigButton variant="secondary" label={t('lab.takePhoto')} onPress={() => void camera()} /> : null}
+          {scan?.step === 'reading' ? <Body>{t('meds.scan.reading', { n: Math.round(progress * 100) })}</Body> : null}
+          {scan?.step === 'check' ? (
+            <View style={{ gap: 8 }}>
+              <Body>{t('meds.scan.confirmIntro')}</Body>
+              <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{t('lab.original')}</Text>
+              {scan.mime === 'application/pdf'
+                ? <><Body>{t('lab.noPreview')}</Body><BigButton variant="secondary" label={t('lab.openOriginal')} onPress={() => { if (typeof window !== 'undefined') window.open(scan.uri, '_blank', 'noopener,noreferrer'); }} /></>
+                : <Image accessibilityLabel={t('lab.original')} source={{ uri: scan.uri }} resizeMode="contain" style={{ width: '100%', height: 320, borderRadius: 8, backgroundColor: color.surface }} />}
+              <Body>{t('meds.scan.keep')}</Body>
+              {scan.msg ? <Body>{scan.msg}</Body> : null}
+              <Field label={t('meds.name')} value={scan.name} onChangeText={(v) => { setScan({ ...scan, name: v, read: false }); setScanErr(''); }} maxLength={100} />
+              <Field label={t('meds.scan.strength')} value={scan.strength} onChangeText={(v) => { setScan({ ...scan, strength: v }); setScanErr(''); }} placeholder={t('meds.example')} maxLength={MAX_STRENGTH} autoCapitalize="none" autoCorrect={false} />
+              {scan.read ? <Body>{t('lab.readNote')}</Body> : null}
+              {scan.name.trim() ? <Body>{scanMatch ? (ids.includes(scanMatch.med_id) ? t('meds.scan.matchedHave', { name: scanMatch.generic }) : t('meds.scan.matched', { name: scanMatch.generic })) : t('meds.scan.noMatch')}</Body> : null}
+              {scanErr ? <Body tone="danger">{scanErr}</Body> : null}
+              <BigButton label={t('meds.scan.add')} onPress={addScanned} disabled={!scan.name.trim()} />
+              <BigButton variant="secondary" label={t('meds.scan.cancel')} onPress={() => { setScan(null); setScanErr(''); }} />
+            </View>
+          ) : null}
+          {!scan && scanErr ? <Body tone="danger">{scanErr}</Body> : null}
           {custom.map((c) => (
             <View key={c} style={{ gap: 6 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>

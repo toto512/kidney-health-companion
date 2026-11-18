@@ -202,6 +202,15 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'ca-hlbc-neck': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/neck-pain', dateText: 'Current as of: November 9, 2022', checkedOn: C },
   'uk-tendon': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/tendonitis/', dateText: 'Page last reviewed: 09 June 2023', nextReviewDue: '2026-06-09', checkedOn: C },
   'uk-scoliosis': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/scoliosis/', dateText: 'Page last reviewed: 12 April 2023', nextReviewDue: '2026-04-12', checkedOn: C },
+  'uk-sickle': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/sickle-cell-anaemia/', dateText: 'Page last reviewed: 22 September 2026', checkedOn: C },
+  'ca-hlbc-sickle': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/sickle-cell-disease', dateText: 'Current as of: September 8, 2022', checkedOn: C },
+  'uk-hepc': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/hepatitis-c/', dateText: 'Page last reviewed: 19 March 2026', checkedOn: C },
+  'uk-lyme': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/lyme-disease/', dateText: 'Page last reviewed: 03 June 2025', checkedOn: C },
+  'ca-hlbc-lyme': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/lyme-disease', dateText: 'Current as of: October 31, 2022', checkedOn: C },
+  'uk-hiv': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/hiv-and-aids/', dateText: 'Page last reviewed: 09 July 2025', checkedOn: C },
+  'us-nih-hiv': { country: 'US', publisher: 'NIH (US National Institutes of Health)', type: 'government', url: 'https://hivinfo.nih.gov/understanding-hiv/fact-sheets/hiv-and-aids-basics', dateText: 'Last Reviewed: May 28, 2025', checkedOn: C },
+  'uk-hearing': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/hearing-loss/', dateText: 'Page last reviewed: 30 May 2025', checkedOn: C },
+  'uk-cancer': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/cancer/', dateText: 'Page last reviewed: 27 May 2025', checkedOn: C },
 };
 
 type Tiles = Partial<Record<TileKey, TileItem[]>>;
@@ -2204,6 +2213,82 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
     },
     CA: {},
   },
+  // Batch 17 (read 2026-11-18): sickle cell and thalassemia, viral hepatitis, HIV, Lyme disease, sensory loss (hearing), cancer. Gaps: no US sickle cell, hepatitis, Lyme or cancer page with usable lines (CDC and NIDCD pages did not load, NCI not read); no Canadian hepatitis C or HIV line (HealthLink BC hepatitis C paraphrased and not usable); no vision-loss page read in any country; NHS cancer page has no treatment or side-effect sentences. All new sources are in PENDING_SOURCES until the verify script says OK.
+  'sickle-thalassemia': {
+    US: {},
+    GB: {
+      avoid: [
+        it('gb-sickle-temp', 'Sudden temperature changes', 'uk-sickle', ['try to avoid sudden temperature changes, for example, dress warmly in cold weather']),
+        it('gb-sickle-intense', 'High intensity exercise', 'uk-sickle', ['avoid high intensity exercise because it may affect your breathing']),
+      ],
+      activity: [
+        it('gb-sickle-exercise', 'Gentle to moderate exercise', 'uk-sickle', ['try gentle to moderate exercise, such as walking or yoga']),
+        it('gb-sickle-breathing', 'Breathing exercises to relax', 'uk-sickle', ['try doing breathing exercises to relax']),
+      ],
+      meds: [
+        it('gb-sickle-painkillers', 'Painkillers such as paracetamol', 'uk-sickle', ['painkillers such as paracetamol or ibuprofen']),
+        it('gb-sickle-antibiotics', 'Antibiotics to prevent serious infections', 'uk-sickle', ['antibiotics such as penicillin or erythromycin, to help prevent serious infections, particularly in children']),
+      ],
+    },
+    CA: {
+      avoid: [it('ca-sickle-cold', 'Cold water', 'ca-hlbc-sickle', ['Avoid swimming and playing in cold water.'])],
+      home: [it('ca-sickle-bottle', 'Hot water bottle on low', 'ca-hlbc-sickle', ['Use a hot water bottle or a heating pad set on low.'])],
+      activity: [
+        it('ca-sickle-fluids', 'Drink plenty of fluid', 'ca-hlbc-sickle', ['Drink plenty of fluid if you have a fever or infection.']),
+        it('ca-sickle-rest', 'Rest when you feel tired', 'ca-hlbc-sickle', ['Rest when you feel tired.']),
+      ],
+      meds: [
+        it('ca-sickle-meds', 'Hydroxyurea and pain medicines', 'ca-hlbc-sickle', ['Medicines that treat sickle cell disease include hydroxyurea and pain medicines.']),
+        it('ca-sickle-mild-pain', 'Ibuprofen or acetaminophen for mild pain', 'ca-hlbc-sickle', ['For mild pain, use over-the-counter ibuprofen (such as Advil), acetaminophen (such as Tylenol), or both.']),
+      ],
+    },
+  },
+  'viral-hepatitis': {
+    US: {},
+    GB: {
+      avoid: [
+        it('gb-hepc-share', 'Drug injection equipment', 'uk-hepc', ['There are things you can do to avoid catching or spreading hepatitis C.', 'do not share any drug injection equipment, including needles, syringes, spoons and filters']),
+        it('gb-hepc-alcohol', 'Alcohol', 'uk-hepc', ['avoiding or cutting down on alcohol.']),
+      ],
+      meds: [it('gb-hepc-tablets', 'Antiviral tablets for 8 to 12 weeks', 'uk-hepc', ['Hepatitis C is treated with antiviral tablets you take every day for 8 to 12 weeks.'])],
+    },
+  },
+  hiv: {
+    US: {
+      meds: [it('us-hiv-pills', 'Medicines taken every day', 'us-nih-hiv', ['are typically a combination of medicines taken every day (as one or more pills)'])],
+    },
+    GB: {
+      meds: [it('gb-hiv-daily', 'Taking tablets every day', 'uk-hiv', ["You'll start by taking tablets every day."])],
+    },
+  },
+  lyme: {
+    US: {},
+    GB: {
+      home: [it('gb-lyme-tweezers', 'Tick-removal tweezers', 'uk-lyme', ['Use fine-tipped tweezers or a tick-removal tool.'])],
+      meds: [
+        it('gb-lyme-antibiotics', 'Antibiotics for up to 28 days', 'uk-lyme', ["The antibiotics you're given will depend on your symptoms, but you may need to take them for up to 28 days."]),
+        it('gb-lyme-finish', 'Finish the course', 'uk-lyme', ["It's important to finish the course, even if you start to feel better."]),
+      ],
+    },
+    CA: {
+      home: [it('ca-lyme-tick', 'Pull the tick slowly', 'ca-hlbc-lyme', ['If you find a tick, remove it quickly.', 'Slowly pull the tick straight out—do not twist or yank—until its mouth releases from your skin.'])],
+      meds: [it('ca-lyme-antibiotics', 'Take antibiotics as directed', 'ca-hlbc-lyme', ["Take your antibiotics as directed. Don't stop taking them just because you feel better."])],
+    },
+  },
+  'sensory-loss': {
+    US: {},
+    GB: {
+      activity: [
+        it('gb-hear-noise', 'Reduce background noise', 'uk-hearing', ['reduce background noise or move to a quieter area when talking to other people']),
+        it('gb-hear-face', 'Face people when talking', 'uk-hearing', ["face people when they're talking to you, so you can see their mouth, facial expressions and gestures"]),
+      ],
+    },
+  },
+  cancer: {
+    GB: {
+      activity: [it('gb-cancer-active', 'Be physically active', 'uk-cancer', ['be physically active – aim for at least 150 minutes of moderate activity or 75 minutes of vigorous activity a week'])],
+    },
+  },
 };
 
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
@@ -2239,6 +2324,7 @@ export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) 
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
 export const PENDING_SOURCES: string[] = [
   'us-nimh-autism', 'uk-fibro', 'us-niams-fibro', 'ca-hlbc-fibro', 'uk-neck', 'ca-hlbc-neck', 'uk-tendon', 'uk-scoliosis',
+  'uk-sickle', 'ca-hlbc-sickle', 'uk-hepc', 'uk-lyme', 'ca-hlbc-lyme', 'uk-hiv', 'us-nih-hiv', 'uk-hearing', 'uk-cancer',
 ];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);

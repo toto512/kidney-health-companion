@@ -1,6 +1,6 @@
 import * as DocumentPicker from 'expo-document-picker';
-import { router } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { UploadButtons } from '@/components/UploadButtons';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Panel, Screen } from '@/components/ui';
@@ -68,6 +68,15 @@ export default function ChooseMedicines() {
     const res = await DocumentPicker.getDocumentAsync({ type: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'], copyToCacheDirectory: true, multiple: false });
     if (!res.canceled) await startScan(res.assets[0]);
   }
+  // Arriving from "My medications" with a file or picture already chosen: read it once the saved list has loaded.
+  const incoming = useLocalSearchParams<{ uri?: string; mime?: string; size?: string }>();
+  const started = useRef(false);
+  useEffect(() => {
+    if (saved === undefined || started.current || !incoming.uri) return;
+    started.current = true;
+    void startScan({ uri: incoming.uri, mimeType: incoming.mime ?? '', fileSize: incoming.size ? Number(incoming.size) : null });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [saved, incoming.uri]);
   const scanMatch = scan && scan.step === 'check' ? matchMed(scan.name) : null;
 
   function addScanned() {

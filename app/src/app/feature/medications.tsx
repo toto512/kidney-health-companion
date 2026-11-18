@@ -1,6 +1,8 @@
+import * as DocumentPicker from 'expo-document-picker';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
+import { UploadButtons } from '@/components/UploadButtons';
 import { BigButton, Body, DisclaimerFooter, H1, Panel, Screen, SectionHeader } from '@/components/ui';
 import { linkFor, medById, medLabel } from '@/content/medList';
 import { useI18n } from '@/i18n/I18nProvider';
@@ -18,6 +20,15 @@ export default function Medications() {
   const [country, setCountry] = useState<string | null>(null);
   useEffect(() => { void supabase.from('profiles').select('country_code').maybeSingle().then(({ data }) => setCountry(data?.country_code ?? null)); }, []);
   const items = (m?.ids ?? []).map(medById).filter((x) => !!x);
+
+  // File or picture: the next screen reads it on this device and asks you to confirm before anything is added.
+  function scan(a: { uri: string; mimeType?: string | null; fileSize?: number | null } | undefined) {
+    if (a) router.push({ pathname: '/feature/choose-medicines', params: { uri: a.uri, mime: a.mimeType ?? '', size: String(a.fileSize ?? '') } });
+  }
+  async function pickFile() {
+    const res = await DocumentPicker.getDocumentAsync({ type: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'], copyToCacheDirectory: true, multiple: false });
+    if (!res.canceled) scan(res.assets[0]);
+  }
 
   return (
     <ScrollView>
@@ -58,6 +69,7 @@ export default function Medications() {
             ))}
           </Panel>
         ) : null}
+        {m ? <UploadButtons onFile={() => void pickFile()} onAsset={scan} /> : null}
         {m ? <BigButton variant="secondary" label={items.length || m.custom.length ? t('medlist.change') : t('medlist.pick')} onPress={() => router.push('/feature/choose-medicines')} /> : null}
         <Body>{t('medlist.note')}</Body>
         <BigButton variant="secondary" label={t('profile.backHealth')} onPress={() => router.replace('/')} />

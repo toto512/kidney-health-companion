@@ -194,6 +194,14 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'uk-hives': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/hives/', dateText: 'Page last reviewed: 26 April 2024', nextReviewDue: '2027-04-26', checkedOn: C },
   'uk-mecfs': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/chronic-fatigue-syndrome-cfs/', dateText: 'Page last reviewed: 28 May 2024', nextReviewDue: '2027-05-28', checkedOn: C },
   'us-cdc-mecfs': { country: 'US', publisher: 'CDC (US Centers for Disease Control and Prevention)', type: 'government', url: 'https://www.cdc.gov/me-cfs/management/index.html', dateText: 'Last Reviewed May 10, 2024', checkedOn: C },
+  'us-nimh-autism': { country: 'US', publisher: 'NIMH (US National Institutes of Health)', type: 'government', url: 'https://www.nimh.nih.gov/health/topics/autism-spectrum-disorders-asd', dateText: 'Last Reviewed December 2024', checkedOn: C },
+  'uk-fibro': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/fibromyalgia/', dateText: 'Page last reviewed: 12 October 2022', nextReviewDue: '2025-10-12', checkedOn: C },
+  'us-niams-fibro': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/fibromyalgia/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
+  'ca-hlbc-fibro': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/fibromyalgia', dateText: 'Current as of: November 9, 2022', checkedOn: C },
+  'uk-neck': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/neck-pain/', dateText: 'Page last reviewed: 27 April 2023', nextReviewDue: '2026-04-27', checkedOn: C },
+  'ca-hlbc-neck': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/neck-pain', dateText: 'Current as of: November 9, 2022', checkedOn: C },
+  'uk-tendon': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/tendonitis/', dateText: 'Page last reviewed: 09 June 2023', nextReviewDue: '2026-06-09', checkedOn: C },
+  'uk-scoliosis': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/scoliosis/', dateText: 'Page last reviewed: 12 April 2023', nextReviewDue: '2026-04-12', checkedOn: C },
 };
 
 type Tiles = Partial<Record<TileKey, TileItem[]>>;
@@ -2094,6 +2102,108 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
     },
     CA: {},
   },
+  // Batch 16 (read 2026-11-18): autism, fibromyalgia, neck pain, tendon problems, scoliosis. Gaps: NHS autism page is a menu with no usable line; no HealthLink BC page for autism, tendon or scoliosis had usable lines; NIAMS scoliosis page is written for children and is not used; no US tendon or neck page read. All new sources are in PENDING_SOURCES until the verify script says OK.
+  autism: {
+    US: {
+      activity: [it('us-aut-help', 'Find help for yourself or someone else', 'us-nimh-autism', ['Learn how to find help for yourself or someone else.'])],
+    },
+    GB: {},
+    CA: {},
+  },
+  fibromyalgia: {
+    US: {
+      activity: [
+        it('us-fibro-start', 'Start exercising at a low level', 'us-niams-fibro', ['You should start exercising at a low level and gradually increase over time.']),
+        it('us-fibro-physio', 'Physical therapists or exercise physiologists', 'us-niams-fibro', ['Physical therapists or exercise physiologists can prescribe an exercise program and provide ongoing support.']),
+        it('us-fibro-sleep', 'Go to sleep at the same time every day', 'us-niams-fibro', ['Go to sleep and get up at the same time every day.']),
+        it('us-fibro-environment', 'Relaxing sleep environment and sleep routine', 'us-niams-fibro', ['Create a relaxing sleep environment and establish a sleep routine.']),
+        it('us-fibro-bedroom', 'Dark, quiet and cool bedroom', 'us-niams-fibro', ['Try to keep your bedroom dark, quiet, and cool.']),
+        it('us-fibro-pace', 'Pace yourself during the day', 'us-niams-fibro', ['Pace yourself during the day.']),
+        it('us-fibro-support', 'Support network', 'us-niams-fibro', ['Having a support network can help you manage difficult times.']),
+        it('us-fibro-professional', 'Mental health professional', 'us-niams-fibro', ['Visit a mental health professional if emotional problems arise.']),
+      ],
+      avoid: [
+        it('us-fibro-stimulants', 'Stimulants like caffeine and nicotine', 'us-niams-fibro', ['Avoid stimulants like caffeine and nicotine, and limit alcohol intake.']),
+        it('us-fibro-bedtime', 'Working or exercising close to bedtime', 'us-niams-fibro', ['Avoid working or exercising close to bedtime.']),
+      ],
+      meds: [it('us-fibro-medicines', 'Medicines for pain and sleep', 'us-niams-fibro', ['A number of medicines can help relieve the pain and improve sleep.'])],
+    },
+    GB: {
+      activity: [it('gb-fibro-lifestyle', 'Exercise programmes and relaxation techniques', 'uk-fibro', ['lifestyle changes, such as exercise programmes and relaxation techniques'])],
+      meds: [it('gb-fibro-antidepressants', 'Antidepressants', 'uk-fibro', ['medicine, such as antidepressants'])],
+    },
+    CA: {
+      activity: [
+        it('ca-fibro-exercise', 'Regular exercise, especially cardiovascular', 'ca-hlbc-fibro', ['Getting regular exercise, especially cardiovascular exercise, is one of the best ways to manage fibromyalgia.']),
+        it('ca-fibro-stress', 'Ways to cope with stress', 'ca-hlbc-fibro', ['Finding healthy ways to cope with stress may help reduce your pain.']),
+      ],
+      moderate: [it('ca-fibro-triggers', 'Common triggers', 'ca-hlbc-fibro', ['Common triggers include cold or damp weather, poor sleep, fatigue, physical or emotional stress, and being too active.'])],
+      avoid: [it('ca-fibro-treatments', 'Harmful treatments, unusual diets or excessive natural health products', 'ca-hlbc-fibro', ['Avoid treatments that may be harmful, such as unusual diets or excessive natural health products.'])],
+    },
+  },
+  'neck-pain': {
+    US: {},
+    GB: {
+      home: [
+        it('gb-neck-peas', 'Frozen peas wrapped in a tea towel', 'uk-neck', ['a pack of frozen peas wrapped in a tea towel for 5 minutes, 3 times a day']),
+        it('gb-neck-packs', 'Heat or cold packs from a pharmacy', 'uk-neck', ['You can also buy heat or cold packs from a pharmacy.']),
+      ],
+      activity: [
+        it('gb-neck-flexibility', 'Neck flexibility exercises', 'uk-neck', ['try neck flexibility exercises']),
+        it('gb-neck-height', 'Head the same height when sleeping', 'uk-neck', ['when sleeping, make sure your head is the same height as the rest of your body']),
+        it('gb-neck-front', 'Sleep on your front', 'uk-neck', ['do not sleep on your front']),
+      ],
+      meds: [
+        it('gb-neck-paracetamol', 'Paracetamol or ibuprofen', 'uk-neck', ['take paracetamol or ibuprofen']),
+        it('gb-neck-gel', 'Ibuprofen gel on your neck', 'uk-neck', ['or use ibuprofen gel on your neck']),
+      ],
+    },
+    CA: {
+      avoid: [
+        it('ca-neck-positions', 'Spending a lot of time in positions that stress your neck', 'ca-hlbc-neck', ['Avoid spending a lot of time in positions that stress your neck.']),
+        it('ca-neck-activities', 'Activities that make pain and stiffness worse', 'ca-hlbc-neck', ['Avoid activities that make pain and stiffness worse.']),
+      ],
+      home: [it('ca-neck-heating', 'Heating pad or ice', 'ca-hlbc-neck', ['Try a heating pad or ice for 10 to 15 minutes every few hours.'])],
+      activity: [
+        it('ca-neck-moving', 'Get moving as soon as you can', 'ca-hlbc-neck', ['As soon as you can, get moving.']),
+        it('ca-neck-stretch', 'Stretching and strengthening exercises', 'ca-hlbc-neck', ['Do stretching and strengthening exercises for your neck.']),
+        it('ca-neck-sit', 'Sit straight in your chair', 'ca-hlbc-neck', ['Sit straight in your chair with your feet flat on the floor.']),
+        it('ca-neck-smoking', 'Smoking slows healing', 'ca-hlbc-neck', ['Smoking slows healing because it decreases blood supply and delays tissue repair.']),
+      ],
+      meds: [it('ca-neck-medicines', 'Medicines for neck pain', 'ca-hlbc-neck', ['Medicines can relieve neck pain and reduce inflammation of the soft tissues.'])],
+    },
+  },
+  'tendon-problems': {
+    US: {},
+    GB: {
+      activity: [
+        it('gb-tendon-rest', 'Rest the tendon for 2 to 3 days', 'uk-tendon', ['Rest: try to avoid moving the tendon for 2 to 3 days.']),
+        it('gb-tendon-treat', 'Treat a mild tendon injury yourself', 'uk-tendon', ['You can treat a mild tendon injury yourself and it should feel better within 2 to 3 weeks.']),
+        it('gb-tendon-lifting', 'Heavy lifting, gripping or twisting', 'uk-tendon', ['heavy lifting, strong gripping or twisting actions that make the symptoms worse']),
+        it('gb-tendon-sport', 'Playing any sport until the tendon has recovered', 'uk-tendon', ['playing any sport until the tendon has recovered']),
+        it('gb-tendon-warmup', 'Warm up before exercising', 'uk-tendon', ['warm up before exercising and gently stretch afterwards']),
+        it('gb-tendon-shoes', 'Supportive shoes or insoles for exercise', 'uk-tendon', ['wear supportive shoes or insoles for exercise']),
+        it('gb-tendon-breaks', 'Regular breaks from repetitive exercises', 'uk-tendon', ['take regular breaks from repetitive exercises']),
+      ],
+      home: [it('gb-tendon-bandage', 'Elastic bandage or soft brace', 'uk-tendon', ['wrap an elastic bandage around the area, use a tube bandage, or use a soft brace.'])],
+      meds: [
+        it('gb-tendon-pharmacist', 'Pharmacist and painkiller', 'uk-tendon', ['A pharmacist can recommend the best painkiller for you.']),
+        it('gb-tendon-paracetamol', 'Paracetamol and ibuprofen', 'uk-tendon', ['Paracetamol and ibuprofen can help to ease pain.']),
+      ],
+    },
+    CA: {},
+  },
+  scoliosis: {
+    US: {},
+    GB: {
+      activity: [
+        it('gb-scol-exercise', 'Exercise and sports', 'uk-scoliosis', ['Most people with scoliosis are able to live normal lives and can do most activities, including exercise and sports.']),
+        it('gb-scol-support', 'Contact a support group', 'uk-scoliosis', ['You may find it useful to contact a support group, such as Scoliosis Support & Research.']),
+      ],
+      meds: [it('gb-scol-painkillers', 'Painkillers and spinal injections', 'uk-scoliosis', ['Adults may need treatment to relieve pain, such as painkillers, spinal injections and, very occasionally, surgery.'])],
+    },
+    CA: {},
+  },
 };
 
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
@@ -2127,7 +2237,9 @@ export const pageIsOld = (srcId: string, now: Date = new Date()): boolean => {
 export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !!i.medIds?.length;
 export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
-export const PENDING_SOURCES: string[] = [];
+export const PENDING_SOURCES: string[] = [
+  'us-nimh-autism', 'uk-fibro', 'us-niams-fibro', 'ca-hlbc-fibro', 'uk-neck', 'ca-hlbc-neck', 'uk-tendon', 'uk-scoliosis',
+];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);
 export const visibleGroups = (i: TileItem) => (i.foodGroups ?? []).filter((g) => groupShown(i.id, g));

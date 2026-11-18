@@ -100,7 +100,8 @@ describe('batch 1 coverage', () => {
   });
   it('a checked country with nothing found has empty tiles, never a stand-in from another country', () => {
     for (const t of TILE_KEYS) expect(tileItems('hbp', 'CA', t)).toEqual([]);
-    expect(hasTiles('scoliosis', 'CA')).toBe(false);
+    expect(hasTiles('scoliosis', 'CA')).toBe(true);
+    expect(hasTiles('cancer', 'CA')).toBe(false);
   });
   it('home remedy tiles list only what the page says to do at home', () => {
     for (const { item } of all.filter((a) => a.tile === 'home' && ['ckd', 'gout', 'hbp'].includes(a.cond))) expect(item.quotes.join(' '), item.id).toMatch(/ice|rest|raise|prop|elevat|cool|water|bedclothes|cold/i);

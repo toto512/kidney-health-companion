@@ -130,6 +130,19 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'ca-hlbc-pneumonia': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/pneumonia-0', dateText: 'Current as of: October 31, 2022', checkedOn: C },
   'ca-hlbc-cold': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/colds', dateText: 'Current as of: October 31, 2022', checkedOn: C },
   'ca-hlbc-dvt': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/deep-vein-thrombosis', dateText: 'Current as of: December 19, 2022', checkedOn: C },
+  'us-ninds-epilepsy': { country: 'US', publisher: 'NINDS (US National Institutes of Health)', type: 'government', url: 'https://www.ninds.nih.gov/health-information/disorders/epilepsy-and-seizures', dateText: 'Last reviewed on March 13, 2026', checkedOn: C },
+  'uk-epilepsy': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/epilepsy/', dateText: 'Page last reviewed: 06 March 2025', nextReviewDue: '2028-03-06', checkedOn: C },
+  'ca-hlbc-epilepsy': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/epilepsy', dateText: 'Current as of: August 25, 2022', checkedOn: C },
+  'us-niddk-celiac': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/digestive-diseases/celiac-disease/eating-diet-nutrition', dateText: 'Last Reviewed October 2020', checkedOn: C },
+  'ca-hlbc-celiac': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/celiac-disease', dateText: 'Current as of: March 22, 2023', checkedOn: C },
+  'us-niams-psoriasis': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/psoriasis/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
+  'uk-psoriasis': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/psoriasis/', dateText: 'Page last reviewed: 10 March 2026', nextReviewDue: '2029-03-10', checkedOn: C },
+  'ca-hlbc-psoriasis': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/psoriasis', dateText: 'Current as of: March 22, 2023', checkedOn: C },
+  'us-niams-eczema': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/atopic-dermatitis/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
+  'uk-eczema': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/atopic-eczema/', dateText: 'Page last reviewed: 06 September 2024', nextReviewDue: '2027-09-06', checkedOn: C },
+  'us-ninds-ms': { country: 'US', publisher: 'NINDS (US National Institutes of Health)', type: 'government', url: 'https://www.ninds.nih.gov/health-information/disorders/multiple-sclerosis', dateText: 'Last reviewed on December 17, 2025', checkedOn: C },
+  'uk-ms': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/multiple-sclerosis/', dateText: 'Page last reviewed: 16 August 2024', nextReviewDue: '2027-08-16', checkedOn: C },
+  'ca-hlbc-ms': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/multiple-sclerosis', dateText: 'Current as of: August 25, 2022', checkedOn: C },
 };
 
 type Tiles = Partial<Record<TileKey, TileItem[]>>;
@@ -1358,6 +1371,128 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       ],
     },
   },
+  // Batch 10 (read 2026-11-18): epilepsy, celiac disease, psoriasis, eczema, multiple sclerosis. Gaps: no UK celiac or Canadian eczema line quoted verbatim (NHS celiac page lists foods only in paraphrase, HealthLink BC eczema page blocks reading); US/CA MS pages say little. Two NIAMS pages show no review date. All new sources are in PENDING_SOURCES until the verify script says OK.
+  epilepsy: {
+    US: {
+      avoid: [it('us-epi-avoid', 'Dehydration, overexertion, and low blood sugar', 'us-ninds-epilepsy', ['Individuals with epilepsy should avoid dehydration, overexertion, and low blood sugar'])],
+      activity: [
+        it('us-epi-exercise', 'Regular exercise', 'us-ninds-epilepsy', ['regular exercise may improve seizure control in some people']),
+        it('us-epi-sleep', 'Treating sleep problems', 'us-ninds-epilepsy', ['Treating sleep problems can help reduce seizures.']),
+      ],
+      meds: [
+        it('us-epi-continue', 'Continue taking antiseizure medication', 'us-ninds-epilepsy', ['It is very important to continue taking antiseizure medication for as long as it is prescribed.']),
+        it('us-epi-stop', 'Discontinuing medication', 'us-ninds-epilepsy', ['Discontinuing medication should always be done with supervision of a health care professional.']),
+      ],
+    },
+    GB: {
+      moderate: [it('gb-epi-alcohol', 'Too much alcohol', 'uk-epilepsy', ['do not drink too much alcohol, as it can increase the risk of seizures'])],
+      activity: [
+        it('gb-epi-family', 'Family and friends know what to do', 'uk-epilepsy', ['make sure your family and friends know what to do if you have a seizure']),
+        it('gb-epi-id', 'Carry medical ID', 'uk-epilepsy', ['carry medical ID, such as a bracelet or a card that lets people know you have epilepsy']),
+        it('gb-epi-showers', 'Showers instead of baths', 'uk-epilepsy', ['have showers instead of baths if you can']),
+        it('gb-epi-safety', 'Think about safety', 'uk-epilepsy', ['think about safety when doing activities such as cooking, using tools or machinery, swimming or sports']),
+      ],
+      meds: [
+        it('gb-epi-doses', 'Do not miss doses', 'uk-epilepsy', ['do not miss doses of your epilepsy medicine']),
+        it('gb-epi-change', 'Do not change your dose or stop taking your medicine', 'uk-epilepsy', ['Do not change your dose or stop taking your medicine without talking to your specialist.']),
+      ],
+    },
+    CA: {
+      activity: [
+        it('ca-epi-plan', 'Follow your treatment plan', 'ca-hlbc-epilepsy', ['To help control your seizures, follow your treatment plan.']),
+        it('ca-epi-id', 'Wear a medical ID bracelet', 'ca-hlbc-epilepsy', ['Wear a medical ID bracelet.']),
+        it('ca-epi-drive', 'Ask your doctor: drive or swim', 'ca-hlbc-epilepsy', ["Ask your doctor if it's safe for you to do things like drive or swim."]),
+      ],
+      meds: [
+        it('ca-epi-prescribed', 'Take medicine exactly as prescribed', 'ca-hlbc-epilepsy', ['If you take medicine to control seizures, take it exactly as prescribed.']),
+        it('ca-epi-missing', 'Missing doses', 'ca-hlbc-epilepsy', ['Even missing just a few doses can allow seizures to happen.']),
+      ],
+    },
+  },
+  celiac: {
+    US: {
+      activity: [
+        it('us-cel-remove', 'Remove foods and drinks that contain gluten', 'us-niddk-celiac', ['If you have celiac disease, you will need to remove foods and drinks that contain gluten from your diet.']),
+        it('us-cel-labels', 'Read food labels', 'us-niddk-celiac', ['carefully read food labels to check for grains that contain gluten']),
+        it('us-cel-unsure', 'Foods you are not sure whether they contain gluten', 'us-niddk-celiac', ["don't eat foods if you aren't sure whether they contain gluten"]),
+      ],
+    },
+    GB: {},
+    CA: {
+      activity: [it('ca-cel-labels', 'Read food labels carefully', 'ca-hlbc-celiac', ['It helps to read food labels carefully and look for hidden gluten.'])],
+      meds: [it('ca-cel-medicine', 'Gluten in medicine', 'ca-hlbc-celiac', ['Also look for gluten in medicine and some food additives.'])],
+    },
+  },
+  psoriasis: {
+    US: {
+      avoid: [it('us-pso-triggers', 'Things that trigger psoriasis flares', 'us-niams-psoriasis', ['Try to identify things that trigger psoriasis flares and work to avoid them.'])],
+      moderate: [it('us-pso-alcohol', 'Moderate your use of alcohol', 'us-niams-psoriasis', ['Moderate your use of alcohol.'])],
+      activity: [
+        it('us-pso-moisture', 'Keep your skin well moisturized', 'us-niams-psoriasis', ['Keep your skin well moisturized.']),
+        it('us-pso-smoke', 'Work with your doctor to quit if you smoke', 'us-niams-psoriasis', ['If you smoke, work with your doctor to make a plan to quit.']),
+      ],
+      home: [
+        it('us-pso-bathe', 'Bathe in lukewarm water', 'us-niams-psoriasis', ['Bathe in lukewarm water and use mild soap that has added oils.']),
+        it('us-pso-damp', 'Heavy moisturizers while your skin is still damp', 'us-niams-psoriasis', ['After bathing, apply heavy moisturizers while your skin is still damp.']),
+      ],
+    },
+    GB: {
+      avoid: [it('gb-pso-triggers', 'Things that make your symptoms worse', 'uk-psoriasis', ['try to avoid the things that make your symptoms worse (triggers)'])],
+      moderate: [it('gb-pso-alcohol', 'Too much alcohol', 'uk-psoriasis', ['try not to drink too much alcohol'])],
+      activity: [it('gb-pso-smoke', 'Stop smoking', 'uk-psoriasis', ['try to stop smoking, if you smoke'])],
+      home: [it('gb-pso-share', 'Do not share your moisturising treatments', 'uk-psoriasis', ['do not share your moisturising treatments (emollients) with anyone else'])],
+      meds: [it('gb-pso-severe', 'Light therapy and medicines', 'uk-psoriasis', ['If your psoriasis is more severe, there are other treatments, such as light therapy and medicines.'])],
+    },
+    CA: {
+      avoid: [it('ca-pso-alcohol', 'Alcohol if it causes your symptoms to flare up', 'ca-hlbc-psoriasis', ['Avoid alcohol if it causes your symptoms to flare up.'])],
+      activity: [it('ca-pso-smoke', 'Consider quitting if you smoke', 'ca-hlbc-psoriasis', ['If you smoke, consider quitting.'])],
+      home: [it('ca-pso-lotions', 'Creams, ointments, and lotions', 'ca-hlbc-psoriasis', ['Creams, ointments, and lotions to moisturize the skin.'])],
+      meds: [
+        it('ca-pso-trigger', 'Certain medicines can trigger psoriasis', 'ca-hlbc-psoriasis', ['Certain medicines can trigger psoriasis or make symptoms worse.']),
+        it('ca-pso-topical', 'Topical medicine', 'ca-hlbc-psoriasis', ['For moderate to severe psoriasis, you may need to use a topical medicine prescribed by your doctor.']),
+      ],
+    },
+  },
+  eczema: {
+    US: {
+      avoid: [it('us-ecz-scratch', 'Scratching or rubbing', 'us-niams-eczema', ['Try to avoid scratching or rubbing, which irritates the skin, increases inflammation, and can increase itchiness.'])],
+      activity: [it('us-ecz-routine', 'Daily skin care routine', 'us-niams-eczema', ['Following a daily skin care routine is important and helps prevent flares.'])],
+      home: [it('us-ecz-creams', 'Moisturizing creams', 'us-niams-eczema', ['Moisturizing creams can help restore the skin barrier.'])],
+      meds: [it('us-ecz-calcineurin', 'Calcineurin inhibitors', 'us-niams-eczema', ['Calcineurin inhibitors applied to the skin decrease inflammation and help prevent flares.'])],
+    },
+    GB: {
+      avoid: [it('gb-ecz-triggers', 'Things that make your eczema worse', 'uk-eczema', ['avoid things that make your eczema worse such as soap, washing detergent, some fabrics or pets'])],
+      activity: [
+        it('gb-ecz-soap', 'Wash with an emollient instead of soap', 'uk-eczema', ['wash with an emollient instead of soap']),
+        it('gb-ecz-scratch', 'Do not scratch your eczema', 'uk-eczema', ['do not scratch your eczema, as it can make it worse']),
+        it('gb-ecz-flames', 'Do not smoke or go near naked flames', 'uk-eczema', ['do not smoke or go near naked flames if you use an emollient']),
+      ],
+      home: [it('gb-ecz-emollients', 'Moisturising treatments', 'uk-eczema', ['apply moisturising treatments (emollients) to your skin as often as possible (at least 2 times a day)'])],
+      meds: [it('gb-ecz-aqueous', 'Aqueous cream', 'uk-eczema', ['do not use aqueous cream as it can irritate the skin and make eczema worse'])],
+    },
+    CA: {},
+  },
+  ms: {
+    US: {
+      activity: [it('us-ms-stress', 'Stress management programs or relaxation training', 'us-ninds-ms', ['Stress management programs or relaxation training may help some people.'])],
+      meds: [it('us-ms-spasticity', 'Medicines for spasticity', 'us-ninds-ms', ['Medicines can also help reduce spasticity.'])],
+    },
+    GB: {
+      activity: [
+        it('gb-ms-physio', 'Physiotherapy and exercises', 'uk-ms', ['physiotherapy and exercises to help with movement problems and muscle pain']),
+        it('gb-ms-cbt', 'Cognitive behavioural therapy', 'uk-ms', ['cognitive behavioural therapy (CBT) to help with anxiety, depression and fatigue']),
+        it('gb-ms-tiredness', 'Manage tiredness', 'uk-ms', ['advice about how to manage tiredness (fatigue)']),
+      ],
+      meds: [
+        it('gb-ms-steroid', 'Steroid medicine', 'uk-ms', ['steroid medicine to reduce swelling and help nerves work better']),
+        it('gb-ms-relaxant', 'Muscle relaxant medicine', 'uk-ms', ['muscle relaxant medicine to help relieve muscle spasms, cramps or stiffness']),
+        it('gb-ms-walking', 'Medicine to improve walking', 'uk-ms', ['medicine to help improve walking']),
+      ],
+    },
+    CA: {
+      meds: [it('ca-ms-medicines', 'Medicines may help lower attacks', 'ca-hlbc-ms', ['MS has no cure, but medicines may help lower the number of attacks and make them less severe.'])],
+    },
+  },
 };
 
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
@@ -1392,7 +1527,7 @@ export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !
 export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
 export const PENDING_SOURCES: string[] = [
-  'uk-pneumonia', 'uk-cold', 'uk-hayfever', 'uk-migraine', 'uk-dvt', 'us-nhlbi-pneumonia', 'us-cdc-cold', 'us-ninds-migraine', 'us-nhlbi-vte', 'ca-hlbc-pneumonia', 'ca-hlbc-cold', 'ca-hlbc-dvt',
+  'us-ninds-epilepsy', 'uk-epilepsy', 'ca-hlbc-epilepsy', 'us-niddk-celiac', 'ca-hlbc-celiac', 'us-niams-psoriasis', 'uk-psoriasis', 'ca-hlbc-psoriasis', 'us-niams-eczema', 'uk-eczema', 'us-ninds-ms', 'uk-ms', 'ca-hlbc-ms',
 ];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);

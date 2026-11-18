@@ -273,7 +273,7 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
         it('us-hd-sleep', 'Sleep', 'us-nhlbi-chd', ['The recommended amount for adults is 7 to 9 hours of sleep a night.']),
       ],
       meds: [
-        it('us-hd-ace', 'ACE inhibitors and beta blockers', 'us-nhlbi-chd', ['ACE inhibitors, beta blockers, and angiotensin-receptor blockers help lower blood pressure.']),
+        it('us-hd-ace', 'ACE inhibitors and beta blockers', 'us-nhlbi-chd', ['ACE inhibitors, beta blockers, and angiotensin-receptor blockers help lower blood pressure']),
         it('us-hd-ccb', 'Calcium channel blockers', 'us-nhlbi-chd', ['Calcium channel blockers lower blood pressure by allowing blood vessels to relax.']),
         it('us-hd-nitrates', 'Nitrates', 'us-nhlbi-chd', ['Nitrates, such as nitroglycerin, dilate your coronary arteries and relieve or prevent angina (chest pain).']),
         it('us-hd-statins', 'Atorvastatin and rosuvastatin', 'us-nhlbi-chd', ['such as atorvastatin and rosuvastatin, can help control high blood cholesterol and slow plaque buildup.'], ['atorvastatin']),

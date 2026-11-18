@@ -24,6 +24,7 @@ async function page(id) {
 }
 
 let ok = 0, manual = 0, bad = 0;
+const notFound = [];
 console.log(`checked_on ${new Date().toISOString().slice(0, 10)}`);
 for (const [cond, byCountry] of Object.entries(TILES)) {
   for (const [country, tiles] of Object.entries(byCountry)) {
@@ -34,7 +35,7 @@ for (const [cond, byCountry] of Object.entries(TILES)) {
           let line;
           if (typeof text !== 'string') { line = `MANUAL | ${text.error}`; manual++; }
           else if (text.includes(flat(q))) { line = 'OK'; ok++; }
-          else { line = 'NOT FOUND | the quote is not in the page text (page changed, or script-rendered)'; bad++; }
+          else { line = 'NOT FOUND | the quote is not in the page text (page changed, or script-rendered)'; bad++; notFound.push(`${item.id} | ${q}`); }
           console.log(`${cond}.${country}.${tile} ${item.id} | ${line} | ${q.slice(0, 60)}`);
         }
         for (const g of item.foodGroups ?? []) {
@@ -43,7 +44,7 @@ for (const [cond, byCountry] of Object.entries(TILES)) {
             let line;
             if (typeof text !== 'string') { line = `MANUAL | ${text.error}`; manual++; }
             else if (text.includes(flat(q))) { line = 'OK'; ok++; }
-            else { line = 'NOT FOUND | the food line is not in the page text (page changed, or script-rendered)'; bad++; }
+            else { line = 'NOT FOUND | the food line is not in the page text (page changed, or script-rendered)'; bad++; notFound.push(`${item.id} FOOD | ${q}`); }
             console.log(`${cond}.${country}.${tile} ${item.id} FOOD | ${line} | ${q.slice(0, 60)}`);
           }
         }
@@ -52,3 +53,5 @@ for (const [cond, byCountry] of Object.entries(TILES)) {
   }
 }
 console.log(`\nOK ${ok}, MANUAL ${manual}, NOT FOUND ${bad}`);
+
+if (notFound.length) { console.log('\nNOT FOUND SUMMARY (paste this):'); for (const n of notFound) console.log(`- ${n}`); }

@@ -223,6 +223,10 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
   },
 };
 
+// Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
+export const UNVERIFIED: string[] = ['gb-hbp-weight'];
+const shown = (i: TileItem) => !UNVERIFIED.includes(i.id);
+
 // True once a condition has been checked for the country, even when every tile came out empty (the tiles then say so).
 export const hasTiles = (conditionId: string, country: Country) => !!TILES[conditionId]?.[country];
-export const tileItems = (conditionId: string, country: Country, key: TileKey): TileItem[] => TILES[conditionId]?.[country]?.[key] ?? [];
+export const tileItems = (conditionId: string, country: Country, key: TileKey): TileItem[] => (TILES[conditionId]?.[country]?.[key] ?? []).filter(shown);

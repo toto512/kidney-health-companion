@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { MED_LIST } from './medList';
 import { CONDITIONS } from './conditions';
-import { hasTiles, TILE_KEYS, TILE_SOURCES, TILES, tileItems, type TileItem } from './conditionTiles';
+import { UNVERIFIED, hasTiles, TILE_KEYS, TILE_SOURCES, TILES, tileItems, type TileItem } from './conditionTiles';
 
 const all: { cond: string; country: string; tile: string; item: TileItem }[] = [];
 for (const [cond, byCountry] of Object.entries(TILES)) for (const [country, tiles] of Object.entries(byCountry)) for (const [tile, items] of Object.entries(tiles ?? {})) for (const item of items ?? []) all.push({ cond, country, tile, item });
@@ -99,5 +99,14 @@ describe('batch 1 coverage', () => {
   });
   it('home remedy tiles list only what the page says to do at home', () => {
     for (const { tile, item } of all.filter((a) => a.tile === 'home')) expect(item.quotes.join(' '), item.id).toMatch(/ice|rest|raise|prop|elevat|cool|water|bedclothes|cold/i);
+  });
+});
+
+describe('unverified items', () => {
+  it('hidden ids exist, and none is returned by tileItems', () => {
+    for (const id of UNVERIFIED) {
+      expect(all.some((a) => a.item.id === id), id).toBe(true);
+      for (const { cond, country, tile } of all) expect(tileItems(cond, country as 'US', tile as 'avoid').some((i) => i.id === id)).toBe(false);
+    }
   });
 });

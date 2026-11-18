@@ -1,5 +1,5 @@
 import type { Country } from './profile';
-import { TILES, TILE_SOURCES, type TileSource } from '../content/conditionTiles';
+import { TILES, TILE_SOURCES, UNVERIFIED, type TileSource } from '../content/conditionTiles';
 import { CONDITIONS } from '../content/conditions';
 
 // The honest food check. For one food and the person's own conditions and country, list every official line (already stored in the tile data,
@@ -33,7 +33,7 @@ export function foodCheck(foodName: string, conditionIds: string[], country: Cou
     const tileId = TILE_ID[picked] ?? picked;
     const tiles = TILES[tileId]?.[country];
     if (!tiles) continue;
-    for (const items of Object.values(tiles)) for (const item of items ?? []) for (const g of item.foodGroups ?? []) {
+    for (const items of Object.values(tiles)) for (const item of (items ?? []).filter((i) => !UNVERIFIED.includes(i.id))) for (const g of item.foodGroups ?? []) {
       const hit = g.foods.flatMap(entriesOf).find((e) => same(words(e), target));
       if (!hit) continue;
       const key = `${tileId}|${g.src}|${g.quote}`;

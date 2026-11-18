@@ -8,7 +8,9 @@ import { CONDITIONS, EXTRAS, sourceReviewOverdue } from '@/content/conditions';
 import { hasTiles } from '@/content/conditionTiles';
 import { useI18n } from '@/i18n/I18nProvider';
 import { countryLabel } from '@/i18n/labels';
+import { cardsFor } from '@/lib/conditionIds';
 import { countryName, isSupported } from '@/lib/profile';
+import { loadMyConditionIds } from '@/lib/userConditions';
 import { supabase } from '@/lib/supabase';
 import { AccentName, font, useColors } from '@/theme/tokens';
 
@@ -23,7 +25,11 @@ export default function Conditions() {
   useEffect(() => {
     supabase.from('profiles').select('country_code').maybeSingle().then(({ data }) => setCountry(data?.country_code ?? null));
   }, []);
+  const [picked, setPicked] = useState<string[] | null | undefined>(undefined);
+  useEffect(() => { void loadMyConditionIds().then(setPicked); }, []);
   const today = new Date();
+  // Every condition the person picked gets a card. With none picked (or the list unreadable), the five with official definitions show as before.
+  const cards = (picked && picked.length ? cardsFor(picked) : CONDITIONS.map((c) => ({ key: c.id, officialId: c.id, label: c.label })));
 
   return (
     <ScrollView>
@@ -40,7 +46,18 @@ export default function Conditions() {
         {isSupported(country) ? (
           <>
             <Body>{t('cond.officialFor', { country: countryLabel(country, lang, countryName(country)) })}</Body>
-            {CONDITIONS.map((c) => {
+            {picked === undefined ? <Body>{t('common.loading')}</Body> : null}
+            {picked !== undefined ? <BigButton variant="secondary" label={t('cond.choose')} onPress={() => router.push('/feature/choose-conditions')} /> : null}
+            {picked === undefined ? null : cards.map((card) => {
+              const c = CONDITIONS.find((x) => x.id === card.officialId);
+              if (!c) {
+                return (
+                  <Panel key={card.key}>
+                    <SectionHeader icon="🩺" accent="blue">{card.label}</SectionHeader>
+                    <Body>{t('cond.noneYet')}</Body>
+                  </Panel>
+                );
+              }
               const f = c.facts[country];
               return (
                 <Panel key={c.id}>

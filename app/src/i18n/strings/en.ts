@@ -343,6 +343,8 @@ export const en = {
   "tiles.why": "Why this is here: this is what an official page for {cond} says.",
   "tiles.inMeds": "In your medicines",
   "tiles.tapSee": "Tap to see why",
+  "cond.choose": "Choose my conditions",
+  "cond.noneYet": "No official page for this condition and country names anything here yet.",
   "food.check.title": "What official pages say about this food for you",
   "food.check.none": "No official page for your condition names this food. Ask your doctor or dietitian.",
   "food.check.noConds": "Add your conditions under My conditions to see what official pages say about this food.",

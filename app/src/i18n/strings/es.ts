@@ -344,6 +344,8 @@ export const es: Record<Key, string> = {
   "tiles.why": "Por qué está aquí: esto es lo que dice una página oficial sobre {cond}.",
   "tiles.inMeds": "En sus medicamentos",
   "tiles.tapSee": "Toque para ver por qué",
+  "cond.choose": "Elegir mis afecciones",
+  "cond.noneYet": "Todavía ninguna página oficial para esta afección y país nombra algo aquí.",
   "food.check.title": "Lo que dicen las páginas oficiales sobre este alimento para usted",
   "food.check.none": "Ninguna página oficial para su afección nombra este alimento. Pregunte a su médico o dietista.",
   "food.check.noConds": "Agregue sus afecciones en Mis afecciones para ver lo que dicen las páginas oficiales sobre este alimento.",

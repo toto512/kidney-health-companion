@@ -185,6 +185,15 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'uk-pancreatitis': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/chronic-pancreatitis/', dateText: 'Page last reviewed: 20 October 2025', nextReviewDue: '2028-10-20', checkedOn: C },
   'us-niddk-pancreatitis': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/digestive-diseases/pancreatitis/eating-diet-nutrition', dateText: 'Last Reviewed November 2017', checkedOn: C },
   'uk-as': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/ankylosing-spondylitis/', dateText: 'Page last reviewed: 05 January 2023', nextReviewDue: '2026-01-05', checkedOn: C },
+  'uk-ocd': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/mental-health/conditions/obsessive-compulsive-disorder-ocd/treatment/', dateText: 'Page last reviewed: 04 April 2023', nextReviewDue: '2026-04-04', checkedOn: C },
+  'uk-schiz': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/mental-health/conditions/schizophrenia/treatment/', dateText: 'Page last reviewed: 13 April 2023', nextReviewDue: '2026-04-13', checkedOn: C },
+  'ca-hlbc-schiz': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/schizophrenia', dateText: 'Current as of: October 20, 2022', checkedOn: C },
+  'uk-acne': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/acne/', dateText: 'Page last reviewed: 22 September 2026', nextReviewDue: '2029-09-22', checkedOn: C },
+  'us-niams-acne': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/acne/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
+  'ca-hlbc-acne': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/acne', dateText: 'Current as of: March 22, 2023', checkedOn: C },
+  'uk-hives': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/hives/', dateText: 'Page last reviewed: 26 April 2024', nextReviewDue: '2027-04-26', checkedOn: C },
+  'uk-mecfs': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/chronic-fatigue-syndrome-cfs/', dateText: 'Page last reviewed: 28 May 2024', nextReviewDue: '2027-05-28', checkedOn: C },
+  'us-cdc-mecfs': { country: 'US', publisher: 'CDC (US Centers for Disease Control and Prevention)', type: 'government', url: 'https://www.cdc.gov/me-cfs/treatment/index.html', dateText: null, checkedOn: C },
 };
 
 type Tiles = Partial<Record<TileKey, TileItem[]>>;
@@ -1994,6 +2003,96 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
     },
     CA: {},
   },
+  // Batch 15 (read 2026-11-18): OCD, schizophrenia, adult acne, chronic hives, ME/CFS. Gaps: no US page for OCD, schizophrenia or hives; HealthLink BC pages for OCD and ME/CFS blocked reading and its hives page has no usable line; two NHS pages (OCD, schizophrenia) are past their "next review due" date. All new sources are in PENDING_SOURCES until the verify script says OK.
+  ocd: {
+    US: {},
+    GB: {
+      activity: [
+        it('gb-ocd-support', 'Support groups', 'uk-ocd', ['Many people with OCD find support groups helpful, as they can:']),
+        it('gb-ocd-refer', 'Refer yourself directly to an NHS talking therapies service', 'uk-ocd', ['You can also refer yourself directly to an NHS talking therapies service without a referral from a GP.']),
+      ],
+      meds: [
+        it('gb-ocd-ssri', 'Selective serotonin reuptake inhibitors', 'uk-ocd', ['The main medicines prescribed are a type of antidepressant called selective serotonin reuptake inhibitors (SSRIs).']),
+        it('gb-ocd-stop', 'Do not stop taking an SSRI', 'uk-ocd', ['Do not stop taking an SSRI without speaking to your doctor first']),
+      ],
+    },
+    CA: {},
+  },
+  schizophrenia: {
+    US: {},
+    GB: {
+      activity: [it('gb-schiz-talking', 'Talking therapies', 'uk-schiz', ['Talking therapies can help people with schizophrenia cope with the symptoms of hallucinations or delusions better.'])],
+      meds: [it('gb-schiz-antipsychotics', 'Antipsychotics', 'uk-schiz', ['Antipsychotics are usually recommended as the initial treatment for the symptoms of an acute schizophrenic episode.'])],
+    },
+    CA: {
+      avoid: [it('ca-schiz-drugs', 'Drugs and alcohol', 'ca-hlbc-schiz', ['Avoid drugs and alcohol.'])],
+      activity: [it('ca-schiz-family', 'Family and community support', 'ca-hlbc-schiz', ['Your family and community can support you and help you meet your goals.'])],
+      meds: [
+        it('ca-schiz-stop', 'Do not stop taking your medicines', 'ca-hlbc-schiz', ["Don't stop taking your medicines until you talk with your doctor."]),
+        it('ca-schiz-relapse', 'If you stop taking your medicines', 'ca-hlbc-schiz', ['If you stop taking your medicines, you may have a relapse.']),
+      ],
+    },
+  },
+  acne: {
+    US: {
+      avoid: [
+        it('us-acne-soaps', 'Strong soaps, astringents, or rough scrub pads', 'us-niams-acne', ['Try to avoid using strong soaps, astringents, or rough scrub pads.']),
+        it('us-acne-rubbing', 'Rubbing and touching skin lesions', 'us-niams-acne', ['Avoid rubbing and touching skin lesions.']),
+        it('us-acne-sunburn', 'Sunburn and suntan', 'us-niams-acne', ['Use sunscreen, and avoid sunburn and suntan.']),
+      ],
+      activity: [
+        it('us-acne-gently', 'Clean your skin gently', 'us-niams-acne', ['Clean your skin gently.']),
+        it('us-acne-cleanser', 'Mild cleanser', 'us-niams-acne', ['Use a mild cleanser in the morning, in the evening, and after heavy exercise.']),
+      ],
+      home: [it('us-acne-noncomedogenic', 'Noncomedogenic products', 'us-niams-acne', ['Choose products labeled noncomedogenic, which means they do not clog pores.'])],
+      meds: [it('us-acne-sideeffects', 'Talk to your doctor about side effects', 'us-niams-acne', ['Talk to your doctor about any side effects that you experience.'])],
+    },
+    GB: {
+      moderate: [it('gb-acne-scrub', 'Do not scrub your skin', 'uk-acne', ['do not scrub your skin as this can irritate it and make acne worse'])],
+      activity: [
+        it('gb-acne-wash', 'Wash your skin twice a day with a gentle cleanser', 'uk-acne', ['wash your skin twice a day with a gentle cleanser']),
+        it('gb-acne-makeup', 'Remove make-up at the end of the day', 'uk-acne', ['remove make-up at the end of the day']),
+        it('gb-acne-pick', 'Do not pick or squeeze spots', 'uk-acne', ['do not pick or squeeze spots because this can cause scars']),
+      ],
+      home: [it('gb-acne-products', 'Non-comedogenic skincare and make-up products', 'uk-acne', ['use skincare and make-up products that are non-comedogenic (this means they will not clog pores)'])],
+      meds: [it('gb-acne-topical', 'Acne medicines you put on your skin', 'uk-acne', ['Acne medicines you put on your skin (topical) usually come as a cream, gel or lotion.'])],
+    },
+    CA: {
+      activity: [
+        it('ca-acne-wash', 'Gently wash your face with warm water and a mild soap or cleanser', 'ca-hlbc-acne', ['Gently wash your face 1 or 2 times a day with warm (not hot) water and a mild soap or cleanser.']),
+        it('ca-acne-pick', 'Do not squeeze or pick pimples and blackheads', 'ca-hlbc-acne', ['Do not squeeze or pick pimples and blackheads.']),
+        it('ca-acne-sun', 'Protect your skin from the sun', 'ca-hlbc-acne', ['Protect your skin from the sun and other sources of UV light.']),
+      ],
+      home: [it('ca-acne-oilfree', 'Oil-free makeup, sunscreen, and other skin care products', 'ca-hlbc-acne', ['Use only oil-free makeup, sunscreen, and other skin care products that will not clog your pores.'])],
+      meds: [it('ca-acne-medicines', 'Medicines to manage acne outbreaks', 'ca-hlbc-acne', ['Medicines can help manage how severe acne outbreaks are and how often they occur.'])],
+    },
+  },
+  hives: {
+    US: {},
+    GB: {
+      avoid: [it('gb-hives-triggers', 'Hives triggers', 'uk-hives', ['Try to find out what triggers hives for you, so you can avoid those triggers, if possible.'])],
+      meds: [it('gb-hives-antihistamine', 'Antihistamine treatment', 'uk-hives', ['A pharmacist can give you advice about antihistamine treatment to help a hives rash.'])],
+    },
+    CA: {},
+  },
+  mecfs: {
+    US: {
+      avoid: [it('us-mecfs-exercise', 'Exercise right before going to bed', 'us-cdc-mecfs', ['Avoid exercise right before going to bed.'])],
+      activity: [
+        it('us-mecfs-bed', 'Go to bed at the same time each night', 'us-cdc-mecfs', ['Go to bed at same time each night and wake up at same time each morning.']),
+        it('us-mecfs-memory', 'Memory aids, like organizers and calendars', 'us-cdc-mecfs', ['Memory aids, like organizers and calendars, can help with memory problems.']),
+      ],
+      meds: [it('us-mecfs-provider', 'Talk to their healthcare provider before trying any medication', 'us-cdc-mecfs', ['Patients should always talk to their healthcare provider before trying any medication.'])],
+    },
+    GB: {
+      activity: [
+        it('gb-mecfs-routine', 'Adapt daily routine and pattern of activities', 'uk-mecfs', ['People with ME/CFS will need to adapt their daily routine and pattern of activities on a long-term basis.']),
+        it('gb-mecfs-talk', 'Talk to other people with ME/CFS', 'uk-mecfs', ['you may find it useful to talk to other people with ME/CFS']),
+      ],
+      meds: [it('gb-mecfs-medicine', 'Medicine to control symptoms such as pain and sleeping problems', 'uk-mecfs', ['medicine to control symptoms such as pain and sleeping problems'])],
+    },
+    CA: {},
+  },
 };
 
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
@@ -2028,7 +2127,7 @@ export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !
 export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
 export const PENDING_SOURCES: string[] = [
-  'uk-gastritis', 'ca-hlbc-gastritis', 'uk-lupus', 'us-niams-lupus', 'uk-varicose', 'uk-pancreatitis', 'us-niddk-pancreatitis', 'uk-as',
+  'uk-ocd', 'uk-schiz', 'ca-hlbc-schiz', 'uk-acne', 'us-niams-acne', 'ca-hlbc-acne', 'uk-hives', 'uk-mecfs', 'us-cdc-mecfs',
 ];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);

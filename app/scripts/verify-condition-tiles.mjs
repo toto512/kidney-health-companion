@@ -21,17 +21,22 @@ function debugNear(id, q) {
   const at = t.indexOf(probe);
   const raw = pageRaw.get(id) ?? '';
   const title = (raw.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? '').replace(/\s+/g, ' ').trim();
-  const d = `url ${TILE_SOURCES[id].url}; page text ${t.length} chars, title "${title.slice(0, 80)}"; first four words ${at < 0 ? `NOT on the page; page starts: "${t.slice(0, 160)}"` : `found, page says: "${t.slice(at, at + flat(q).length + 40)}"`}`;
+  const fu = finalUrls.get(id);
+  const d = `url ${TILE_SOURCES[id].url}${fu && fu !== TILE_SOURCES[id].url ? `; REDIRECTED to ${fu}` : '; no redirect'}; page text ${t.length} chars, title "${title.slice(0, 80)}"; first four words ${at < 0 ? `NOT on the page; page starts: "${t.slice(0, 160)}"` : `found, page says: "${t.slice(at, at + flat(q).length + 40)}"`}`;
   console.log(`    debug: ${d}`);
   return d;
 }
 
+// A browser-like user agent: some sites (NHS) answer a script's agent with a different page than the one a browser gets (found 2026-11-18).
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36';
+const finalUrls = new Map();
 const pages = new Map();
 async function page(id) {
   if (pages.has(id)) return pages.get(id);
   let res;
   try {
-    const r = await fetch(TILE_SOURCES[id].url, { headers: { 'user-agent': 'health-companion-tile-check/1.0' }, redirect: 'follow' });
+    const r = await fetch(TILE_SOURCES[id].url, { headers: { 'user-agent': UA, accept: 'text/html,application/xhtml+xml', 'accept-language': 'en' }, redirect: 'follow' });
+    finalUrls.set(id, r.url);
     if (!r.ok) res = { error: `HTTP ${r.status}` };
     else if (/pdf/i.test(r.headers.get('content-type') ?? '') || /\.pdf($|\?)/i.test(TILE_SOURCES[id].url)) res = { error: 'PDF, text cannot be read by this script: open the PDF and search for the line' };
     else { const raw = await r.text(); pageRaw.set(id, raw); res = flat(raw); }

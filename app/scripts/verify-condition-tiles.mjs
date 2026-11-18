@@ -2,7 +2,7 @@
 // Run from the app folder on a machine that can reach the sites:  node --no-warnings --experimental-strip-types scripts/verify-condition-tiles.mjs
 // Reads only the public tile content (no user data). An item should stay only while all of its lines say OK.
 // MANUAL means the page could not be read by a script (blocked or script-rendered): open the page and look for the quote.
-import { TILES, TILE_SOURCES } from '../src/content/conditionTiles.ts';
+import { TILES, TILE_SOURCES, reviewDate } from '../src/content/conditionTiles.ts';
 
 const flat = (s) => s.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ')
   .replace(/&shy;|&#173;|&#xad;|[\u00ad\u200b\u200c\u200d\ufeff]/gi, '').replace(/&nbsp;|&#160;|&#xa0;|\u00a0|\u202f|\u2009/gi, ' ').replace(/&amp;/g, '&').replace(/&#0?39;|&#x27;|&#x2019;|&#8217;|&apos;|&rsquo;|&lsquo;|&#8216;|&#x2018;|’|‘/g, "'").replace(/&quot;|&ldquo;|&rdquo;|&#8220;|&#8221;|&#x201c;|&#x201d;|“|”/g, '"')
@@ -85,6 +85,27 @@ for (const [cond, byCountry] of Object.entries(TILES)) {
   }
 }
 console.log(`\nOK ${ok}, MANUAL ${manual}, NOT FOUND ${bad}`);
+
+// DATE CHECK: reads the live page's own review dates and compares them with the stored dateText / nextReviewDue (display is not changed by this).
+// The 5-year rule for medicine items depends on these dates, so any mismatch or missing date must be looked at.
+const DATE_RE = /(page last reviewed|last reviewed|last updated on|last updated|current as of|adaptation date|date last reviewed|revised|next review due)\s*:?\s*(\d{1,2}\s+[a-z]+\s+\d{4}|[a-z]+\s+\d{1,2},?\s+\d{4}|[a-z]+\s+\d{4}|\d{1,2}\/\d{1,2}\/\d{4}|\d{4})/g;
+const iso = (d) => (d ? d.toISOString().slice(0, 10) : null);
+const dateIssues = [];
+for (const [id, src] of Object.entries(TILE_SOURCES)) {
+  const text = await page(id);
+  if (typeof text !== 'string') { dateIssues.push(`${id} | not readable by the script (${text.error.slice(0, 60)}): check the date by eye, stored "${src.dateText ?? 'no date'}"`); continue; }
+  const found = [...text.matchAll(DATE_RE)].map((m) => ({ label: m[1], text: `${m[1]} ${m[2]}`, date: reviewDate(m[2]) }));
+  const reviewed = found.filter((f) => f.label !== 'next review due');
+  const next = found.filter((f) => f.label === 'next review due');
+  const seen = [...new Set(found.map((f) => f.text))].slice(0, 4).join(' ; ') || 'no date text found';
+  const storedDate = reviewDate(src.dateText);
+  if (!src.dateText) { if (reviewed.length) dateIssues.push(`${id} | stored: no date shown, but the page shows: ${seen}`); }
+  else if (!reviewed.length) dateIssues.push(`${id} | stored "${src.dateText}", the script found no review date on the page`);
+  else if (!reviewed.some((f) => iso(f.date) === iso(storedDate))) dateIssues.push(`${id} | stored "${src.dateText}", the page shows: ${seen}`);
+  if (src.nextReviewDue && next.length && !next.some((f) => iso(f.date) === src.nextReviewDue)) dateIssues.push(`${id} | stored next review ${src.nextReviewDue}, the page shows: ${next.map((f) => f.text).join(' ; ')}`);
+}
+console.log(`\nDATE CHECK (${dateIssues.length} to look at; ${Object.keys(TILE_SOURCES).length} sources checked):`);
+for (const d of dateIssues) console.log(`- ${d}`);
 
 if (redirects.length) { console.log('\nREDIRECT WARNINGS (the stored address now shows a different page; every line from these sources is MANUAL until re-sourced):'); for (const r of redirects) console.log(`- ${r}`); }
 if (notFound.length) { console.log('\nNOT FOUND SUMMARY (paste this):'); for (const n of notFound) console.log(`- ${n}`); }

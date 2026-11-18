@@ -1,5 +1,4 @@
 import * as DocumentPicker from 'expo-document-picker';
-import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { Image, Pressable, ScrollView, Text, View } from 'react-native';
@@ -67,10 +66,6 @@ export default function ChooseMedicines() {
   }
   async function pickFile() {
     const res = await DocumentPicker.getDocumentAsync({ type: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'], copyToCacheDirectory: true, multiple: false });
-    if (!res.canceled) await startScan(res.assets[0]);
-  }
-  async function camera() {
-    const res = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 0.8 });
     if (!res.canceled) await startScan(res.assets[0]);
   }
   const scanMatch = scan && scan.step === 'check' ? matchMed(scan.name) : null;
@@ -162,7 +157,7 @@ export default function ChooseMedicines() {
           <Field label={t('meds.name')} value={own} onChangeText={(t) => { setOwn(t); setOwnErr(''); }} placeholder={t('meds.typeName')} maxLength={100} onSubmitEditing={addOwn} />
           {ownErr ? <Body tone="danger">{ownErr}</Body> : null}
           <BigButton variant="secondary" label={t('meds.addName')} onPress={addOwn} disabled={!own.trim()} />
-          {!scan ? <UploadButtons onFile={() => void pickFile()} onCamera={() => void camera()} /> : null}
+          {!scan ? <UploadButtons onFile={() => void pickFile()} onAsset={startScan} /> : null}
           {scan?.step === 'reading' ? <Body>{t('meds.scan.reading', { n: Math.round(progress * 100) })}</Body> : null}
           {scan?.step === 'check' ? (
             <View style={{ gap: 8 }}>

@@ -1,7 +1,19 @@
+import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
+import { useState } from 'react';
 import { Platform, Pressable, Text, View } from 'react-native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 import { useI18n } from '@/i18n/I18nProvider';
 import { font, MIN_TOUCH, useColors } from '@/theme/tokens';
+import { Body } from '@/components/ui';
+import { WebcamModal } from './WebcamModal';
+
+export type Shot = { uri: string; mimeType?: string | null; fileSize?: number | null };
+
+// A phone or tablet browser has a touch screen and uses the system camera. A computer browser opens the webcam in a window instead.
+function touchScreen(): boolean {
+  try { return typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches; } catch { return false; }
+}
 
 // Our own simple icons (drawn here, no outside artwork): an open folder and a camera. Decorative, so the buttons carry the spoken labels.
 export function FolderIcon({ color, size = 40 }: { color: string; size?: number }) {
@@ -22,16 +34,6 @@ export function CameraIcon({ color, size = 40 }: { color: string; size?: number 
   );
 }
 
-// A computer browser with a mouse has no camera to open: the Photo button shows only on phones and tablets (touch screens) and in the phone app.
-export function cameraAvailable(): boolean {
-  if (Platform.OS !== 'web') return true;
-  try {
-    return typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
-  } catch {
-    return false;
-  }
-}
-
 function Big({ label, a11y, icon, onPress, disabled }: { label: string; a11y: string; icon: 'folder' | 'camera'; onPress: () => void; disabled?: boolean }) {
   const color = useColors();
   return (
@@ -43,16 +45,38 @@ function Big({ label, a11y, icon, onPress, disabled }: { label: string; a11y: st
   );
 }
 
-// One line and two big buttons, the same on every screen where a file or picture can be read. At large text the buttons wrap onto two rows.
-export function UploadButtons({ onFile, onCamera, disabled }: { onFile: () => void; onCamera: () => void; disabled?: boolean }) {
+// One line and two big buttons, the same on every screen where a file or picture can be read, on phones and computers alike.
+// Photo: the system camera on phones and tablets; on a computer the webcam (if the browser allows it), otherwise a picture file with a short line saying so.
+export function UploadButtons({ onFile, onAsset, disabled }: { onFile: () => void; onAsset: (a: Shot | undefined) => void; disabled?: boolean }) {
   const { t } = useI18n();
+  const muted = useColors().muted;
+  const [webcam, setWebcam] = useState(false);
+  const [note, setNote] = useState('');
+
+  async function pickImage() {
+    const res = await DocumentPicker.getDocumentAsync({ type: ['image/jpeg', 'image/png', 'image/webp'], copyToCacheDirectory: true, multiple: false });
+    if (!res.canceled) onAsset(res.assets[0]);
+  }
+  async function photo() {
+    setNote('');
+    if (Platform.OS !== 'web' || touchScreen()) {
+      const res = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 0.8 });
+      if (!res.canceled) onAsset(res.assets[0]);
+      return;
+    }
+    setWebcam(true);
+  }
+  function failed() { setWebcam(false); setNote(t('upload.noWebcam')); void pickImage(); }
+
   return (
     <View style={{ gap: 10 }}>
-      <Text style={{ fontSize: font.body, color: useColors().muted }}>{t('upload.hint')}</Text>
+      <Text style={{ fontSize: font.body, color: muted }}>{t('upload.hint')}</Text>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
         <Big icon="folder" label={t('upload.file')} a11y={t('upload.fileA11y')} onPress={onFile} disabled={disabled} />
-        {cameraAvailable() ? <Big icon="camera" label={t('upload.photo')} a11y={t('upload.photoA11y')} onPress={onCamera} disabled={disabled} /> : null}
+        <Big icon="camera" label={t('upload.photo')} a11y={t('upload.photoA11y')} onPress={() => void photo()} disabled={disabled} />
       </View>
+      {note ? <Body>{note}</Body> : null}
+      {webcam ? <WebcamModal onClose={() => setWebcam(false)} onFail={failed} onShot={(a) => { setWebcam(false); onAsset(a); }} /> : null}
     </View>
   );
 }

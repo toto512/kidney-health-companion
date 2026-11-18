@@ -1,5 +1,4 @@
 import * as DocumentPicker from 'expo-document-picker';
-import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
@@ -88,10 +87,6 @@ export default function BloodPressure() {
     const res = await DocumentPicker.getDocumentAsync({ type: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'], copyToCacheDirectory: true, multiple: false });
     if (!res.canceled) scan(res.assets[0]);
   }
-  async function camera() {
-    const res = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 0.8 });
-    if (!res.canceled) scan(res.assets[0]);
-  }
 
   async function remove(id: string) {
     const { error } = await supabase.from('bp_readings').delete().eq('id', id);
@@ -116,7 +111,7 @@ export default function BloodPressure() {
           <BigButton label={busy ? t('profile.saving') : t('bp.saveReading')} onPress={save} disabled={busy || !sys || !dia} />
         </Panel>
         <Panel>
-          <UploadButtons onFile={() => void pickFile()} onCamera={() => void camera()} />
+          <UploadButtons onFile={() => void pickFile()} onAsset={scan} />
         </Panel>
         <Panel>
           <SectionHeader icon="📈" accent="red">{t('bp.chart')}</SectionHeader>

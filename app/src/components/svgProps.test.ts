@@ -22,5 +22,10 @@ describe('upload buttons', () => {
     expect(src.match(/importantForAccessibility="no-hide-descendants"/g)?.length).toBe(2);
     expect(src).toContain("t('upload.fileA11y')");
     expect(src).toContain("t('upload.photoA11y')");
+    // Photo is always shown next to File (desktop included): the webcam on computers, with the picture file picker as the fallback.
+    expect(src).not.toMatch(/cameraAvailable|cameraAvailable\(\) \?/);
+    expect(src).toContain('<WebcamModal');
+    expect(src).toContain('upload.noWebcam');
+    expect(src.match(/<Big /g)?.length).toBe(2);
   });
 });

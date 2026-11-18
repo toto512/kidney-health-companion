@@ -1,5 +1,4 @@
 import * as DocumentPicker from 'expo-document-picker';
-import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useMemo, useRef, useState } from 'react';
 import { Image, Pressable, ScrollView, Text, View } from 'react-native';
@@ -69,10 +68,6 @@ export default function AddBloodTest() {
     const res = await DocumentPicker.getDocumentAsync({ type: ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'], copyToCacheDirectory: true, multiple: false });
     if (!res.canceled) await take(res.assets[0]);
   }
-  async function camera() {
-    const res = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 0.8 });
-    if (!res.canceled) await take(res.assets[0]);
-  }
   function typeIt() { setFile(null); setMsg(''); setRows([{ key: nextKey++, test: '', value: '', unit: '', read: '' }]); setStep('confirm'); }
 
   const setRow = (key: number, p: Partial<Row>) => { setDup(null); setRows((rs) => rs.map((r) => (r.key === key ? { ...r, ...p } : r))); };
@@ -115,7 +110,7 @@ export default function AddBloodTest() {
         {step === 'choose' ? (
           <Panel>
             <Body>{t('lab.intro')}</Body>
-            <UploadButtons onFile={() => void pickFile()} onCamera={() => void camera()} />
+            <UploadButtons onFile={() => void pickFile()} onAsset={take} />
             <BigButton label={t('lab.typeIt')} variant="secondary" onPress={typeIt} />
             {err ? <Body tone="danger">{err}</Body> : null}
           </Panel>

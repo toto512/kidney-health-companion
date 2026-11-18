@@ -30,6 +30,7 @@ function debugNear(id, q) {
 // A browser-like user agent: some sites (NHS) answer a script's agent with a different page than the one a browser gets (found 2026-11-18).
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36';
 const finalUrls = new Map();
+const redirects = [];
 const pages = new Map();
 async function page(id) {
   if (pages.has(id)) return pages.get(id);
@@ -37,7 +38,9 @@ async function page(id) {
   try {
     const r = await fetch(TILE_SOURCES[id].url, { headers: { 'user-agent': UA, accept: 'text/html,application/xhtml+xml', 'accept-language': 'en' }, redirect: 'follow' });
     finalUrls.set(id, r.url);
-    if (!r.ok) res = { error: `HTTP ${r.status}` };
+    const path = (u) => new URL(u).pathname.replace(/\/+$/, '');
+    if (r.ok && path(r.url) !== path(TILE_SOURCES[id].url)) { redirects.push(`${id}: ${TILE_SOURCES[id].url} -> ${r.url}`); res = { error: `REDIRECTED to ${r.url}: the stored address no longer shows this page, re-source it` }; }
+    else if (!r.ok) res = { error: `HTTP ${r.status}` };
     else if (/pdf/i.test(r.headers.get('content-type') ?? '') || /\.pdf($|\?)/i.test(TILE_SOURCES[id].url)) res = { error: 'PDF, text cannot be read by this script: open the PDF and search for the line' };
     else { const raw = await r.text(); pageRaw.set(id, raw); res = flat(raw); }
 
@@ -83,4 +86,5 @@ for (const [cond, byCountry] of Object.entries(TILES)) {
 }
 console.log(`\nOK ${ok}, MANUAL ${manual}, NOT FOUND ${bad}`);
 
+if (redirects.length) { console.log('\nREDIRECT WARNINGS (the stored address now shows a different page; every line from these sources is MANUAL until re-sourced):'); for (const r of redirects) console.log(`- ${r}`); }
 if (notFound.length) { console.log('\nNOT FOUND SUMMARY (paste this):'); for (const n of notFound) console.log(`- ${n}`); }

@@ -51,7 +51,7 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'uk-nafld': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/non-alcoholic-fatty-liver-disease/', dateText: 'Page last reviewed: 31 July 2025', nextReviewDue: '2028-07-31', checkedOn: C },
   'ca-hlbc-nafld': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/non-alcoholic-fatty-liver-disease-nafld', dateText: 'Current as of: March 22, 2023', checkedOn: C },
   'us-nhlbi-pad': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/peripheral-artery-disease/treatment', dateText: 'Last updated on March 24, 2022', checkedOn: C },
-  'uk-pad-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/peripheral-arterial-disease-pad/treatment/', dateText: 'Page last reviewed: 10 April 2026', nextReviewDue: '2029-04-10', checkedOn: C },
+  'uk-pad-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/peripheral-arterial-disease-pad/', dateText: 'Page last reviewed: 29 October 2026', nextReviewDue: '2029-10-29', checkedOn: C },
   'ca-hlbc-pad': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/peripheral-arterial-disease', dateText: 'Current as of: September 7, 2022', checkedOn: C },
   'us-nhlbi-af': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/atrial-fibrillation/treatment', dateText: 'Last updated on November 30, 2022', checkedOn: C },
   'uk-af-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/atrial-fibrillation/treatment/', dateText: 'Page last reviewed: 13 January 2025', nextReviewDue: '2028-01-13', checkedOn: C },
@@ -515,12 +515,13 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
     },
     GB: {
       activity: [
-        it('gb-pad-walking', 'Walking', 'uk-pad-treat', ['One of the best exercises you can do is walking.']),
-        it('gb-pad-smoking', 'Stopping smoking', 'uk-pad-treat', ['Stopping smoking will reduce your risk of PAD getting worse and another serious CVD developing.']),
+        it('gb-pad-exercise-programme', 'Exercise programme', 'uk-pad-treat', ['an exercise programme – this may be with the help of a healthcare professional, or you may be able to do it on your own']),
+        it('gb-pad-exercise-regularly', 'Exercise regularly', 'uk-pad-treat', ['exercise regularly – ask your doctor for advice about exercising if you have not done any physical activity for a while']),
+        it('gb-pad-smoke', 'Do not smoke', 'uk-pad-treat', ['do not smoke because it can make your symptoms worse']),
       ],
       meds: [
-        it('gb-pad-list', 'Medicines you may be prescribed', 'uk-pad-treat', ['Medicines you may be prescribed if you have PAD include:']),
-        it('gb-pad-naftidrofuryl', 'Naftidrofuryl oxalate', 'uk-pad-treat', ['You may be offered naftidrofuryl oxalate if you have leg pain triggered by exercise (intermittent claudication).']),
+        it('gb-pad-meds-pain', 'Medicines to relieve pain', 'uk-pad-treat', ['medicines to relieve pain or to help increase blood flow to your leg muscles']),
+        it('gb-pad-meds-other', 'Medicines prescribed for other health conditions', 'uk-pad-treat', ["take any medicines you've been prescribed for other health conditions like high blood pressure and high cholesterol"]),
       ],
     },
     CA: {
@@ -738,7 +739,7 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
 // An entry is an item id, or "itemId@sourceId" to hide only that item's food group from one source.
 // The two NIDDK PDFs cannot be read by the script: the lines were read by hand-run page fetch on 2026-11-18 and stay hidden until James confirms them in the PDF.
-export const UNVERIFIED: string[] = ['us-ckd-phosphorus', 'us-ckd-meat-dairy@us-niddk-potassium-tips', 'gb-pad-walking', 'gb-pad-smoking', 'gb-pad-list', 'gb-pad-naftidrofuryl'];
+export const UNVERIFIED: string[] = ['us-ckd-phosphorus', 'us-ckd-meat-dairy@us-niddk-potassium-tips'];
 // Old-page rule (James, 2026-11-18, option 3): an item that names a medicine or dose (every item in the Medicines tile, and any item with medIds) is hidden
 // when its page's last review date is more than 5 years before today. Pages with no date, and old pages that name no medicines, stay visible.
 const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];

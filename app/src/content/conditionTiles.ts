@@ -22,7 +22,7 @@ const NIDDK = 'NIDDK (US National Institutes of Health)';
 
 export const TILE_SOURCES: Record<string, TileSource> = {
   'us-niddk-ckd-manage': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd/managing', dateText: 'Last Reviewed October 2016', checkedOn: C },
-  'us-niddk-ckd-eat': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd/eating-nutrition', dateText: 'Last Reviewed January 2025', checkedOn: C },
+  'us-niddk-ckd-eat': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd/healthy-eating-adults-chronic-kidney-disease', dateText: 'Last Reviewed January 2025', checkedOn: C },
   'uk-ckd-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/kidney-disease/treatment/', dateText: 'Page last reviewed: 22 March 2023', nextReviewDue: '2026-03-22', checkedOn: C },
   'ca-hlbc-ckd': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/chronic-kidney-disease', dateText: 'Current as of: March 1, 2023', checkedOn: C },
   'us-cdc-diabetes-kidney-food': { country: 'US', publisher: 'CDC (US Centers for Disease Control and Prevention)', type: 'government', url: 'https://www.cdc.gov/diabetes/healthy-eating/diabetes-and-kidney-disease-food.html', dateText: null, checkedOn: C },
@@ -37,7 +37,7 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'uk-chd-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/coronary-heart-disease/treatment/', dateText: 'Page last reviewed: 17 January 2024', nextReviewDue: '2027-01-17', checkedOn: C },
   'ca-hlbc-cad': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/coronary-artery-disease-0', dateText: 'Current as of: September 7, 2022', checkedOn: C },
   'us-nhlbi-hf': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/heart-failure/treatment', dateText: 'Last updated on March 24, 2022', checkedOn: C },
-  'uk-hf-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/heart-failure/treatment/', dateText: 'Page last reviewed: 26 June 2026', nextReviewDue: '2029-06-26', checkedOn: C },
+  'uk-hf-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/heart-failure/', dateText: 'Page last reviewed: 26 June 2026', nextReviewDue: '2029-06-26', checkedOn: C },
   'ca-hlbc-hf': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/heart-failure', dateText: 'Adaptation Date: 9/19/2023', checkedOn: C },
   'us-nhlbi-chol': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/blood-cholesterol/treatment', dateText: 'Last updated on April 19, 2024', checkedOn: C },
   'uk-chol-lower': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/high-cholesterol/how-to-lower-your-cholesterol/', dateText: 'Page last reviewed: 13 March 2026', nextReviewDue: '2029-03-13', checkedOn: C },
@@ -54,12 +54,12 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'uk-pad-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/peripheral-arterial-disease-pad/', dateText: 'Page last reviewed: 29 October 2026', nextReviewDue: '2029-10-29', checkedOn: C },
   'ca-hlbc-pad': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/peripheral-arterial-disease', dateText: 'Current as of: September 7, 2022', checkedOn: C },
   'us-nhlbi-af': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/atrial-fibrillation/treatment', dateText: 'Last updated on November 30, 2022', checkedOn: C },
-  'uk-af-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/atrial-fibrillation/treatment/', dateText: 'Page last reviewed: 13 January 2025', nextReviewDue: '2028-01-13', checkedOn: C },
+  'uk-af-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/atrial-fibrillation/', dateText: 'Page last reviewed: 13 January 2025', nextReviewDue: '2028-01-13', checkedOn: C },
   'ca-hlbc-af': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/atrial-fibrillation', dateText: 'Adaptation Date: 9/19/2023', checkedOn: C },
   'us-niddk-adpkd': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/kidney-disease/polycystic-kidney-disease/autosomal-dominant-pkd', dateText: 'Last Reviewed January 2017', checkedOn: C },
   'uk-adpkd-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/autosomal-dominant-polycystic-kidney-disease-adpkd/treatment/', dateText: 'Page last reviewed: 23 February 2023', nextReviewDue: '2026-02-23', checkedOn: C },
   'us-nhlbi-copd': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/copd/treatment', dateText: 'Last updated on October 6, 2024', checkedOn: C },
-  'uk-copd-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/chronic-obstructive-pulmonary-disease-copd/treatment/', dateText: 'Page last reviewed: 2 November 2026', nextReviewDue: '2029-11-02', checkedOn: C },
+  'uk-copd-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/chronic-obstructive-pulmonary-disease-copd/', dateText: 'Page last reviewed: 2 November 2026', nextReviewDue: '2029-11-02', checkedOn: C },
   'ca-hlbc-copd': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/copd-chronic-obstructive-pulmonary-disease', dateText: 'Current as of: November 14, 2022', checkedOn: C },
   'us-nhlbi-asthma': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/asthma/treatment-action-plan', dateText: 'Last updated on April 17, 2024', checkedOn: C },
   'uk-asthma': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/asthma/', dateText: 'Page last reviewed: 07 April 2025', nextReviewDue: '2028-04-07', checkedOn: C },
@@ -72,10 +72,10 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'us-nimh-depression': { country: 'US', publisher: 'NIMH (US National Institutes of Health)', type: 'government', url: 'https://www.nimh.nih.gov/health/publications/depression', dateText: 'Revised 2024', checkedOn: C },
   'uk-depression-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/mental-health/conditions/depression-in-adults/treatment/', dateText: 'Page last reviewed: 5 July 2023', nextReviewDue: '2026-07-05', checkedOn: C },
   'us-niams-gout': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/gout/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
-  'uk-gout-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/gout/treatment/', dateText: 'Page last reviewed: 24 August 2023', nextReviewDue: '2026-08-24', checkedOn: C },
+  'uk-gout-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/gout/', dateText: 'Page last reviewed: 24 August 2023', nextReviewDue: '2026-08-24', checkedOn: C },
   'ca-hlbc-gout': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gout', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
   'us-nhlbi-hbp': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/high-blood-pressure/treatment', dateText: 'Last updated on April 30, 2024', checkedOn: C },
-  'uk-hbp': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/high-blood-pressure-hypertension/', dateText: 'Page last reviewed: 19 July 2024', nextReviewDue: '2027-07-19', checkedOn: C },
+  'uk-hbp': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/high-blood-pressure/', dateText: 'Page last reviewed: 19 July 2024', nextReviewDue: '2027-07-19', checkedOn: C },
 };
 
 type Tiles = Partial<Record<TileKey, TileItem[]>>;

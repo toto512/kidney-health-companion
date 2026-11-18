@@ -45,6 +45,19 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'us-nhlbi-stroke': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/stroke/recovery', dateText: 'Last updated on May 26, 2023', checkedOn: C },
   'uk-stroke-recovery': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/stroke/recovery/', dateText: 'Page last reviewed: 12 September 2024', nextReviewDue: '2027-09-12', checkedOn: C },
   'ca-hlbc-stroke': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/stroke', dateText: 'Current as of: December 19, 2022', checkedOn: C },
+  'us-niddk-obesity': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/weight-management/adult-overweight-obesity/treatment', dateText: 'Last Reviewed May 2023', checkedOn: C },
+  'ca-hlbc-obesity': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/obesity', dateText: 'Current as of: August 25, 2022', checkedOn: C },
+  'us-niddk-nafld-eat': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/liver-disease/nafld-nash/eating-diet-nutrition', dateText: 'Last Reviewed April 2021', checkedOn: C },
+  'uk-nafld': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/non-alcoholic-fatty-liver-disease/', dateText: 'Page last reviewed: 31 July 2025', nextReviewDue: '2028-07-31', checkedOn: C },
+  'ca-hlbc-nafld': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/non-alcoholic-fatty-liver-disease-nafld', dateText: 'Current as of: March 22, 2023', checkedOn: C },
+  'us-nhlbi-pad': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/peripheral-artery-disease/treatment', dateText: 'Last updated on March 24, 2022', checkedOn: C },
+  'uk-pad-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/peripheral-arterial-disease-pad/treatment/', dateText: 'Page last reviewed: 10 April 2026', nextReviewDue: '2029-04-10', checkedOn: C },
+  'ca-hlbc-pad': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/peripheral-arterial-disease', dateText: 'Current as of: September 7, 2022', checkedOn: C },
+  'us-nhlbi-af': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/atrial-fibrillation/treatment', dateText: 'Last updated on November 30, 2022', checkedOn: C },
+  'uk-af-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/atrial-fibrillation/treatment/', dateText: 'Page last reviewed: 13 January 2025', nextReviewDue: '2028-01-13', checkedOn: C },
+  'ca-hlbc-af': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/atrial-fibrillation', dateText: 'Adaptation Date: 9/19/2023', checkedOn: C },
+  'us-niddk-adpkd': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/kidney-disease/polycystic-kidney-disease/autosomal-dominant-pkd', dateText: 'Last Reviewed January 2017', checkedOn: C },
+  'uk-adpkd-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/autosomal-dominant-polycystic-kidney-disease-adpkd/treatment/', dateText: 'Page last reviewed: 23 February 2023', nextReviewDue: '2026-02-23', checkedOn: C },
   'us-niams-gout': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/gout/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
   'uk-gout-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/gout/treatment/', dateText: 'Page last reviewed: 24 August 2023', nextReviewDue: '2026-08-24', checkedOn: C },
   'ca-hlbc-gout': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gout', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
@@ -435,6 +448,135 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       ],
       meds: [it('ca-st-tpa', 'Tissue plasminogen activator (TPA)', 'ca-hlbc-stroke', ['You may get a clot-dissolving medicine called tissue plasminogen activator (TPA).'])],
     },
+  },
+  // Batch 4 (read 2026-11-18): overweight or obesity, fatty liver, peripheral artery disease, atrial fibrillation, polycystic kidney disease.
+  // UK obesity: no national NHS page was read, so it is not listed. Canada polycystic kidney: the page has no usable line, so every tile is empty.
+  obesity: {
+    US: {
+      activity: [
+        it('us-ob-activity', 'Physical activity', 'us-niddk-obesity', ['When combined with healthy eating, regular physical activity may help you lose weight and stay at a healthy weight.']),
+        it('us-ob-goal', 'Losing weight', 'us-niddk-obesity', ['For example, losing 5% of your body weight over a period of 6 months may be a good initial goal.']),
+        it('us-ob-apps', 'Smartphone apps', 'us-niddk-obesity', ['Smartphone apps and other tools may help you track how well you are sticking with your plan.']),
+      ],
+    },
+    CA: {
+      moderate: [
+        it('ca-ob-foods', 'Foods high in fat, sugar, and calories', 'ca-hlbc-obesity', ['Limit foods high in fat, sugar, and calories.']),
+        it('ca-ob-alcohol', 'Alcohol', 'ca-hlbc-obesity', ['Alcohol is very high in calories.']),
+      ],
+      activity: [
+        it('ca-ob-activity', 'Moderate to vigorous activity', 'ca-hlbc-obesity', ['Start with at least 30 minutes of moderate to vigorous activity on most days of the week.']),
+        it('ca-ob-losing', 'Losing weight', 'ca-hlbc-obesity', ['Losing just 10% of your body weight can make a difference in your health.']),
+        it('ca-ob-track', 'Keep track', 'ca-hlbc-obesity', ['People who keep track of what they eat, feel, and do are better at losing weight.']),
+      ],
+      meds: [it('ca-ob-orlistat', 'Orlistat', 'ca-hlbc-obesity', ['Orlistat prevents some of the fat calories you eat from being absorbed in your intestines.'])],
+    },
+  },
+  'fatty-liver': {
+    US: {
+      moderate: [
+        it('us-fl-alcohol', 'Alcohol', 'us-niddk-nafld-eat', ['If you have NAFLD, you should minimize alcohol use, which can further damage your liver.']),
+        it('us-fl-fructose', 'Fructose', 'us-niddk-nafld-eat', ['Fructose is found in sweetened soft drinks, sports drinks, sweetened tea, and juices.'], undefined, [
+          { src: 'us-niddk-nafld-eat', quote: 'Fructose is found in sweetened soft drinks, sports drinks, sweetened tea, and juices.', foods: ['sweetened soft drinks', 'sports drinks', 'sweetened tea', 'juices'] },
+        ]),
+      ],
+      activity: [it('us-fl-weight', 'Losing weight', 'us-niddk-nafld-eat', ['If you have NAFLD, your doctor may recommend gradually losing weight if you are overweight or have obesity.'])],
+    },
+    GB: {
+      moderate: [it('gb-fl-alcohol', 'Alcohol', 'uk-nafld', ['do not drink too much alcohol – keep to the recommended limit of no more than 14 alcohol units a week'])],
+      activity: [
+        it('gb-fl-exercise', 'Regular exercise', 'uk-nafld', ['exercise regularly – aim to do at least 150 minutes of exercise a week']),
+        it('gb-fl-weight', 'Lose weight', 'uk-nafld', ["lose weight if you're overweight"]),
+        it('gb-fl-smoke', 'Do not smoke', 'uk-nafld', ['do not smoke']),
+      ],
+      meds: [it('gb-fl-pioglitazone', 'Pioglitazone or vitamin E', 'uk-nafld', ['Treatment from a liver specialist may include a medicine called pioglitazone, or vitamin E.'])],
+    },
+    CA: {
+      meds: [it('ca-fl-weightloss', 'Medicines for weight loss', 'ca-hlbc-nafld', ['A doctor may prescribe medicines for related conditions or to help with weight loss.'])],
+    },
+  },
+  'peripheral-artery-disease': {
+    US: {
+      activity: [it('us-pad-walking', 'Walking', 'us-nhlbi-pad', ['The goal is to work up to at least 30 minutes of continuous walking.'])],
+      meds: [it('us-pad-cilostazol', 'Cilostazol', 'us-nhlbi-pad', ['One type of antiplatelet medicine, cilostazol, may also improve your symptoms and make walking easier.'])],
+    },
+    GB: {
+      activity: [
+        it('gb-pad-walking', 'Walking', 'uk-pad-treat', ['One of the best exercises you can do is walking.']),
+        it('gb-pad-smoking', 'Stopping smoking', 'uk-pad-treat', ['Stopping smoking will reduce your risk of PAD getting worse and another serious CVD developing.']),
+      ],
+      meds: [
+        it('gb-pad-list', 'Medicines you may be prescribed', 'uk-pad-treat', ['Medicines you may be prescribed if you have PAD include:']),
+        it('gb-pad-naftidrofuryl', 'Naftidrofuryl oxalate', 'uk-pad-treat', ['You may be offered naftidrofuryl oxalate if you have leg pain triggered by exercise (intermittent claudication).']),
+      ],
+    },
+    CA: {
+      avoid: [it('ca-pad-fat', 'Trans fat', 'ca-hlbc-pad', ['Choose foods that are low in saturated fat and avoid trans fat.'])],
+      moderate: [
+        it('ca-pad-sodium', 'Sodium and alcohol', 'ca-hlbc-pad', ['Limit sodium and alcohol.']),
+        it('ca-pad-sugar', 'Added sugar', 'ca-hlbc-pad', ['Limit drinks and foods with added sugar.']),
+      ],
+      activity: [
+        it('ca-pad-walking', 'Walking, swimming, or biking', 'ca-hlbc-pad', ['Try walking, swimming, or biking for at least 2½ hours a week.']),
+        it('ca-pad-smoking', 'Quit smoking', 'ca-hlbc-pad', ['Quit smoking, and avoid second-hand smoke.']),
+        it('ca-pad-weight', 'Weight', 'ca-hlbc-pad', ['Stay at a healthy weight.']),
+      ],
+      meds: [
+        it('ca-pad-aspirin', 'Aspirin and other blood thinners', 'ca-hlbc-pad', ['Aspirin and other blood thinners.']),
+        it('ca-pad-statins', 'Statins', 'ca-hlbc-pad', ['Statins and other medicines.']),
+      ],
+    },
+  },
+  'atrial-fibrillation': {
+    US: {
+      avoid: [it('us-af-alcohol', 'Alcohol and stimulants', 'us-nhlbi-af', ['Limit or avoid alcohol or stimulants that may increase your heart rate.'])],
+      activity: [
+        it('us-af-activity', 'Be physically active', 'us-nhlbi-af', ['Be physically active.']),
+        it('us-af-weight', 'Weight', 'us-nhlbi-af', ['Aim for a healthy weight to reduce the severity and number of atrial fibrillation episodes you have.']),
+        it('us-af-smoke', 'Quit smoking', 'us-nhlbi-af', ['Quit smoking.']),
+      ],
+    },
+    GB: {
+      avoid: [it('gb-af-triggers', 'Triggers: caffeine, spicy food', 'uk-af-treat', ['avoid triggers such as caffeine, spicy food, stress, dehydration and lack of sleep'], undefined, [
+        { src: 'uk-af-treat', quote: 'avoid triggers such as caffeine, spicy food, stress, dehydration and lack of sleep', foods: ['caffeine', 'spicy food'] },
+      ])],
+      moderate: [it('gb-af-alcohol', 'Alcohol', 'uk-af-treat', ['do not drink too much alcohol'])],
+      activity: [
+        it('gb-af-exercise', 'Regular exercise', 'uk-af-treat', ['exercise regularly – aim to do at least 150 minutes of moderate exercise a week, like walking, bike riding or gardening']),
+        it('gb-af-hard', 'Do not exercise too hard', 'uk-af-treat', ['do not exercise too much or too hard – this can trigger atrial fibrillation']),
+        it('gb-af-weight', 'Weight', 'uk-af-treat', ['try to keep to a healthy weight']),
+        it('gb-af-smoke', 'Do not smoke', 'uk-af-treat', ['do not smoke']),
+      ],
+      meds: [
+        it('gb-af-beta', 'Beta blockers', 'uk-af-treat', ['control the rate and rhythm of your heart, such as beta blockers']),
+        it('gb-af-anticoag', 'Anticoagulants', 'uk-af-treat', ['lower the risk of blood clots or stroke (anticoagulants)']),
+      ],
+    },
+    CA: {
+      avoid: [it('ca-af-alcohol-avoid', 'Alcohol', 'ca-hlbc-af', ['Avoid alcohol if it triggers symptoms.'])],
+      moderate: [it('ca-af-alcohol', 'Alcohol', 'ca-hlbc-af', ['Limit alcohol to 3 drinks a day for men and 2 drinks a day for women.'])],
+      activity: [
+        it('ca-af-exercise', 'Exercise', 'ca-hlbc-af', ['Talk to your doctor about what type and level of exercise is safe for you.']),
+        it('ca-af-weight', 'Weight', 'ca-hlbc-af', ['Stay at a healthy weight. Lose weight if you need to.']),
+        it('ca-af-smoke', 'Do not smoke', 'ca-hlbc-af', ["Don't smoke. Avoid second-hand smoke too."]),
+      ],
+    },
+  },
+  'polycystic-kidney': {
+    US: {
+      activity: [
+        it('us-pkd-activity', 'Physical activity', 'us-niddk-adpkd', ['Sometimes you can control blood pressure with healthy eating and regular physical activity alone.']),
+        it('us-pkd-bp', 'Blood pressure', 'us-niddk-adpkd', ['Keep your blood pressure under control to help delay kidney damage.']),
+      ],
+      meds: [it('us-pkd-otc', 'OTC medicines', 'us-niddk-adpkd', ['Always talk with a health care provider before taking any OTC medicines because some may be harmful to your kidneys.'])],
+    },
+    GB: {
+      meds: [
+        it('gb-pkd-nsaids', 'NSAIDs (such as ibuprofen)', 'uk-adpkd-treat', ['It’s usually recommended that non-steroidal anti-inflammatory drugs (NSAIDs), such as ibuprofen, are avoided.'], ['ibuprofen']),
+        it('gb-pkd-paracetamol', 'Paracetamol', 'uk-adpkd-treat', ['If you need to take a painkiller, paracetamol is the best medication to try first.']),
+      ],
+    },
+    CA: {},
   },
 };
 

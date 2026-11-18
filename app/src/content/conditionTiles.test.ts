@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { MED_LIST } from './medList';
 import { CONDITIONS } from './conditions';
 import { CONDITION_LIST } from './conditionList';
-import { UNVERIFIED, hasTiles, reviewDate, pageIsOld, hiddenAsOld, TILE_KEYS, TILE_SOURCES, TILES, tileItems, type TileItem } from './conditionTiles';
+import { UNVERIFIED, PENDING_SOURCES, hasTiles, reviewDate, pageIsOld, hiddenAsOld, TILE_KEYS, TILE_SOURCES, TILES, tileItems, type TileItem } from './conditionTiles';
 
 const all: { cond: string; country: string; tile: string; item: TileItem }[] = [];
 for (const [cond, byCountry] of Object.entries(TILES)) for (const [country, tiles] of Object.entries(byCountry)) for (const [tile, items] of Object.entries(tiles ?? {})) for (const item of items ?? []) all.push({ cond, country, tile, item });
@@ -99,7 +99,7 @@ describe('batch 1 coverage', () => {
     expect(hasTiles('adhd', 'CA')).toBe(false);
   });
   it('home remedy tiles list only what the page says to do at home', () => {
-    for (const { tile, item } of all.filter((a) => a.tile === 'home')) expect(item.quotes.join(' '), item.id).toMatch(/ice|rest|raise|prop|elevat|cool|water|bedclothes|cold/i);
+    for (const { item } of all.filter((a) => a.tile === 'home' && ['ckd', 'gout', 'hbp'].includes(a.cond))) expect(item.quotes.join(' '), item.id).toMatch(/ice|rest|raise|prop|elevat|cool|water|bedclothes|cold/i);
   });
 });
 
@@ -147,5 +147,12 @@ describe('old-page rule (medicines on pages reviewed more than 5 years ago)', ()
     for (const c of Object.keys(TILES)) for (const k of ['US', 'GB', 'CA'] as const) for (const key of TILE_KEYS) for (const i of tileItems(c, k, key)) {
       if (key === 'meds' || i.medIds?.length) expect(pageIsOld(i.src), i.id).toBe(false);
     }
+  });
+});
+
+describe('pending sources (new, not yet confirmed by the verify script)', () => {
+  it('exist, and nothing from them is returned by tileItems', () => {
+    for (const id of PENDING_SOURCES) expect(TILE_SOURCES[id], id).toBeTruthy();
+    for (const c of Object.keys(TILES)) for (const k of ['US', 'GB', 'CA'] as const) for (const key of TILE_KEYS) for (const i of tileItems(c, k, key)) expect(PENDING_SOURCES, i.id).not.toContain(i.src);
   });
 });

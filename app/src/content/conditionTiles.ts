@@ -71,6 +71,20 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'ca-hlbc-oa': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/osteoarthritis', dateText: 'Current as of: November 9, 2022', checkedOn: C },
   'us-nimh-depression': { country: 'US', publisher: 'NIMH (US National Institutes of Health)', type: 'government', url: 'https://www.nimh.nih.gov/health/publications/depression', dateText: 'Revised 2024', checkedOn: C },
   'uk-depression-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/mental-health/conditions/depression-in-adults/treatment/', dateText: 'Page last reviewed: 5 July 2023', nextReviewDue: '2026-07-05', checkedOn: C },
+  'us-niams-osteo': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/osteoporosis/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
+  'uk-osteo-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/osteoporosis/treatment/', dateText: 'Page last reviewed: 13 October 2022', nextReviewDue: '2025-10-13', checkedOn: C },
+  'ca-hlbc-osteo': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/osteoporosis', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
+  'uk-gad-selfhelp': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/mental-health/conditions/generalised-anxiety-disorder/self-help/', dateText: 'Page last reviewed: 22 October 2024', checkedOn: C },
+  'ca-hlbc-anxiety': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/anxiety-disorders', dateText: 'Current as of: October 20, 2022', checkedOn: C },
+  'ca-hlbc-alz': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/alzheimers-disease', dateText: 'Current as of: October 20, 2022', checkedOn: C },
+  'us-niddk-gerd-eat': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/eating-diet-nutrition', dateText: 'Last Reviewed July 2020', checkedOn: C },
+  'us-niddk-gerd-treat': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/treatment', dateText: 'Last Reviewed July 2020', checkedOn: C },
+  'uk-reflux': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/heartburn-and-acid-reflux/', dateText: 'Page last reviewed: 20 November 2023', nextReviewDue: '2026-11-20', checkedOn: C },
+  'ca-hlbc-gerd-habits': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gerd-controlling-heartburn-changing-your-habits', dateText: 'Current as of: March 22, 2023', checkedOn: C },
+  'ca-hlbc-gerd': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gastroesophageal-reflux-disease-gerd-0', dateText: 'Current as of: March 22, 2023', checkedOn: C },
+  'us-niams-ra': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/rheumatoid-arthritis/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
+  'uk-ra-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/rheumatoid-arthritis/treatment/', dateText: 'Page last reviewed: 08 March 2023', nextReviewDue: '2026-03-08', checkedOn: C },
+  'ca-hlbc-ra': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/rheumatoid-arthritis', dateText: 'Current as of: September 8, 2022', checkedOn: C },
   'us-niams-gout': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/gout/diagnosis-treatment-and-steps-to-take', dateText: 'Last Reviewed December 2023', checkedOn: C },
   'uk-gout-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/gout/', dateText: 'Page last reviewed: 24 August 2023', nextReviewDue: '2026-08-24', checkedOn: C },
   'ca-hlbc-gout': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gout', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
@@ -734,6 +748,156 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
     },
     CA: {},
   },
+  // Batch 6 (read 2026-11-18): osteoporosis, anxiety, dementia, acid reflux, rheumatoid arthritis. All new sources are in PENDING_SOURCES until the verify script says OK.
+  // US anxiety (NIMH page has no advice lines), US and UK dementia (no usable lines on the pages read): checked, tiles say so.
+  osteoporosis: {
+    US: {
+      moderate: [it('us-osteo-alcohol', 'Alcohol in moderation', 'us-niams-osteo', ['Drink alcohol in moderation, no more than one drink a day for women and no more than two drinks a day for men.'])],
+      activity: [
+        it('us-osteo-strength', 'Strength or resistance training', 'us-niams-osteo', ['Research shows that the best physical activities for bone health include strength training or resistance training.']),
+        it('us-osteo-impact', 'High-impact exercise', 'us-niams-osteo', ['If you have osteoporosis, you should avoid high-impact exercise.']),
+        it('us-osteo-smoke', 'If you smoke, quit', 'us-niams-osteo', ['Avoid secondhand smoke, and if you smoke, quit.']),
+      ],
+      home: [
+        it('us-osteo-cane', 'Cane or walker', 'us-niams-osteo', ['Use a cane or walker for added stability.']),
+        it('us-osteo-clutter', 'Keep rooms free of clutter', 'us-niams-osteo', ['Keep rooms free of clutter, especially on floors.']),
+      ],
+      meds: [it('us-osteo-bisph', 'Bisphosphonates', 'us-niams-osteo', ['Several bisphosphonates are approved to help preserve bone density and strength and to treat osteoporosis.'])],
+    },
+    GB: {
+      meds: [it('gb-osteo-bisph', 'Bisphosphonates', 'uk-osteo-treat', ['Bisphosphonates slow the rate that bone is broken down in your body.'])],
+    },
+    CA: {
+      moderate: [it('ca-osteo-alcohol', 'Drink less alcohol', 'ca-hlbc-osteo', ['If you drink alcohol, try to drink less.'])],
+      activity: [
+        it('ca-osteo-weight', 'Weight-bearing exercise', 'ca-hlbc-osteo', ['Do weight-bearing exercise. This will help you build strong bones.']),
+        it('ca-osteo-smoke', "Don't smoke", 'ca-hlbc-osteo', ["Don't smoke, and limit how much alcohol you drink."]),
+      ],
+      home: [it('ca-osteo-falls', 'Protect yourself from falling', 'ca-hlbc-osteo', ["It's also important to protect yourself from falling."])],
+      meds: [it('ca-osteo-bisph', 'Alendronate, risedronate, and zoledronic acid', 'ca-hlbc-osteo', ['Examples are alendronate (Fosamax), risedronate (Actonel), and zoledronic acid (Aclasta).'])],
+    },
+  },
+  anxiety: {
+    US: {},
+    GB: {
+      moderate: [it('gb-anx-substances', 'Alcohol, cigarettes, gambling or drugs', 'uk-gad-selfhelp', ['do not use alcohol, cigarettes, gambling or drugs to relieve anxiety as these can all contribute to poor mental health'])],
+      activity: [
+        it('gb-anx-exercise', 'Running, walking, swimming and yoga', 'uk-gad-selfhelp', ['activities such as running, walking, swimming and yoga can reduce anxiety and stress']),
+        it('gb-anx-sleep', 'Enough sleep', 'uk-gad-selfhelp', ['try to get enough sleep – this can help you have the energy you need to cope with difficult feelings and experiences']),
+        it('gb-anx-relax', 'Calming breathing exercises', 'uk-gad-selfhelp', ['learn how to relax using calming breathing exercises']),
+      ],
+      meds: [it('gb-anx-ssri', 'Medicines that can help to treat anxiety', 'uk-gad-selfhelp', ['medicines that can help to treat anxiety – usually a type of antidepressant called an SSRI'])],
+    },
+    CA: {
+      meds: [it('ca-anx-meds', 'Medicines and/or counselling', 'ca-hlbc-anxiety', ['These disorders can be treated with medicines and/or counselling.'])],
+    },
+  },
+  dementia: {
+    US: {},
+    GB: {},
+    CA: {
+      activity: [
+        it('ca-dem-exercise', 'Exercise such as walking', 'ca-hlbc-alz', ['Exercise such as walking may slow the decline of your mental abilities.']),
+        it('ca-dem-diet', 'Whole grains, fruits, and vegetables', 'ca-hlbc-alz', ['Get plenty of whole grains, fruits, and vegetables every day.']),
+        it('ca-dem-nap', 'Do not nap during the day', 'ca-hlbc-alz', ['If you have trouble sleeping, do not nap during the day.']),
+        it('ca-dem-schedule', 'Schedule activities and tasks', 'ca-hlbc-alz', ['Schedule activities and tasks for times of the day when you are best able to handle them.']),
+      ],
+      meds: [
+        it('ca-dem-chol', 'Cholinesterase inhibitors', 'ca-hlbc-alz', ["Cholinesterase inhibitors treat symptoms of mental decline in people who have mild to moderate Alzheimer's disease."]),
+        it('ca-dem-memantine', 'Memantine', 'ca-hlbc-alz', ['Memantine treats more severe symptoms of confusion and memory loss.']),
+      ],
+    },
+  },
+  'acid-reflux': {
+    US: {
+      avoid: [it('us-gerd-certain', 'Certain foods or drinks', 'us-niddk-gerd-eat', ['Your doctor may recommend reducing or avoiding certain foods or drinks to see if GERD symptoms improve.'], undefined, [
+        { src: 'us-niddk-gerd-eat', quote: 'Some people who have GERD find that certain foods or drinks trigger symptoms or make symptoms worse.', list: true, foods: ['acidic foods, such as citrus fruits and tomatoes', 'alcoholic drinks', 'chocolate', 'coffee and other sources of caffeine', 'high-fat foods', 'mint', 'spicy foods'] },
+      ])],
+      activity: [
+        it('us-gerd-3h', 'Meals at least 3 hours before bed', 'us-niddk-gerd-eat', ['eating meals at least 3 hours before you lie down or go to bed may improve symptoms.']),
+        it('us-gerd-weight', 'Weight', 'us-niddk-gerd-eat', ['If you are overweight or have obesity, your doctor may suggest losing weight to reduce your GERD symptoms.']),
+        it('us-gerd-quit', 'Quitting smoking, if you smoke', 'us-niddk-gerd-treat', ['quitting smoking, if you smoke']),
+      ],
+      home: [it('us-gerd-wedge', 'Elevating your head during sleep', 'us-niddk-gerd-treat', ['elevating your head during sleep by placing a foam wedge or extra pillows'])],
+      meds: [
+        it('us-gerd-antacids', 'Antacids', 'us-niddk-gerd-treat', ['Doctors may recommend antacids to relieve mild heartburn and other mild GER and GERD symptoms.']),
+        it('us-gerd-h2', 'H2 blockers', 'us-niddk-gerd-treat', ['H2 blockers lower the amount of acid your stomach makes.']),
+        it('us-gerd-ppi', 'PPIs', 'us-niddk-gerd-treat', ['PPIs lower the amount of acid your stomach makes.']),
+      ],
+    },
+    GB: {
+      moderate: [
+        it('gb-reflux-triggers', 'Food and drink that triggers your symptoms', 'uk-reflux', ['do not have food or drink that triggers your symptoms'], undefined, [
+          { src: 'uk-reflux', quote: 'certain food and drink – such as coffee, tomatoes, alcohol, chocolate and fatty or spicy foods', foods: ['coffee', 'tomatoes', 'alcohol', 'chocolate'] },
+        ]),
+        it('gb-reflux-alcohol', 'Too much alcohol', 'uk-reflux', ['do not drink too much alcohol']),
+      ],
+      activity: [
+        it('gb-reflux-meals', 'Smaller, more frequent meals', 'uk-reflux', ['eat smaller, more frequent meals']),
+        it('gb-reflux-bed', 'Not within 3 or 4 hours before bed', 'uk-reflux', ['do not eat within 3 or 4 hours before bed']),
+        it('gb-reflux-weight', 'Lose weight if overweight', 'uk-reflux', ["try to lose weight if you're overweight"]),
+        it('gb-reflux-smoke', 'Do not smoke', 'uk-reflux', ['do not smoke']),
+      ],
+      meds: [
+        it('gb-reflux-antacids', 'Antacids or alginates', 'uk-reflux', ['They may recommend medicines called antacids or alginates that can help ease your symptoms.']),
+        it('gb-reflux-ppi', 'Proton pump inhibitor', 'uk-reflux', ['a medicine called a proton pump inhibitor (PPI) that reduces how much acid your stomach makes.']),
+      ],
+    },
+    CA: {
+      moderate: [it('ca-gerd-foods', 'Chocolate, mint, alcohol, pepper, spicy foods, high-fat foods, caffeine drinks', 'ca-hlbc-gerd-habits', ['These may include chocolate, mint, alcohol, pepper, spicy foods, high-fat foods, or drinks with caffeine in them'], undefined, [
+        { src: 'ca-hlbc-gerd-habits', quote: 'These may include chocolate, mint, alcohol, pepper, spicy foods, high-fat foods, or drinks with caffeine in them', foods: ['chocolate', 'mint', 'alcohol', 'pepper', 'spicy foods', 'high-fat foods'] },
+      ])],
+      activity: [
+        it('ca-gerd-small', 'Several small meals', 'ca-hlbc-gerd-habits', ["It's best to eat several small meals instead of two or three large meals."]),
+        it('ca-gerd-wait', 'Wait before you lie down', 'ca-hlbc-gerd-habits', ['After you eat, wait 2 to 3 hours before you lie down.']),
+        it('ca-gerd-tobacco', 'Do not smoke or chew tobacco', 'ca-hlbc-gerd-habits', ['Do not smoke or chew tobacco.']),
+      ],
+      meds: [
+        it('ca-gerd-antacids', 'Antacids', 'ca-hlbc-gerd', ['Antacids neutralize stomach acid and relieve heartburn.']),
+        it('ca-gerd-h2', 'H2 blockers', 'ca-hlbc-gerd', ['H2 blockers reduce the amount of acid in the stomach.']),
+        it('ca-gerd-ppi', 'PPIs', 'ca-hlbc-gerd', ['PPIs reduce the amount of acid in the stomach.']),
+      ],
+    },
+  },
+  'rheumatoid-arthritis': {
+    US: {
+      activity: [
+        it('us-ra-exercise', 'Low-impact exercises', 'us-niams-ra', ['Doctors may sometimes recommend low-impact exercises, such as water exercise programs.']),
+        it('us-ra-weight', 'Maintaining weight', 'us-niams-ra', ['Maintaining a healthy weight to help lower the stress on your joints.']),
+      ],
+      home: [it('us-ra-rest', 'Shorter rest breaks', 'us-niams-ra', ['In general, shorter rest breaks every now and then are more helpful than long times spent in bed.'])],
+      meds: [
+        it('us-ra-dmards', 'DMARDs', 'us-niams-ra', ['Disease-modifying antirheumatic drugs (DMARDs) that can help to slow or change the progression of the disease.']),
+        it('us-ra-antiinflam', 'Anti-inflammatory medications', 'us-niams-ra', ['Anti-inflammatory medications to provide pain relief and lower inflammation.']),
+        it('us-ra-steroids', 'Corticosteroids', 'us-niams-ra', ['Corticosteroids that can help decrease inflammation, provide some pain relief, and slow joint damage.']),
+        it('us-ra-biologics', 'Biologic response modifiers', 'us-niams-ra', ['Biologic response modifiers, which are also DMARDs, if your disease does not respond to initial therapies.']),
+      ],
+    },
+    GB: {
+      activity: [it('gb-ra-physio', 'Physiotherapist', 'uk-ra-treat', ['A physiotherapist may help you improve your fitness and muscle strength, and make your joints more flexible.'])],
+      meds: [
+        it('gb-ra-steroids', 'Steroids', 'uk-ra-treat', ['Steroids are powerful medicines that can help reduce pain, stiffness and inflammation.']),
+        it('gb-ra-methotrexate', 'Methotrexate', 'uk-ra-treat', ["It's important to take methotrexate as instructed by your doctor, and see your doctor if you have any side effects."]),
+      ],
+    },
+    CA: {
+      activity: [
+        it('ca-ra-eat', 'Variety of foods', 'ca-hlbc-ra', ['Try to eat a variety of healthy foods.']),
+        it('ca-ra-calcium', 'Calcium and vitamin D', 'ca-hlbc-ra', ['Be sure to get enough calcium and vitamin D to protect your bones against osteoporosis.']),
+        it('ca-ra-smoke', 'If you smoke, quit', 'ca-hlbc-ra', ['So, if you smoke, quit.']),
+        it('ca-ra-weight', 'Lose weight if overweight', 'ca-hlbc-ra', ['Lose weight, if you are overweight.']),
+      ],
+      home: [
+        it('ca-ra-rest', 'Make time to rest', 'ca-hlbc-ra', ['Make time to rest.']),
+        it('ca-ra-heat', 'Heat therapy', 'ca-hlbc-ra', ['Joint pain and stiffness may improve with heat therapy, such as:']),
+      ],
+      meds: [
+        it('ca-ra-dmards', 'DMARDs', 'ca-hlbc-ra', ['disease-modifying antirheumatic drugs (DMARDs) can slow or sometimes prevent joints from being destroyed.']),
+        it('ca-ra-nsaids', 'Aspirin, ibuprofen, and naproxen', 'ca-hlbc-ra', ['These include aspirin, ibuprofen, and naproxen.']),
+        it('ca-ra-prednisone', 'Prednisone', 'ca-hlbc-ra', ['An example is prednisone.']),
+      ],
+    },
+  },
 };
 
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
@@ -766,8 +930,10 @@ export const pageIsOld = (srcId: string, now: Date = new Date()): boolean => {
 };
 export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !!i.medIds?.length;
 export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
-const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !hiddenAsOld(i, key);
-export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`);
+// Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
+export const PENDING_SOURCES: string[] = ['us-niams-osteo', 'uk-osteo-treat', 'ca-hlbc-osteo', 'uk-gad-selfhelp', 'ca-hlbc-anxiety', 'ca-hlbc-alz', 'us-niddk-gerd-eat', 'us-niddk-gerd-treat', 'uk-reflux', 'ca-hlbc-gerd-habits', 'ca-hlbc-gerd', 'us-niams-ra', 'uk-ra-treat', 'ca-hlbc-ra'];
+const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
+export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);
 export const visibleGroups = (i: TileItem) => (i.foodGroups ?? []).filter((g) => groupShown(i.id, g));
 
 // True once a condition has been checked for the country, even when every tile came out empty (the tiles then say so).

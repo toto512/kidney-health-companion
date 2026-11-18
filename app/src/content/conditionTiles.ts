@@ -202,7 +202,7 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'ca-hlbc-neck': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/neck-pain', dateText: 'Current as of: November 9, 2022', checkedOn: C },
   'uk-tendon': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/tendonitis/', dateText: 'Page last reviewed: 09 June 2023', nextReviewDue: '2026-06-09', checkedOn: C },
   'uk-scoliosis': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/scoliosis/', dateText: 'Page last reviewed: 12 April 2023', nextReviewDue: '2026-04-12', checkedOn: C },
-  'uk-sickle': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/sickle-cell-anaemia/', dateText: 'Page last reviewed: 22 September 2026', checkedOn: C },
+  'uk-sickle': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/sickle-cell-disease/', dateText: 'Page last reviewed: 22 September 2026', checkedOn: C },
   'ca-hlbc-sickle': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/sickle-cell-disease', dateText: 'Current as of: September 8, 2022', checkedOn: C },
   'uk-hepc': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/hepatitis-c/', dateText: 'Page last reviewed: 19 March 2026', checkedOn: C },
   'uk-lyme': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/lyme-disease/', dateText: 'Page last reviewed: 03 June 2025', checkedOn: C },

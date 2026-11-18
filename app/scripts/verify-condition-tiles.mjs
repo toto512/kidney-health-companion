@@ -15,14 +15,15 @@ const pageRaw = new Map();
 // Prints what the script actually received near a missing quote, so a page that is blocked, cookie-walled or rewritten can be told apart from a wording change.
 function debugNear(id, q) {
   const t = pages.get(id);
-  if (typeof t !== 'string') return;
+  if (typeof t !== 'string') return '';
   const words = flat(q).split(' ');
   const probe = words.slice(0, 4).join(' ');
   const at = t.indexOf(probe);
   const raw = pageRaw.get(id) ?? '';
   const title = (raw.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? '').replace(/\s+/g, ' ').trim();
-  console.log(`    debug: page text ${t.length} chars, title "${title.slice(0, 80)}"; first four words ${at < 0 ? 'NOT on the page' : `found, page says: "${t.slice(at, at + flat(q).length + 40)}"`}`);
-  if (at < 0) console.log(`    debug: page starts: "${t.slice(0, 160)}"`);
+  const d = `url ${TILE_SOURCES[id].url}; page text ${t.length} chars, title "${title.slice(0, 80)}"; first four words ${at < 0 ? `NOT on the page; page starts: "${t.slice(0, 160)}"` : `found, page says: "${t.slice(at, at + flat(q).length + 40)}"`}`;
+  console.log(`    debug: ${d}`);
+  return d;
 }
 
 const pages = new Map();
@@ -57,7 +58,7 @@ for (const [cond, byCountry] of Object.entries(TILES)) {
           else if (squash(text).includes(squash(q))) { line = 'MANUAL | the words are on the page but spacing or punctuation differs: compare by eye'; manual++; }
           else { line = 'NOT FOUND | the quote is not in the page text (page changed, or script-rendered)'; bad++; notFound.push(`${item.id} | ${q}`); }
           console.log(`${cond}.${country}.${tile} ${item.id} | ${line} | ${q.slice(0, 60)}`);
-          if (line.startsWith('NOT FOUND')) debugNear(item.src, q);
+          if (line.startsWith('NOT FOUND')) notFound[notFound.length - 1] += `\n    debug: ${debugNear(item.src, q).replace(/^/, '')}`;
         }
         for (const g of item.foodGroups ?? []) {
           const text = await page(g.src);
@@ -68,7 +69,7 @@ for (const [cond, byCountry] of Object.entries(TILES)) {
             else if (squash(text).includes(squash(q))) { line = 'MANUAL | the words are on the page but spacing or punctuation differs: compare by eye'; manual++; }
             else { line = 'NOT FOUND | the food line is not in the page text (page changed, or script-rendered)'; bad++; notFound.push(`${item.id} FOOD | ${q}`); }
             console.log(`${cond}.${country}.${tile} ${item.id} FOOD | ${line} | ${q.slice(0, 60)}`);
-            if (line.startsWith('NOT FOUND')) debugNear(g.src, q);
+            if (line.startsWith('NOT FOUND')) notFound[notFound.length - 1] += `\n    debug: ${debugNear(g.src, q)}`;
           }
         }
       }

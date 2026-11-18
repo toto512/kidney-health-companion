@@ -738,7 +738,7 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
 // An entry is an item id, or "itemId@sourceId" to hide only that item's food group from one source.
 // The two NIDDK PDFs cannot be read by the script: the lines were read by hand-run page fetch on 2026-11-18 and stay hidden until James confirms them in the PDF.
-export const UNVERIFIED: string[] = ['us-ckd-phosphorus', 'us-ckd-meat-dairy@us-niddk-potassium-tips', 'gb-pad-walking', 'gb-pad-smoking', 'gb-pad-list', 'gb-pad-naftidrofuryl', 'us-copd-broncho'];
+export const UNVERIFIED: string[] = ['us-ckd-phosphorus', 'us-ckd-meat-dairy@us-niddk-potassium-tips', 'gb-pad-walking', 'gb-pad-smoking', 'gb-pad-list', 'gb-pad-naftidrofuryl'];
 // Old-page rule (James, 2026-11-18, option 3): an item that names a medicine or dose (every item in the Medicines tile, and any item with medIds) is hidden
 // when its page's last review date is more than 5 years before today. Pages with no date, and old pages that name no medicines, stay visible.
 const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];

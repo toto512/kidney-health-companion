@@ -1,5 +1,5 @@
 // Checks that every quote in src/content/conditionTiles.ts appears word for word on its official page, and prints one line per quote.
-// Run from the app folder on a machine that can reach the sites:  node --experimental-strip-types scripts/verify-condition-tiles.mjs
+// Run from the app folder on a machine that can reach the sites:  node --no-warnings --experimental-strip-types scripts/verify-condition-tiles.mjs
 // Reads only the public tile content (no user data). An item should stay only while all of its lines say OK.
 // MANUAL means the page could not be read by a script (blocked or script-rendered): open the page and look for the quote.
 import { TILES, TILE_SOURCES } from '../src/content/conditionTiles.ts';

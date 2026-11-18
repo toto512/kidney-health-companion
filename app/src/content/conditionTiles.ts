@@ -71,10 +71,10 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'ca-hlbc-oa': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/osteoarthritis', dateText: 'Current as of: November 9, 2022', checkedOn: C },
   'us-nimh-depression': { country: 'US', publisher: 'NIMH (US National Institutes of Health)', type: 'government', url: 'https://www.nimh.nih.gov/health/publications/depression', dateText: 'Revised 2024', checkedOn: C },
   'uk-depression-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/mental-health/conditions/depression-in-adults/treatment/', dateText: 'Page last reviewed: 5 July 2023', nextReviewDue: '2026-07-05', checkedOn: C },
-  'us-niams-osteo': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/osteoporosis/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
-  'uk-osteo-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/osteoporosis/treatment/', dateText: 'Page last reviewed: 13 October 2022', nextReviewDue: '2025-10-13', checkedOn: C },
+  'us-niams-osteo': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/osteoporosis/diagnosis-treatment-and-steps-to-take', dateText: 'Last Reviewed December 2022', checkedOn: C },
+  'uk-osteo-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/osteoporosis/', dateText: 'Page last reviewed: 29 October 2026', nextReviewDue: '2029-10-29', checkedOn: C },
   'ca-hlbc-osteo': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/osteoporosis', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
-  'uk-gad-selfhelp': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/mental-health/conditions/generalised-anxiety-disorder/self-help/', dateText: 'Page last reviewed: 22 October 2024', checkedOn: C },
+  'uk-gad-selfhelp': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/mental-health/conditions/generalised-anxiety-disorder-gad/', dateText: 'Page last reviewed: 22 October 2024', nextReviewDue: '2027-10-22', checkedOn: C },
   'ca-hlbc-anxiety': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/anxiety-disorders', dateText: 'Current as of: October 20, 2022', checkedOn: C },
   'ca-hlbc-alz': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/alzheimers-disease', dateText: 'Current as of: October 20, 2022', checkedOn: C },
   'us-niddk-gerd-eat': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/eating-diet-nutrition', dateText: 'Last Reviewed July 2020', checkedOn: C },
@@ -82,7 +82,7 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'uk-reflux': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/heartburn-and-acid-reflux/', dateText: 'Page last reviewed: 20 November 2023', nextReviewDue: '2026-11-20', checkedOn: C },
   'ca-hlbc-gerd-habits': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gerd-controlling-heartburn-changing-your-habits', dateText: 'Current as of: March 22, 2023', checkedOn: C },
   'ca-hlbc-gerd': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gastroesophageal-reflux-disease-gerd-0', dateText: 'Current as of: March 22, 2023', checkedOn: C },
-  'us-niams-ra': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/rheumatoid-arthritis/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
+  'us-niams-ra': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/rheumatoid-arthritis/diagnosis-treatment-and-steps-to-take', dateText: 'Last Reviewed November 2022', checkedOn: C },
   'uk-ra-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/rheumatoid-arthritis/treatment/', dateText: 'Page last reviewed: 08 March 2023', nextReviewDue: '2026-03-08', checkedOn: C },
   'ca-hlbc-ra': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/rheumatoid-arthritis', dateText: 'Current as of: September 8, 2022', checkedOn: C },
   'us-niams-gout': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/gout/diagnosis-treatment-and-steps-to-take', dateText: 'Last Reviewed December 2023', checkedOn: C },
@@ -765,7 +765,13 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       meds: [it('us-osteo-bisph', 'Bisphosphonates', 'us-niams-osteo', ['Several bisphosphonates are approved to help preserve bone density and strength and to treat osteoporosis.'])],
     },
     GB: {
-      meds: [it('gb-osteo-bisph', 'Bisphosphonates', 'uk-osteo-treat', ['Bisphosphonates slow the rate that bone is broken down in your body.'])],
+      moderate: [it('gb-osteo-alcohol', 'Too much alcohol', 'uk-osteo-treat', ['do not drink too much alcohol'])],
+      activity: [
+        it('gb-osteo-exercise', 'Exercise regularly', 'uk-osteo-treat', ['exercise regularly – include weight-bearing exercise, strengthening exercises and balance exercises']),
+        it('gb-osteo-smoke', 'Do not smoke', 'uk-osteo-treat', ['do not smoke']),
+        it('gb-osteo-calcium', 'Food high in calcium', 'uk-osteo-treat', ['eat plenty of food high in calcium, and take a calcium supplement if your doctor prescribes it']),
+        it('gb-osteo-vitd', 'Vitamin D from sunlight and a supplement', 'uk-osteo-treat', ['get enough vitamin D from sunlight in summer and from a supplement in winter']),
+      ],
     },
     CA: {
       moderate: [it('ca-osteo-alcohol', 'Drink less alcohol', 'ca-hlbc-osteo', ['If you drink alcohol, try to drink less.'])],
@@ -780,7 +786,10 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
   anxiety: {
     US: {},
     GB: {
-      moderate: [it('gb-anx-substances', 'Alcohol, cigarettes, gambling or drugs', 'uk-gad-selfhelp', ['do not use alcohol, cigarettes, gambling or drugs to relieve anxiety as these can all contribute to poor mental health'])],
+      moderate: [
+        it('gb-anx-caffeine', 'Lots of coffee, tea, cola or energy drinks', 'uk-gad-selfhelp', ['do not drink lots of coffee, tea, cola or energy drinks']),
+        it('gb-anx-substances', 'Alcohol, cigarettes, gambling or drugs', 'uk-gad-selfhelp', ['do not use alcohol, cigarettes, gambling or drugs to relieve anxiety as these can all contribute to poor mental health']),
+      ],
       activity: [
         it('gb-anx-exercise', 'Running, walking, swimming and yoga', 'uk-gad-selfhelp', ['activities such as running, walking, swimming and yoga can reduce anxiety and stress']),
         it('gb-anx-sleep', 'Enough sleep', 'uk-gad-selfhelp', ['try to get enough sleep – this can help you have the energy you need to cope with difficult feelings and experiences']),
@@ -931,7 +940,7 @@ export const pageIsOld = (srcId: string, now: Date = new Date()): boolean => {
 export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !!i.medIds?.length;
 export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
-export const PENDING_SOURCES: string[] = ['us-niams-osteo', 'uk-osteo-treat', 'ca-hlbc-osteo', 'uk-gad-selfhelp', 'ca-hlbc-anxiety', 'ca-hlbc-alz', 'us-niddk-gerd-eat', 'us-niddk-gerd-treat', 'uk-reflux', 'ca-hlbc-gerd-habits', 'ca-hlbc-gerd', 'us-niams-ra', 'uk-ra-treat', 'ca-hlbc-ra'];
+export const PENDING_SOURCES: string[] = ['uk-osteo-treat', 'uk-gad-selfhelp'];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);
 export const visibleGroups = (i: TileItem) => (i.foodGroups ?? []).filter((g) => groupShown(i.id, g));

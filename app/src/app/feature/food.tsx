@@ -8,7 +8,7 @@ import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
 import type { FormKind } from '@/content/foodNutrition';
 import { amountsFor, lookupLinks, reviewReason } from '@/lib/foodAmounts';
-import { searchFoods } from '@/lib/foodSearch';
+import { searchFoodNames, searchFoods } from '@/lib/foodSearch';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
 
@@ -28,7 +28,7 @@ function Groups({ onPick, onOpen }: { onPick: (g: FoodGroup) => void; onOpen: (f
   const { t } = useI18n();
   const [q, setQ] = useState('');
   const searching = q.trim().length > 0;
-  const found = useMemo(() => (searching ? searchFoods(FOODS, q, 'all') : []), [q, searching]);
+  const found = useMemo(() => (searching ? searchFoodNames(FOODS, q) : []), [q, searching]);
   return (
     <ScrollView keyboardShouldPersistTaps="handled">
       <Screen>

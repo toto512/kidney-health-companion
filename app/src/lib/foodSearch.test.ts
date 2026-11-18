@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { FOODS, FOOD_GROUPS } from '../content/foods';
-import { norm, searchFoods } from './foodSearch';
+import { norm, searchFoodNames, searchFoods } from './foodSearch';
 
 const names = (q: string, g: Parameters<typeof searchFoods>[2] = 'all') => searchFoods(FOODS, q, g).map((f) => f.name);
 
@@ -33,6 +33,29 @@ describe('food search', () => {
   });
   it('matches the sub-group name too', () => {
     expect(names('pome', 'fruit')).toContain('Pears');
+  });
+});
+
+describe('all-foods name search', () => {
+  const n = (q: string) => searchFoodNames(FOODS, q).map((f) => f.name);
+  it('returns only names that contain the typed text', () => {
+    for (const q of ['bowl', 'pea', 'chicken']) {
+      const r = n(q);
+      expect(r.every((x) => norm(x).includes(q))).toBe(true);
+    }
+    expect(n('bowl')).not.toContain('Guinea fowl');
+    expect(n('bowl')).not.toContain('Boiled peanuts');
+  });
+  it('is case and accent insensitive, and does not match typos, synonyms or group names', () => {
+    expect(n('PEARS')).toContain('Pears');
+    expect(n('bannana')).toEqual([]);
+    expect(n('whey powder')).toEqual([]);
+    expect(n('fatty oily')).toEqual([]);
+  });
+  it('empty text returns nothing and names starting with the text come first', () => {
+    expect(n('  ')).toEqual([]);
+    const r = n('pear');
+    expect(norm(r[0]).startsWith('pear')).toBe(true);
   });
 });
 

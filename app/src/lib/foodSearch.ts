@@ -61,3 +61,17 @@ export function searchFoods(foods: Food[], query: string, group: FoodGroup | 'al
     .sort((a, b) => b.s - a.s || a.f.name.length - b.f.name.length || byName(a.f, b.f))
     .map((x) => x.f);
 }
+
+/** Exact search for the all-foods bar: foods whose name contains every typed word (case, accents and punctuation ignored). Names only, no typos, synonyms or group names. Names starting with the text come first, then A to Z. */
+export function searchFoodNames(foods: Food[], query: string): Food[] {
+  const words = norm(query).split(' ').filter(Boolean);
+  if (words.length === 0) return [];
+  const phrase = words.join(' ');
+  const rank = (f: Food) => {
+    const n = norm(f.name);
+    return n.startsWith(phrase) ? 0 : n.split(' ').some((w) => w.startsWith(phrase)) ? 1 : 2;
+  };
+  return foods
+    .filter((f) => { const n = norm(f.name); return words.every((w) => n.includes(w)); })
+    .sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
+}

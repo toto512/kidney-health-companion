@@ -16,21 +16,26 @@ function touchScreen(): boolean {
 }
 
 // Our own simple icons (drawn here, no outside artwork): an open folder and a camera. Decorative, so the buttons carry the spoken labels.
+// The hiding props sit on a View, never on Svg: on web, react-native-svg passes them to the DOM and React logs "does not recognize the importantForAccessibility prop".
 export function FolderIcon({ color, size = 32 }: { color: string; size?: number }) {
   return (
-    <Svg width={size} height={size} viewBox="0 0 48 48" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+    <View accessible={false} importantForAccessibility="no-hide-descendants">
+    <Svg width={size} height={size} viewBox="0 0 48 48">
       <Path d="M5 14a3 3 0 0 1 3-3h10l4 5h18a3 3 0 0 1 3 3v19a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3Z" fill="none" stroke={color} strokeWidth={3} strokeLinejoin="round" />
       <Path d="M5 22h38" fill="none" stroke={color} strokeWidth={3} strokeLinecap="round" />
     </Svg>
+    </View>
   );
 }
 export function CameraIcon({ color, size = 32 }: { color: string; size?: number }) {
   return (
-    <Svg width={size} height={size} viewBox="0 0 48 48" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+    <View accessible={false} importantForAccessibility="no-hide-descendants">
+    <Svg width={size} height={size} viewBox="0 0 48 48">
       <Path d="M6 17a3 3 0 0 1 3-3h6l3-4h12l3 4h6a3 3 0 0 1 3 3v21a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3Z" fill="none" stroke={color} strokeWidth={3} strokeLinejoin="round" />
       <Circle cx={24} cy={26} r={7} fill="none" stroke={color} strokeWidth={3} />
       <Rect x={36} y={18} width={3} height={3} rx={1} fill={color} />
     </Svg>
+    </View>
   );
 }
 

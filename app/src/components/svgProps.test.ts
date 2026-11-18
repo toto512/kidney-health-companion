@@ -19,7 +19,9 @@ describe('upload buttons', () => {
     const tags = src.match(/<(Svg|Circle|Rect|Path)\b[^>]*>/g) ?? [];
     expect(tags.length).toBeGreaterThanOrEqual(6);
     for (const t of tags) expect(t).not.toMatch(/\bon[A-Z]\w*=/);
-    expect(src.match(/importantForAccessibility="no-hide-descendants"/g)?.length).toBe(2);
+    // Hidden from screen readers by a View around each icon. Svg itself must not carry accessibility props (web logs an unknown-prop error).
+    expect(src.match(/<View accessible=\{false\} importantForAccessibility="no-hide-descendants">/g)?.length).toBe(2);
+    for (const t of src.match(/<Svg\b[^>]*>/g) ?? []) expect(t).not.toMatch(/importantForAccessibility|accessibilityElementsHidden/);
     expect(src).toContain("t('upload.fileA11y')");
     expect(src).toContain("t('upload.photoA11y')");
     // Photo is always shown next to File (desktop included): the webcam on computers, with the picture file picker as the fallback.

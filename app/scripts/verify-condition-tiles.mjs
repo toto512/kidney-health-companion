@@ -51,7 +51,7 @@ async function page(id) {
   return res;
 }
 
-let ok = 0, manual = 0, bad = 0;
+let ok = 0, manual = 0, manualOther = 0, bad = 0;
 const notFound = [];
 console.log(`checked_on ${new Date().toISOString().slice(0, 10)}`);
 for (const [cond, byCountry] of Object.entries(TILES)) {
@@ -61,9 +61,9 @@ for (const [cond, byCountry] of Object.entries(TILES)) {
         const text = await page(item.src);
         for (const q of item.quotes) {
           let line;
-          if (typeof text !== 'string') { line = `MANUAL | ${text.error}`; manual++; }
+          if (typeof text !== 'string') { line = `MANUAL | ${text.error}`; manual++; if (!text.error.startsWith('PDF')) manualOther++; }
           else if (text.includes(flat(q))) { line = 'OK'; ok++; }
-          else if (squash(text).includes(squash(q))) { line = 'MANUAL | the words are on the page but spacing or punctuation differs: compare by eye'; manual++; }
+          else if (squash(text).includes(squash(q))) { line = 'MANUAL | the words are on the page but spacing or punctuation differs: compare by eye'; manual++; manualOther++; }
           else { line = 'NOT FOUND | the quote is not in the page text (page changed, or script-rendered)'; bad++; notFound.push(`${item.id} | ${q}`); }
           console.log(`${cond}.${country}.${tile} ${item.id} | ${line} | ${q.slice(0, 60)}`);
           if (line.startsWith('NOT FOUND')) notFound[notFound.length - 1] += `\n    debug: ${debugNear(item.src, q).replace(/^/, '')}`;
@@ -72,9 +72,9 @@ for (const [cond, byCountry] of Object.entries(TILES)) {
           const text = await page(g.src);
           for (const q of [g.quote, ...(g.list ? g.foods : [])]) {
             let line;
-            if (typeof text !== 'string') { line = `MANUAL | ${text.error}`; manual++; }
+            if (typeof text !== 'string') { line = `MANUAL | ${text.error}`; manual++; if (!text.error.startsWith('PDF')) manualOther++; }
             else if (text.includes(flat(q))) { line = 'OK'; ok++; }
-            else if (squash(text).includes(squash(q))) { line = 'MANUAL | the words are on the page but spacing or punctuation differs: compare by eye'; manual++; }
+            else if (squash(text).includes(squash(q))) { line = 'MANUAL | the words are on the page but spacing or punctuation differs: compare by eye'; manual++; manualOther++; }
             else { line = 'NOT FOUND | the food line is not in the page text (page changed, or script-rendered)'; bad++; notFound.push(`${item.id} FOOD | ${q}`); }
             console.log(`${cond}.${country}.${tile} ${item.id} FOOD | ${line} | ${q.slice(0, 60)}`);
             if (line.startsWith('NOT FOUND')) notFound[notFound.length - 1] += `\n    debug: ${debugNear(g.src, q)}`;
@@ -91,9 +91,10 @@ console.log(`\nOK ${ok}, MANUAL ${manual}, NOT FOUND ${bad}`);
 const DATE_RE = /(page last reviewed|last reviewed|last updated on|last updated|current as of|adaptation date|date last reviewed|revised|next review due)\s*:?\s*(\d{1,2}\s+[a-z]+\s+\d{4}|[a-z]+\s+\d{1,2},?\s+\d{4}|[a-z]+\s+\d{4}|\d{1,2}\/\d{1,2}\/\d{4}|\d{4})/g;
 const iso = (d) => (d ? d.toISOString().slice(0, 10) : null);
 const dateIssues = [];
+let unreadable = 0;
 for (const [id, src] of Object.entries(TILE_SOURCES)) {
   const text = await page(id);
-  if (typeof text !== 'string') { dateIssues.push(`${id} | not readable by the script (${text.error.slice(0, 60)}): check the date by eye, stored "${src.dateText ?? 'no date'}"`); continue; }
+  if (typeof text !== 'string') { unreadable++; dateIssues.push(`${id} | not readable by the script (${text.error.slice(0, 60)}): check the date by eye, stored "${src.dateText ?? 'no date'}"`); continue; }
   const found = [...text.matchAll(DATE_RE)].map((m) => ({ label: m[1], text: `${m[1]} ${m[2]}`, date: reviewDate(m[2]) }));
   const reviewed = found.filter((f) => f.label !== 'next review due');
   const next = found.filter((f) => f.label === 'next review due');
@@ -109,3 +110,10 @@ for (const d of dateIssues) console.log(`- ${d}`);
 
 if (redirects.length) { console.log('\nREDIRECT WARNINGS (the stored address now shows a different page; every line from these sources is MANUAL until re-sourced):'); for (const r of redirects) console.log(`- ${r}`); }
 if (notFound.length) { console.log('\nNOT FOUND SUMMARY (paste this):'); for (const n of notFound) console.log(`- ${n}`); }
+
+// One plain line James can paste: everything checked, or what to look at.
+const mismatches = dateIssues.length - unreadable;
+const verdict = bad === 0 && manualOther === 0 && redirects.length === 0 && mismatches === 0
+  ? `VERDICT: ALL CLEAR except ${manual} manual lines (PDFs), ${mismatches} date mismatches, ${redirects.length} redirects`
+  : `VERDICT: LOOK AT THIS: ${bad} not found, ${manualOther} manual lines that are not PDFs, ${redirects.length} redirects, ${mismatches} date mismatches`;
+console.log(`\n${verdict}`);

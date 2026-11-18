@@ -100,6 +100,19 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'us-ninds-pd': { country: 'US', publisher: 'NINDS (US National Institutes of Health)', type: 'government', url: 'https://www.ninds.nih.gov/health-information/disorders/parkinsons-disease', dateText: 'Last reviewed on July 23, 2026', checkedOn: C },
   'uk-pd-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/parkinsons-disease/treatment/', dateText: 'Page last reviewed: 03 November 2022', nextReviewDue: '2025-11-03', checkedOn: C },
   'ca-hlbc-pd': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/parkinsons-disease', dateText: 'Current as of: August 25, 2022', checkedOn: C },
+  'us-niddk-divert-eat': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/digestive-diseases/diverticulosis-diverticulitis/eating-diet-nutrition', dateText: 'Last Reviewed August 2021', checkedOn: C },
+  'us-niddk-divert-treat': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/digestive-diseases/diverticulosis-diverticulitis/treatment', dateText: 'Last Reviewed August 2021', checkedOn: C },
+  'uk-diverticular': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/diverticular-disease-and-diverticulitis/', dateText: 'Page last reviewed: 07 September 2023', nextReviewDue: '2026-09-07', checkedOn: C },
+  'ca-hlbc-divert': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/diverticulitis', dateText: 'Current as of: March 22, 2023', checkedOn: C },
+  'us-niddk-uti-eat': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults/eating-diet-nutrition', dateText: 'Last Reviewed April 2024', checkedOn: C },
+  'us-niddk-uti-treat': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults/treatment', dateText: 'Last Reviewed April 2024', checkedOn: C },
+  'uk-uti': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/urinary-tract-infections-utis/', dateText: 'Page last reviewed: 11 July 2025', nextReviewDue: '2028-07-11', checkedOn: C },
+  'ca-hlbc-uti': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/urinary-tract-infection', dateText: 'Current as of: March 1, 2023', checkedOn: C },
+  'uk-glaucoma': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/glaucoma/', dateText: 'Page last reviewed: 13 June 2025', nextReviewDue: '2028-06-13', checkedOn: C },
+  'uk-cataracts': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/cataracts/', dateText: 'Page last reviewed: 12 March 2025', checkedOn: C },
+  'us-cdc-flu-treat': { country: 'US', publisher: 'CDC (US Centers for Disease Control and Prevention)', type: 'government', url: 'https://www.cdc.gov/flu/treatment/index.html', dateText: 'Last Reviewed September 2, 2025', checkedOn: C },
+  'uk-flu': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/flu/', dateText: 'Page last reviewed: 03 February 2026', nextReviewDue: '2029-02-03', checkedOn: C },
+  'uk-gum': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/gum-disease/', dateText: 'Page last reviewed: 20 April 2026', nextReviewDue: '2029-04-20', checkedOn: C },
   'us-niams-gout': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/gout/diagnosis-treatment-and-steps-to-take', dateText: 'Last Reviewed December 2023', checkedOn: C },
   'uk-gout-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/gout/', dateText: 'Page last reviewed: 24 August 2023', nextReviewDue: '2026-08-24', checkedOn: C },
   'ca-hlbc-gout': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gout', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
@@ -1085,6 +1098,104 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       ],
     },
   },
+  // Batch 8 (read 2026-11-18): diverticular disease, urinary tract infection, glaucoma and cataracts, flu, gum disease. Gaps: no US page read for glaucoma/cataracts or gum disease; no Canadian page with usable lines for glaucoma/cataracts, flu or gum disease. All new sources are in PENDING_SOURCES until the verify script says OK.
+  'diverticular-disease': {
+    US: {
+      moderate: [it('us-div-redmeat', 'Eating less red meat', 'us-niddk-divert-eat', ['Eating high-fiber foods and eating less red meat may lower the risk.'])],
+      activity: [
+        it('us-div-active', 'Physically active on a regular basis', 'us-niddk-divert-treat', ['being physically active on a regular basis']),
+        it('us-div-weight', 'Reaching and maintaining weight', 'us-niddk-divert-treat', ['reaching and maintaining a healthy weight']),
+        it('us-div-smoke', 'Not smoking, or quitting smoking', 'us-niddk-divert-treat', ['not smoking, or quitting smoking if you smoke']),
+      ],
+      meds: [
+        it('us-div-pain', 'Antispasmodics or acetaminophen', 'us-niddk-divert-treat', ['Doctors may recommend antispasmodics or acetaminophen instead of nonsteroidal anti-inflammatory drugs (NSAIDs).']),
+        it('us-div-nsaids', 'NSAIDs', 'us-niddk-divert-treat', ['NSAIDs may increase the chance of diverticulitis complications.']),
+      ],
+    },
+    GB: {
+      activity: [
+        it('gb-div-fibre', 'Slowly increase fibre', 'uk-diverticular', ['slowly increase how much fibre you eat']),
+        it('gb-div-diet', 'Balanced diet including whole grains, fruits and vegetables', 'uk-diverticular', ['eat a healthy, balanced diet including whole grains, fruits and vegetables']),
+        it('gb-div-weight', 'Maintain weight', 'uk-diverticular', ['maintain a healthy weight']),
+        it('gb-div-smoke', 'Stop smoking', 'uk-diverticular', ['stop smoking if you smoke']),
+      ],
+      meds: [
+        it('gb-div-nsaids', 'NSAIDs (such as ibuprofen)', 'uk-diverticular', ['do not take NSAIDs (such as ibuprofen)']),
+        it('gb-div-antibiotics', 'Antibiotics', 'uk-diverticular', ['antibiotics if the diverticulitis is caused by an infection']),
+      ],
+    },
+    CA: {
+      moderate: [it('ca-div-laxatives', 'Laxatives or enemas', 'ca-hlbc-divert', ['Do not use laxatives or enemas unless your doctor tells you to use them.'])],
+      activity: [
+        it('ca-div-fluids', 'Drink plenty of fluids', 'ca-hlbc-divert', ['Drink plenty of fluids.']),
+        it('ca-div-liquids', 'Liquids or small amounts of food', 'ca-hlbc-divert', ['Stay with liquids or start with small amounts of food until you are feeling better.']),
+      ],
+      meds: [it('ca-div-antibiotics', 'Antibiotics', 'ca-hlbc-divert', ['If your doctor prescribed antibiotics, take them as directed.'])],
+    },
+  },
+  uti: {
+    US: {
+      activity: [
+        it('us-uti-liquids', 'Drinking enough liquids', 'us-niddk-uti-eat', ['Drinking enough liquids can keep you hydrated and help prevent or relieve bladder infections.']),
+        it('us-uti-water', 'Water', 'us-niddk-uti-eat', ['Water is best.']),
+      ],
+      home: [it('us-uti-heating', 'Heating pad', 'us-niddk-uti-treat', ['A heating pad on your back or abdomen may help you ease pain from a bladder infection.'])],
+      meds: [
+        it('us-uti-antibiotics', 'Antibiotics', 'us-niddk-uti-treat', ['If you have a bladder infection caused by bacteria, your health care professional will likely prescribe antibiotics.']),
+        it('us-uti-pain', 'Ibuprofen or acetaminophen', 'us-niddk-uti-treat', ['You may be asked to use medicine such as ibuprofen or acetaminophen.']),
+      ],
+    },
+    GB: {
+      avoid: [it('gb-uti-drinks', 'Drinks that may irritate your bladder', 'uk-uti', ['avoid drinks that may irritate your bladder, like fruit juices, coffee and alcohol'], undefined, [
+        { src: 'uk-uti', quote: 'avoid drinks that may irritate your bladder, like fruit juices, coffee and alcohol', foods: ['fruit juices', 'coffee', 'alcohol'] },
+      ])],
+      moderate: [it('gb-uti-soap', 'Scented soap', 'uk-uti', ['do not use scented soap around the genital area'])],
+      activity: [it('gb-uti-fluids', 'Plenty of fluids, particularly water', 'uk-uti', ['drink plenty of fluids, particularly water, so that you regularly pee during the day and do not feel thirsty'])],
+      meds: [it('gb-uti-antibiotics', 'Take all the medicine you are prescribed', 'uk-uti', ["It's important to take all the medicine you are prescribed, even if you start to feel better."])],
+    },
+    CA: {
+      meds: [it('ca-uti-antibiotics', 'Antibiotics', 'ca-hlbc-uti', ["They're caused by bacteria and can be cured with antibiotics."])],
+    },
+  },
+  'glaucoma-cataracts': {
+    US: {},
+    GB: {
+      activity: [it('gb-glau-appointments', 'Regular eye clinic appointments', 'uk-glaucoma', ['For many people this includes using eye drops daily and attending regular eye clinic appointments.'])],
+      home: [it('gb-cat-light', 'Stronger glasses and brighter light', 'uk-cataracts', ['Using stronger glasses and brighter light for reading may help for a while.'])],
+      meds: [it('gb-glau-drops', 'Eye drops', 'uk-glaucoma', ['eye drops – to decrease the amount of fluid in the eye and help it drain'])],
+    },
+    CA: {},
+  },
+  influenza: {
+    US: {
+      avoid: [it('us-flu-home', 'Contact with other people', 'us-cdc-flu-treat', ['Stay home and avoid contact with other people except to get medical care.'])],
+      meds: [
+        it('us-flu-antivirals', 'Flu antiviral drugs', 'us-cdc-flu-treat', ['Flu antiviral drugs work best when started early, ideally within two days after your flu symptoms begin.']),
+        it('us-flu-otc', 'Antiviral drugs are not sold over the counter', 'us-cdc-flu-treat', ['Antiviral drugs are not sold over the counter.']),
+      ],
+    },
+    GB: {
+      home: [
+        it('gb-flu-rest', 'Rest and sleep', 'uk-flu', ['rest and sleep']),
+        it('gb-flu-water', 'Plenty of water', 'uk-flu', ['drink plenty of water to avoid dehydration (your pee should be light yellow or clear)']),
+      ],
+      meds: [it('gb-flu-painkillers', 'Paracetamol or ibuprofen', 'uk-flu', ['take paracetamol or ibuprofen to lower your temperature and treat aches and pains'])],
+    },
+    CA: {},
+  },
+  'dental-disease': {
+    US: {},
+    GB: {
+      moderate: [it('gb-gum-mouthwash', 'Mouthwash straight after brushing your teeth', 'uk-gum', ['do not use mouthwash straight after brushing your teeth'])],
+      activity: [
+        it('gb-gum-brush', 'Brush with fluoride toothpaste', 'uk-gum', ['brush your teeth with fluoride toothpaste at least twice a day – spit after brushing, do not rinse']),
+        it('gb-gum-floss', 'Clean in between your teeth', 'uk-gum', ['clean in between your teeth every day using floss or interdental brushes']),
+        it('gb-gum-smoke', 'Do not smoke', 'uk-gum', ['do not smoke']),
+        it('gb-gum-dentist', 'See a dentist', 'uk-gum', ["See a dentist if you have not had a check-up for 2 years (or 1 year if you're under 18)."]),
+      ],
+    },
+    CA: {},
+  },
 };
 
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
@@ -1118,7 +1229,7 @@ export const pageIsOld = (srcId: string, now: Date = new Date()): boolean => {
 export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !!i.medIds?.length;
 export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
-export const PENDING_SOURCES: string[] = [];
+export const PENDING_SOURCES: string[] = ['us-niddk-divert-eat', 'us-niddk-divert-treat', 'uk-diverticular', 'ca-hlbc-divert', 'us-niddk-uti-eat', 'us-niddk-uti-treat', 'uk-uti', 'ca-hlbc-uti', 'uk-glaucoma', 'uk-cataracts', 'us-cdc-flu-treat', 'uk-flu', 'uk-gum'];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);
 export const visibleGroups = (i: TileItem) => (i.foodGroups ?? []).filter((g) => groupShown(i.id, g));

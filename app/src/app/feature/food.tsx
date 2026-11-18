@@ -9,6 +9,9 @@ import type { Key } from '@/i18n/strings/en';
 import type { FormKind } from '@/content/foodNutrition';
 import { amountsFor, lookupLinks, reviewReason } from '@/lib/foodAmounts';
 import { searchFoodNames, searchFoods } from '@/lib/foodSearch';
+import { foodCheck } from '@/lib/foodCheck';
+import { loadMyConditionIds } from '@/lib/userConditions';
+import type { Country } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
 
@@ -144,6 +147,9 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
     supabase.from('profiles').select('country_code').maybeSingle().then(({ data }) => { if (alive) setCountry(data?.country_code ?? null); }, () => { if (alive) setCountry(null); });
     return () => { alive = false; };
   }, []);
+  const [myConds, setMyConds] = useState<string[] | null | undefined>(undefined);
+  useEffect(() => { let alive = true; void loadMyConditionIds().then((ids) => { if (alive) setMyConds(ids); }); return () => { alive = false; }; }, []);
+  const checks = useMemo(() => (myConds && country ? foodCheck(food.name, myConds, country as Country) : []), [myConds, country, food.name]);
   const [form, setForm] = useState<FormKind | null>(null);
   const a = country === undefined ? null : amountsFor(food.id, country, form, lang);
   const same = useMemo(() => FOODS.filter((f) => f.group === group).sort((x, y) => x.sub.localeCompare(y.sub) || x.name.localeCompare(y.name)), [group]);
@@ -213,6 +219,22 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
               <Body>{t('food.lookup.note')}</Body>
             </>
           )}
+        </Panel>
+        <Panel>
+          <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t('food.check.title')}</Text>
+          {myConds === undefined || country === undefined ? null : !myConds || myConds.length === 0 ? <Body>{t('food.check.noConds')}</Body> : checks.length === 0 ? <Body>{t('food.check.none')}</Body> : checks.map((l) => (
+            <View key={`${l.condition}|${l.src}|${l.quote}`} style={{ gap: 6 }}>
+              <Text style={{ fontSize: font.body, fontWeight: '700', color: color.text }}>{t('food.check.for', { condition: l.conditionLabel })}</Text>
+              <Text style={{ fontSize: font.body, lineHeight: 26, color: color.text }}>{'“'}{l.quote}{l.list ? ':' : ''}{'”'}</Text>
+              {l.list ? <Text style={{ fontSize: font.body, color: color.muted }}>{t('food.check.listed', { food: l.foodEntry })}</Text> : null}
+              <Text style={{ fontSize: font.body, color: color.muted }}>{t('cond.source', { source: l.source.publisher })}</Text>
+              <Text style={{ fontSize: font.body, color: color.muted }}>{t('cond.reviewed', { page: l.source.dateText ?? t('cond.noDate'), checked: l.source.checkedOn })}</Text>
+              <Pressable accessibilityRole="link" onPress={() => Linking.openURL(l.source.url)} style={{ minHeight: 48, justifyContent: 'center' }}>
+                <Text style={{ fontSize: font.body, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>{t('cond.openPage')}</Text>
+              </Pressable>
+            </View>
+          ))}
+          <Body>{t('tiles.askDoctor')}</Body>
         </Panel>
         <Pressable accessibilityRole="button" accessibilityState={{ expanded: open }} onPress={() => setOpen(!open)}
           style={{ minHeight: 56, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 14, borderRadius: 14, borderWidth: 2, borderColor: color.border, backgroundColor: color.surface }}>

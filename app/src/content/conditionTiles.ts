@@ -66,6 +66,8 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       ],
       activity: [
         it('us-ckd-active', 'Physical activity', 'us-niddk-ckd-manage', ['Be active for 30 minutes or more on most days.', 'Physical activity can help you reduce stress, manage your weight, and achieve your blood pressure and blood glucose goals.']),
+        it('us-ckd-weight', 'Weight', 'us-niddk-ckd-manage', ['Being overweight makes your kidneys work harder and may damage your kidneys.']),
+        it('us-ckd-sleep', 'Sleep', 'us-niddk-ckd-manage', ['Aim for 7 to 8 hours of sleep each night.']),
       ],
       meds: [
         it('us-ckd-nsaids', 'Ibuprofen and naproxen (NSAIDs)', 'us-niddk-ckd-manage', ['Some medicines can also harm your kidneys.', 'Ibuprofen and naproxen are NSAIDs.'], ['ibuprofen']),
@@ -78,6 +80,8 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       ],
       activity: [
         it('gb-ckd-exercise', 'Regular exercise', 'uk-ckd-treat', ['do regular exercise – aim to do at least 150 minutes a week']),
+        it('gb-ckd-smoking', 'Stop smoking', 'uk-ckd-treat', ['stop smoking if you smoke']),
+        it('gb-ckd-weight', 'Weight', 'uk-ckd-treat', ["lose weight if you're overweight or obese"]),
       ],
       meds: [
         it('gb-ckd-sglt2', 'Dapagliflozin (an SGLT2 inhibitor)', 'uk-ckd-treat', ['An SGLT2 inhibitor called dapagliflozin is used to treat CKD and is often given to people who are also living with diabetes.']),
@@ -100,6 +104,9 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       activity: [
         it('ca-ckd-walking', 'Walking', 'ca-hlbc-ckd', ['Be active. Walking is a good choice. Try for at least 2½ hours a week.']),
         it('ca-ckd-exercise', 'Exercise', 'ca-hlbc-ckd', ['Make exercise a routine part of your life.', 'Exercise may lower your risk for diabetes and high blood pressure.']),
+        it('ca-ckd-smoking', 'Quitting smoking', 'ca-hlbc-ckd', ['If you need help quitting, talk to your doctor about stop-smoking programs and medicines.']),
+        it('ca-ckd-weight', 'Weight', 'ca-hlbc-ckd', ['Stay at a healthy weight.']),
+        it('ca-ckd-bp-home', 'Check blood pressure at home', 'ca-hlbc-ckd', ['Learn to check your blood pressure at home.']),
       ],
       meds: [
         it('ca-ckd-nsaids', 'Medicines that can harm your kidneys', 'ca-hlbc-ckd', ['Avoid medicines that can harm your kidneys.', 'These medicines include non-steroidal anti-inflammatory drugs. Examples of these are ibuprofen and celecoxib.'], ['ibuprofen']),
@@ -112,7 +119,9 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
     US: {
       avoid: [
         it('us-gout-sugar-drinks', 'Sugar-sweetened drinks', 'us-niams-gout', ['Avoiding sugar-sweetened drinks, such as soda.']),
-        it('us-gout-seafood', 'Shellfish, sardines, and anchovies', 'us-niams-gout', ['Avoiding certain seafood, such as shellfish (shrimp and lobster), sardines, and anchovies.']),
+        it('us-gout-seafood', 'Shellfish, sardines, and anchovies', 'us-niams-gout', ['Avoiding certain seafood, such as shellfish (shrimp and lobster), sardines, and anchovies.'], undefined, [
+          { src: 'us-niams-gout', quote: 'Avoiding certain seafood, such as shellfish (shrimp and lobster), sardines, and anchovies.', foods: ['shellfish', 'shrimp', 'lobster', 'sardines', 'anchovies'] },
+        ]),
       ],
       moderate: [
         it('us-gout-alcohol', 'Alcoholic beverages', 'us-niams-gout', ['Drinking fewer alcoholic beverages.']),
@@ -137,6 +146,8 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       ],
       activity: [
         it('gb-gout-exercise', 'Regular exercise', 'uk-gout-treat', ['exercise regularly – but avoid intense exercise or putting lots of pressure on joints']),
+        it('gb-gout-weight', 'Weight', 'uk-gout-treat', ['try to lose weight if you are overweight, but avoid crash diets']),
+        it('gb-gout-smoking', 'Quit smoking', 'uk-gout-treat', ['try to quit smoking']),
       ],
       home: [
         it('gb-gout-rest', 'Rest and raise the limb', 'uk-gout-treat', ['rest and raise the limb']),
@@ -155,8 +166,13 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
         it('ca-gout-hfcs', 'High-fructose corn syrup', 'ca-hlbc-gout', ['Avoid foods or drinks that are made with high-fructose corn syrup.']),
       ],
       moderate: [
-        it('ca-gout-seafood', 'Seafood and red meat', 'ca-hlbc-gout', ['Eat less seafood and red meat.']),
+        it('ca-gout-seafood', 'Seafood and red meat', 'ca-hlbc-gout', ['Eat less seafood and red meat.'], undefined, [
+          { src: 'ca-hlbc-gout', quote: 'Eat less seafood and red meat.', foods: ['seafood', 'red meat'] },
+        ]),
         it('ca-gout-alcohol', 'Alcohol', 'ca-hlbc-gout', ['Check with your doctor before drinking alcohol.']),
+      ],
+      activity: [
+        it('ca-gout-weight', 'Weight', 'ca-hlbc-gout', ['Losing weight, if you are overweight, may help reduce attacks of gout.', 'But do not go on a diet that causes rapid weight loss.']),
       ],
       home: [
         it('ca-gout-ice', 'Ice or a cold pack', 'ca-hlbc-gout', ['If the joint is swollen, put ice or a cold pack on the area for 10 to 20 minutes at a time.']),
@@ -180,6 +196,9 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       activity: [
         it('us-hbp-activity', 'Physical activity', 'us-nhlbi-hbp', ['Get regular physical activity.', 'Even a small amount of physical activity may help, like walking for 10 minutes each day.']),
         it('us-hbp-stress', 'Manage stress', 'us-nhlbi-hbp', ['Manage stress.', 'Learning how to manage stress and cope with problems can improve your mental and physical health.', 'Relaxation techniques, talking to a counselor, and finding a support group can all help.']),
+        it('us-hbp-weight', 'Weight', 'us-nhlbi-hbp', ['Even losing just 3% to 5% of your weight can improve blood pressure.']),
+        it('us-hbp-sleep', 'Sleep', 'us-nhlbi-hbp', ['The recommended amount for adults is 7 to 9 hours of sleep per day.']),
+        it('us-hbp-smoking', 'Quit smoking', 'us-nhlbi-hbp', ['The Tips to Quit Smoking Fact Sheet has information about how to quit smoking.']),
       ],
       meds: [
         it('us-hbp-ccb', 'Calcium channel blockers', 'us-nhlbi-hbp', ['Calcium channel blockers prevent calcium from entering the muscle cells of your heart and blood vessels.']),
@@ -196,6 +215,9 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       ],
       activity: [
         it('gb-hbp-exercise', 'Regular exercise', 'uk-hbp', ['exercise regularly – aim to do at least 150 minutes of exercise a week']),
+        it('gb-hbp-weight', 'Lose weight', 'uk-hbp', ["lose weight if you're overweight"]),
+        it('gb-hbp-smoking', 'Do not smoke', 'uk-hbp', ['do not smoke']),
+        it('gb-hbp-bp-home', 'Blood pressure monitor at home', 'uk-hbp', ['use a blood pressure monitor at home to check your blood pressure regularly over the next few days']),
       ],
     },
   },

@@ -60,6 +60,35 @@ describe('condition tiles: every item is sourced', () => {
   });
 });
 
+describe('food groups named by official pages', () => {
+  const groups = all.flatMap(({ item }) => (item.foodGroups ?? []).map((g) => ({ id: item.id, country: item.src && TILE_SOURCES[item.src].country, g })));
+  it('there are groups, each from an official source of the same country, with a short complete quote', () => {
+    expect(groups.length).toBeGreaterThan(5);
+    for (const { id, country, g } of groups) {
+      const s = TILE_SOURCES[g.src];
+      expect(s, id).toBeTruthy();
+      expect(s.country, id).toBe(country);
+      expect(g.quote.length, `${id}: ${g.quote}`).toBeLessThanOrEqual(125);
+      expect(g.quote, id).not.toMatch(/\.\.\.|…/);
+      expect(g.quote, id).not.toMatch(/\b\d+(\.\d+)?\s?(mg|mcg|g|ml)\b/i);
+    }
+  });
+  it('every named food is in the quote itself, or (for a page list) the quote introduces a list', () => {
+    for (const { id, g } of groups) {
+      expect(g.foods.length, id).toBeGreaterThan(0);
+      if (!g.list) for (const f of g.foods) expect(norm(g.quote), `${id}: ${f}`).toContain(norm(f));
+      else expect(norm(g.quote), id).toMatch(/include/);
+    }
+  });
+  it('no verdict wording: nothing says ok, safe, good or bad', () => {
+    for (const { id, g } of groups) expect(g.quote + g.foods.join(' '), id).not.toMatch(/\b(ok|okay|safe|unsafe|healthy|unhealthy|good|bad)\b/i);
+  });
+  it('bananas, potatoes, dairy and meat are named for US kidney disease', () => {
+    const foods = tileItems('ckd', 'US', 'moderate').flatMap((i) => (i.foodGroups ?? []).flatMap((g) => g.foods)).join(' | ').toLowerCase();
+    for (const w of ['bananas', 'potatoes', 'dairy', 'meat', 'poultry', 'fish']) expect(foods).toContain(w);
+  });
+});
+
 describe('batch 1 coverage', () => {
   it('Chronic kidney disease, Gout and High blood pressure are checked for all three countries', () => {
     for (const c of ['ckd', 'gout', 'hbp'] as const) for (const k of ['US', 'GB', 'CA'] as const) expect(hasTiles(c, k), `${c} ${k}`).toBe(true);

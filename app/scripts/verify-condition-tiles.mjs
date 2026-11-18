@@ -37,6 +37,16 @@ for (const [cond, byCountry] of Object.entries(TILES)) {
           else { line = 'NOT FOUND | the quote is not in the page text (page changed, or script-rendered)'; bad++; }
           console.log(`${cond}.${country}.${tile} ${item.id} | ${line} | ${q.slice(0, 60)}`);
         }
+        for (const g of item.foodGroups ?? []) {
+          const text = await page(g.src);
+          for (const q of [g.quote, ...(g.list ? g.foods : [])]) {
+            let line;
+            if (typeof text !== 'string') { line = `MANUAL | ${text.error}`; manual++; }
+            else if (text.includes(flat(q))) { line = 'OK'; ok++; }
+            else { line = 'NOT FOUND | the food line is not in the page text (page changed, or script-rendered)'; bad++; }
+            console.log(`${cond}.${country}.${tile} ${item.id} FOOD | ${line} | ${q.slice(0, 60)}`);
+          }
+        }
       }
     }
   }

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { Body } from '@/components/ui';
-import { TILE_KEYS, TILE_SOURCES, tileItems, type TileItem, type TileKey } from '@/content/conditionTiles';
+import { TILE_KEYS, TILE_SOURCES, tileItems, type FoodGroup, type TileItem, type TileKey } from '@/content/conditionTiles';
 import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
 import { loadMyMeds } from '@/lib/userMedications';
@@ -111,7 +111,34 @@ function Detail({ item, tile, conditionLabel, accent, mine, onBack }: { item: Ti
       <Pressable accessibilityRole="link" onPress={() => Linking.openURL(s.url)} style={{ minHeight: 56, justifyContent: 'center' }}>
         <Text style={{ fontSize: font.label, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>{t('cond.openPage')}</Text>
       </Pressable>
+      {item.foodGroups?.length ? <FoodGroups groups={item.foodGroups} accent={accent} /> : null}
       <Text style={{ fontSize: font.body, color: color.muted }}>{t('tiles.askDoctor')}</Text>
+    </View>
+  );
+}
+
+// Foods an official page names for this card. Each group keeps its own quote, source, link and check date.
+function FoodGroups({ groups, accent }: { groups: FoodGroup[]; accent: string }) {
+  const color = useColors();
+  const { t } = useI18n();
+  return (
+    <View style={{ gap: 12 }}>
+      <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: accent }}>{t('tiles.foodsNamed')}</Text>
+      {groups.map((g, i) => {
+        const gs = TILE_SOURCES[g.src];
+        return (
+          <View key={i} style={{ gap: 6, borderLeftWidth: 4, borderLeftColor: accent, paddingLeft: 10 }}>
+            <Text style={{ fontSize: font.body, lineHeight: 26, color: color.text }}>{'“'}{g.quote}{g.list ? ':' : ''}{'”'}</Text>
+            {g.list ? <Text style={{ fontSize: font.body, color: color.muted }}>{t('tiles.listOnPage')}</Text> : null}
+            {g.list ? g.foods.map((f) => <Text key={f} style={{ fontSize: font.body, color: color.text }}>{'• '}{f}</Text>) : null}
+            <Text style={{ fontSize: font.body, color: color.muted }}>{t('tiles.foodFrom', { source: gs.publisher })}</Text>
+            <Text style={{ fontSize: font.body, color: color.muted }}>{t('cond.reviewed', { page: gs.dateText ?? t('cond.noDate'), checked: gs.checkedOn })}</Text>
+            <Pressable accessibilityRole="link" onPress={() => Linking.openURL(gs.url)} style={{ minHeight: 48, justifyContent: 'center' }}>
+              <Text style={{ fontSize: font.body, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>{t('cond.openPage')}</Text>
+            </Pressable>
+          </View>
+        );
+      })}
     </View>
   );
 }

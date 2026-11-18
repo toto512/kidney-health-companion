@@ -9,7 +9,10 @@ import type { Country } from '@/lib/profile';
 // scripts/verify-condition-tiles.mjs re-checks every quote against its live page.
 export type TileKey = 'avoid' | 'moderate' | 'activity' | 'home' | 'meds';
 export const TILE_KEYS: TileKey[] = ['avoid', 'moderate', 'activity', 'home', 'meds'];
-export type TileItem = { id: string; title: string; quotes: string[]; src: string; medIds?: string[] };
+// A group of foods one official page names. `quote` is word for word from the page. With `list` false every food is inside the quote;
+// with `list` true the quote introduces a list on the page and `foods` are its entries, copied word for word.
+export type FoodGroup = { quote: string; foods: string[]; list?: boolean; src: string };
+export type TileItem = { id: string; title: string; quotes: string[]; src: string; medIds?: string[]; foodGroups?: FoodGroup[] };
 export type TileSource = { country: Country; publisher: string; type: 'government' | 'provincial_government'; url: string; dateText: string | null; nextReviewDue?: string; checkedOn: string };
 
 const C = '2026-11-18';
@@ -22,6 +25,11 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'us-niddk-ckd-eat': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd/eating-nutrition', dateText: 'Last Reviewed January 2025', checkedOn: C },
   'uk-ckd-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/kidney-disease/treatment/', dateText: 'Page last reviewed: 22 March 2023', nextReviewDue: '2026-03-22', checkedOn: C },
   'ca-hlbc-ckd': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/chronic-kidney-disease', dateText: 'Current as of: March 1, 2023', checkedOn: C },
+  'us-cdc-diabetes-kidney-food': { country: 'US', publisher: 'CDC (US Centers for Disease Control and Prevention)', type: 'government', url: 'https://www.cdc.gov/diabetes/healthy-eating/diabetes-and-kidney-disease-food.html', dateText: null, checkedOn: C },
+  'us-niddk-potassium-tips': { country: 'US', publisher: 'NIDDK (US National Institutes of Health), "Potassium Tips for People with Chronic Kidney Disease"', type: 'government', url: 'https://www.niddk.nih.gov/-/media/Files/Health-Information/Health-Professionals/Kidney-Disease/PotassiumTipsforPeopleCKD_EN.pdf', dateText: null, checkedOn: C },
+  'us-niddk-phosphorus-tips': { country: 'US', publisher: 'NIDDK (US National Institutes of Health), "Phosphorus Tips for People with Chronic Kidney Disease"', type: 'government', url: 'https://www.niddk.nih.gov/-/media/Files/Health-Information/Health-Professionals/Kidney-Disease/PhosphorusTipsforPeopleCKD_EN.pdf', dateText: null, checkedOn: C },
+  'us-niddk-ckd-children-nutrition': { country: 'US', publisher: 'NIDDK (US National Institutes of Health), page for children with kidney disease', type: 'government', url: 'https://www.niddk.nih.gov/health-information/kidney-disease/children/helping-child-adapt-life-chronic-kidney-disease/nutrition-chronic-kidney-disease', dateText: null, checkedOn: C },
+  'ca-hlbc-ckd-diet': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/kidney-disease-changing-your-diet', dateText: null, checkedOn: C },
   'us-niams-gout': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/gout/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
   'uk-gout-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/gout/treatment/', dateText: 'Page last reviewed: 24 August 2023', nextReviewDue: '2026-08-24', checkedOn: C },
   'ca-hlbc-gout': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gout', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
@@ -30,7 +38,7 @@ export const TILE_SOURCES: Record<string, TileSource> = {
 };
 
 type Tiles = Partial<Record<TileKey, TileItem[]>>;
-const it = (id: string, title: string, src: string, quotes: string[], medIds?: string[]): TileItem => ({ id, title, src, quotes, ...(medIds ? { medIds } : {}) });
+const it = (id: string, title: string, src: string, quotes: string[], medIds?: string[], foodGroups?: FoodGroup[]): TileItem => ({ id, title, src, quotes, ...(medIds ? { medIds } : {}), ...(foodGroups ? { foodGroups } : {}) });
 
 // Keyed by the condition ids used on the My conditions screen. A condition or country with no entry shows nothing here yet (later batches).
 export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
@@ -38,11 +46,23 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
     US: {
       moderate: [
         it('us-ckd-sodium', 'Sodium', 'us-niddk-ckd-eat', ['Many people with CKD need to limit their sodium even more.']),
-        it('us-ckd-packaged', 'Prepared, packaged, and fast foods', 'us-niddk-ckd-eat', ['Limit the amount of prepared, packaged, and fast foods you eat.']),
-        it('us-ckd-potassium', 'Foods that contain potassium', 'us-niddk-ckd-eat', ['Limit serving sizes of foods that contain potassium.']),
+        it('us-ckd-packaged', 'Prepared, packaged, and fast foods', 'us-niddk-ckd-eat', ['Limit the amount of prepared, packaged, and fast foods you eat.'], undefined, [
+          { src: 'us-cdc-diabetes-kidney-food', quote: 'Eat only small amounts of restaurant food and packaged food, which usually have lots of sodium.', foods: ['restaurant food', 'packaged food'] },
+        ]),
+        it('us-ckd-potassium', 'Foods that contain potassium', 'us-niddk-ckd-eat', ['Limit serving sizes of foods that contain potassium.'], undefined, [
+          { src: 'us-cdc-diabetes-kidney-food', quote: 'Oranges, potatoes, tomatoes, whole-grain bread, and many other foods are high in potassium.', foods: ['oranges', 'potatoes', 'tomatoes', 'whole-grain bread'] },
+          { src: 'us-niddk-ckd-children-nutrition', quote: 'Foods higher in potassium include', list: true, foods: ['apricots (fresh)', 'bananas', 'cantaloupe', 'dates', 'kiwi', 'nectarines', 'oranges/orange juice', 'prunes/prune juice', 'raisins', 'acorn and butternut squash', 'avocado', 'baked beans', 'beet and other greens', 'broccoli (cooked)', 'brussels sprouts (cooked)', 'chard', 'chili peppers', 'mushrooms (cooked)', 'potatoes', 'pumpkin', 'spinach (cooked)', 'split peas, lentils, beans', 'sweet potatoes, yams', 'tomatoes/tomato juice/tomato sauce', 'vegetable juice'] },
+        ]),
+        it('us-ckd-phosphorus', 'Phosphorus', 'us-niddk-phosphorus-tips', ['Most people with CKD need to eat foods with less phosphorus than they are used to eating.'], undefined, [
+          { src: 'us-niddk-phosphorus-tips', quote: 'Phosphorus is found naturally in foods rich in protein, such as meat, poultry, fish, nuts, beans, and dairy products.', foods: ['meat', 'poultry', 'fish', 'nuts', 'beans', 'dairy products'] },
+          { src: 'us-cdc-diabetes-kidney-food', quote: 'Meat, dairy, beans, nuts, whole-grain bread, and dark-colored sodas are high in phosphorus.', foods: ['meat', 'dairy', 'beans', 'nuts', 'whole-grain bread', 'dark-colored sodas'] },
+          { src: 'us-niddk-ckd-children-nutrition', quote: 'Foods higher in phosphorus include', list: true, foods: ['beans, lentils, nuts', 'bran cereals, oatmeal', 'cola, some bottled iced tea', 'dairy foods (milk, cheese, yogurt)', 'ice cream', 'processed meats (hot dogs, canned meat)'] },
+        ]),
         it('us-ckd-fats', 'Saturated and trans fats', 'us-niddk-ckd-eat', ['Limit saturated and trans fats.']),
         it('us-ckd-alcohol', 'Alcohol', 'us-niddk-ckd-eat', ['Limit alcohol.']),
-        it('us-ckd-meat-dairy', 'Meat and dairy foods', 'us-niddk-ckd-eat', ['limit how much meat and dairy foods you consume']),
+        it('us-ckd-meat-dairy', 'Meat and dairy foods', 'us-niddk-ckd-eat', ['limit how much meat and dairy foods you consume'], undefined, [
+          { src: 'us-niddk-potassium-tips', quote: 'Eat smaller portions of foods high in protein at meals and for snacks: meat, poultry, fish, beans, dairy, and nuts.', foods: ['meat', 'poultry', 'fish', 'beans', 'dairy', 'nuts'] },
+        ]),
       ],
       activity: [
         it('us-ckd-active', 'Physical activity', 'us-niddk-ckd-manage', ['Be active for 30 minutes or more on most days.', 'Physical activity can help you reduce stress, manage your weight, and achieve your blood pressure and blood glucose goals.']),
@@ -68,8 +88,14 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
     },
     CA: {
       moderate: [
-        it('ca-ckd-salt-protein', 'Salt (sodium) and protein', 'ca-hlbc-ckd', ['You may need to limit salt (sodium) and protein and watch your fluid intake.']),
-        it('ca-ckd-potassium', 'Potassium and phosphorus', 'ca-hlbc-ckd', ['Some people also need to limit potassium and phosphorus.']),
+        it('ca-ckd-salt-protein', 'Salt (sodium) and protein', 'ca-hlbc-ckd', ['You may need to limit salt (sodium) and protein and watch your fluid intake.'], undefined, [
+          { src: 'ca-hlbc-ckd-diet', quote: 'High-protein foods include meat, poultry, seafood, and eggs.', foods: ['meat', 'poultry', 'seafood', 'eggs'] },
+        ]),
+        it('ca-ckd-potassium', 'Potassium and phosphorus', 'ca-hlbc-ckd', ['Some people also need to limit potassium and phosphorus.'], undefined, [
+          { src: 'ca-hlbc-ckd-diet', quote: 'Most salt substitutes and lite salts are high in potassium.', foods: ['salt substitutes', 'lite salts'] },
+          { src: 'ca-hlbc-ckd-diet', quote: 'Limit nuts, peanut butter, seeds, lentils, beans, organ meats, and sardines.', foods: ['nuts', 'peanut butter', 'seeds', 'lentils', 'beans', 'organ meats', 'sardines'] },
+          { src: 'ca-hlbc-ckd-diet', quote: 'Also limit cured meats such as sausages, bologna, and hot dogs.', foods: ['cured meats', 'sausages', 'bologna', 'hot dogs'] },
+        ]),
       ],
       activity: [
         it('ca-ckd-walking', 'Walking', 'ca-hlbc-ckd', ['Be active. Walking is a good choice. Try for at least 2½ hours a week.']),

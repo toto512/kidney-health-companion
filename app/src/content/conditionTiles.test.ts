@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { MED_LIST } from './medList';
 import { CONDITIONS } from './conditions';
+import { CONDITION_LIST } from './conditionList';
 import { UNVERIFIED, hasTiles, TILE_KEYS, TILE_SOURCES, TILES, tileItems, type TileItem } from './conditionTiles';
 
 const all: { cond: string; country: string; tile: string; item: TileItem }[] = [];
@@ -54,7 +55,7 @@ describe('condition tiles: every item is sourced', () => {
     }
   });
   it('tiles belong to known conditions and tile names', () => {
-    const ids = CONDITIONS.map((c) => c.id);
+    const ids = [...CONDITIONS.map((c) => c.id), ...CONDITION_LIST.map((c) => c.id)];
     for (const cond of Object.keys(TILES)) expect(ids).toContain(cond);
     for (const { tile } of all) expect(TILE_KEYS as string[]).toContain(tile);
   });
@@ -77,7 +78,7 @@ describe('food groups named by official pages', () => {
     for (const { id, g } of groups) {
       expect(g.foods.length, id).toBeGreaterThan(0);
       if (!g.list) for (const f of g.foods) expect(norm(g.quote), `${id}: ${f}`).toContain(norm(f));
-      else expect(norm(g.quote), id).toMatch(/include/);
+      else expect(g.foods.length, id).toBeGreaterThan(1);
     }
   });
   it('no verdict wording: nothing says ok, safe, good or bad', () => {

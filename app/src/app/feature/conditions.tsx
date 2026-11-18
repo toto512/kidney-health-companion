@@ -54,7 +54,7 @@ export default function Conditions() {
                 return (
                   <Panel key={card.key}>
                     <SectionHeader icon="🩺" accent="blue">{card.label}</SectionHeader>
-                    <Body>{t('cond.noneYet')}</Body>
+                    {hasTiles(card.officialId, country) ? <ConditionTiles country={country} condition={card.officialId} conditionLabel={card.label} accent="blue" /> : <Body>{t('cond.noneYet')}</Body>}
                   </Panel>
                 );
               }

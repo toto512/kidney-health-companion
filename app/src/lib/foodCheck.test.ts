@@ -27,6 +27,7 @@ describe('food check: only official lines that name the food', () => {
     expect(foodCheck('Seafood', ['hypertension'], 'CA')).toEqual([]);
   });
   it('entriesOf splits slashes, commas and brackets', () => {
+    expect(entriesOf('cream and cheese')).toEqual(['cream', 'cheese']);
     expect(entriesOf('dairy foods (milk, cheese, yogurt)')).toEqual(['dairy foods', 'milk', 'cheese', 'yogurt']);
     expect(entriesOf('tomatoes/tomato juice/tomato sauce')).toEqual(['tomatoes', 'tomato juice', 'tomato sauce']);
   });

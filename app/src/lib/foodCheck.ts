@@ -19,7 +19,7 @@ export function entriesOf(food: string): string[] {
   const out: string[] = [];
   const inner = [...food.matchAll(/\(([^)]*)\)/g)].map((m) => m[1]);
   const outer = food.replace(/\([^)]*\)/g, ' ');
-  for (const part of [outer, ...inner]) for (const e of part.split(/[,/]| or /)) if (e.trim()) out.push(e.trim());
+  for (const part of [outer, ...inner]) for (const e of part.split(/[,/]| or | and /)) if (e.trim()) out.push(e.trim());
   return out;
 }
 

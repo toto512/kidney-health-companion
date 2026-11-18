@@ -36,6 +36,15 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'us-nhlbi-chd': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/coronary-heart-disease/treatment', dateText: 'Last updated on December 27, 2024', checkedOn: C },
   'uk-chd-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/coronary-heart-disease/treatment/', dateText: 'Page last reviewed: 17 January 2024', nextReviewDue: '2027-01-17', checkedOn: C },
   'ca-hlbc-cad': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/coronary-artery-disease-0', dateText: 'Current as of: September 7, 2022', checkedOn: C },
+  'us-nhlbi-hf': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/heart-failure/treatment', dateText: 'Last updated on March 24, 2022', checkedOn: C },
+  'uk-hf-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/heart-failure/treatment/', dateText: 'Page last reviewed: 26 June 2026', nextReviewDue: '2029-06-26', checkedOn: C },
+  'ca-hlbc-hf': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/heart-failure', dateText: 'Adaptation Date: 9/19/2023', checkedOn: C },
+  'us-nhlbi-chol': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/blood-cholesterol/treatment', dateText: 'Last updated on April 19, 2024', checkedOn: C },
+  'uk-chol-lower': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/high-cholesterol/how-to-lower-your-cholesterol/', dateText: 'Page last reviewed: 13 March 2026', nextReviewDue: '2029-03-13', checkedOn: C },
+  'ca-hlbc-chol': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/high-cholesterol', dateText: 'Adaptation Date: 9/26/2023', checkedOn: C },
+  'us-nhlbi-stroke': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/stroke/recovery', dateText: 'Last updated on May 26, 2023', checkedOn: C },
+  'uk-stroke-recovery': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/stroke/recovery/', dateText: 'Page last reviewed: 12 September 2024', nextReviewDue: '2027-09-12', checkedOn: C },
+  'ca-hlbc-stroke': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/stroke', dateText: 'Current as of: December 19, 2022', checkedOn: C },
   'us-niams-gout': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/gout/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
   'uk-gout-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/gout/treatment/', dateText: 'Page last reviewed: 24 August 2023', nextReviewDue: '2026-08-24', checkedOn: C },
   'ca-hlbc-gout': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gout', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
@@ -303,6 +312,128 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       meds: [
         it('ca-hd-ezetimibe', 'Ezetimibe with a statin', 'ca-hlbc-cad', ['Other cholesterol medicines, such as ezetimibe, may be used along with a statin.']),
       ],
+    },
+  },
+  // Batch 3 (read 2026-11-18): heart failure, high cholesterol, stroke. Condition ids are the picker ids.
+  'heart-failure': {
+    US: {
+      avoid: [it('us-hf-alcohol', 'Alcohol', 'us-nhlbi-hf', ['Avoid or limit alcohol.'])],
+      moderate: [it('us-hf-sodium', 'Sodium (salt)', 'us-nhlbi-hf', ['Lower your sodium (salt) intake.', 'Salt may make fluid buildup worse.'])],
+      activity: [
+        it('us-hf-activity', 'Physical activity', 'us-nhlbi-hf', ['Get regular physical activity.']),
+        it('us-hf-weight', 'Weight', 'us-nhlbi-hf', ['Aim for a healthy weight since extra weight can make your heart work harder.']),
+        it('us-hf-smoking', 'Quit smoking', 'us-nhlbi-hf', ['Quit smoking.']),
+        it('us-hf-sleep', 'Sleep', 'us-nhlbi-hf', ['Get good-quality sleep.']),
+      ],
+      meds: [
+        it('us-hf-remove', 'Medicines that remove extra sodium and fluid', 'us-nhlbi-hf', ['Medicines that remove extra sodium and fluid from your body,']),
+        it('us-hf-relax', 'Medicines to relax your blood vessels', 'us-nhlbi-hf', ['Medicines to relax your blood vessels']),
+        it('us-hf-slow', 'Medicines to slow your heart rate', 'us-nhlbi-hf', ['Medicines to slow your heart rate,']),
+        it('us-hf-digoxin', 'Digoxin', 'us-nhlbi-hf', ['Digoxin makes your heart beat stronger and pump more blood.']),
+      ],
+    },
+    GB: {
+      moderate: [it('gb-hf-alcohol', 'Alcohol', 'uk-hf-treat', ['cut down on alcohol, if you drink'])],
+      activity: [
+        it('gb-hf-active', 'Stay active', 'uk-hf-treat', ['stay active – you should be referred for a cardiac rehabilitation assessment, which can help you learn how exercise safely']),
+        it('gb-hf-weight', 'Weight', 'uk-hf-treat', ['maintain a healthy weight']),
+        it('gb-hf-weigh', 'Weigh yourself regularly', 'uk-hf-treat', ['weigh yourself regularly – a build-up of fluid can cause sudden weight gain and may need treatment']),
+        it('gb-hf-smoking', 'Quit smoking', 'uk-hf-treat', ['try to quit smoking']),
+      ],
+      meds: [
+        it('gb-hf-diuretics', 'Diuretics', 'uk-hf-treat', ['make you pee more to reduce fluid build-up in your body (diuretics), such as furosemide'], ['furosemide']),
+        it('gb-hf-beta', 'Beta blockers', 'uk-hf-treat', ['slow your heart down, so it does not need as much oxygen (such as beta blockers)']),
+      ],
+    },
+    CA: {
+      avoid: [
+        it('ca-hf-alcohol', 'Alcohol', 'ca-hlbc-hf', ['Limit or avoid alcohol.']),
+        it('ca-hf-fat', 'Saturated and trans fat', 'ca-hlbc-hf', ['Choose foods that are low in saturated fat, and avoid trans fat.']),
+      ],
+      moderate: [
+        it('ca-hf-sodium', 'Sodium, alcohol, and sugar', 'ca-hlbc-hf', ['Limit sodium, alcohol, and sugar.']),
+        it('ca-hf-fluid', 'Fluid intake', 'ca-hlbc-hf', ['Limit your fluid intake if your doctor tells you to.']),
+      ],
+      activity: [
+        it('ca-hf-exercise', 'Moderate to vigorous exercise', 'ca-hlbc-hf', ['Aim for at least 2½ hours of moderate to vigorous exercise a week.']),
+        it('ca-hf-weigh', 'Weigh yourself each day', 'ca-hlbc-hf', ['Weigh yourself without clothing at the same time each day.']),
+        it('ca-hf-smoke', 'Do not smoke', 'ca-hlbc-hf', ['Do not smoke.']),
+        it('ca-hf-symptoms', 'Check your symptoms every day', 'ca-hlbc-hf', ['Check your symptoms every day to watch for changes.']),
+      ],
+      meds: [
+        it('ca-hf-fishoil', 'Fish oil (omega-3)', 'ca-hlbc-hf', ['Fish oil (omega-3 fatty acid) supplements may help some people who have heart failure.']),
+        it('ca-hf-worse', 'Medicines can affect heart failure', 'ca-hlbc-hf', ['Some medicines can affect your heart and make heart failure worse.']),
+      ],
+    },
+  },
+  'high-cholesterol': {
+    US: {
+      moderate: [it('us-hc-alcohol', 'Alcohol', 'us-nhlbi-chol', ['Limit alcohol.'])],
+      activity: [it('us-hc-activity', 'Physical activity', 'us-nhlbi-chol', ['Before starting any exercise program, ask your provider what level of physical activity is right for you.'])],
+      meds: [
+        it('us-hc-statins', 'Statins', 'us-nhlbi-chol', ['Statins are the most common medicine used to treat high blood cholesterol.']),
+        it('us-hc-ezetimibe', 'Ezetimibe', 'us-nhlbi-chol', ['Ezetimibe works by blocking how cholesterol is absorbed into the body.']),
+        it('us-hc-pcsk9', 'PCSK9 inhibitors', 'us-nhlbi-chol', ['PCSK9 inhibitors are a type of medicine that you inject under your skin.']),
+      ],
+    },
+    GB: {
+      avoid: [it('gb-hc-alcohol', 'Alcohol', 'uk-chol-lower', ['avoid drinking more than 14 units of alcohol a week on a regular basis'])],
+      moderate: [
+        it('gb-hc-eat-less', 'Eat less', 'uk-chol-lower', ['Try to eat less:'], undefined, [
+          { src: 'uk-chol-lower', quote: 'Try to eat less:', list: true, foods: ['meat pies, sausages and fatty meat', 'butter, lard and ghee', 'cream and cheese', 'cakes and biscuits'] },
+        ]),
+      ],
+      activity: [it('gb-hc-exercises', 'Different exercises', 'uk-chol-lower', ['Try a few different exercises to find something you like doing.'])],
+    },
+    CA: {
+      moderate: [
+        it('ca-hc-sodium', 'Sodium and alcohol', 'ca-hlbc-chol', ['Limit sodium and alcohol.']),
+        it('ca-hc-sugar', 'Added sugar', 'ca-hlbc-chol', ['Limit drinks and foods with added sugar.']),
+        it('ca-hc-fat', 'Saturated fat', 'ca-hlbc-chol', ['Choose foods that are low in saturated fat.'], undefined, [
+          { src: 'ca-hlbc-chol', quote: 'These foods include meats, whole milk, butter, and cheese.', foods: ['meats', 'whole milk', 'butter', 'cheese'] },
+        ]),
+      ],
+      activity: [
+        it('ca-hc-activity', 'Moderate to vigorous activity', 'ca-hlbc-chol', ['Try to do moderate to vigorous activity at least 2½ hours a week.']),
+        it('ca-hc-weight', 'Weight', 'ca-hlbc-chol', ['Lose weight if you need to.']),
+        it('ca-hc-smoke', 'Do not smoke', 'ca-hlbc-chol', ["Don't smoke."]),
+      ],
+      meds: [
+        it('ca-hc-statins', 'Statins', 'ca-hlbc-chol', ['Some people also take medicines called statins, along with lifestyle changes, to reduce their risk.']),
+        it('ca-hc-inhibitor', 'Cholesterol absorption inhibitor or PCSK9-inhibitor', 'ca-hlbc-chol', ['Your doctor may talk with you about also taking a cholesterol absorption inhibitor or a PCSK9-inhibitor.']),
+      ],
+    },
+  },
+  stroke: {
+    US: {
+      activity: [
+        it('us-st-activity', 'Physical activity', 'us-nhlbi-stroke', ['Get regular physical activity.']),
+        it('us-st-weight', 'Weight', 'us-nhlbi-stroke', ['Aim for a healthy weight.']),
+        it('us-st-smoking', 'Quit smoking', 'us-nhlbi-stroke', ['Quit smoking.']),
+        it('us-st-sleep', 'Sleep', 'us-nhlbi-stroke', ['Get enough good-quality sleep.']),
+      ],
+      meds: [
+        it('us-st-aspirin', 'Aspirin', 'us-nhlbi-stroke', ['They may also recommend aspirin or other medicines to prevent dangerous clotting that could lead to another stroke.']),
+        it('us-st-thinners', 'Blood thinners', 'us-nhlbi-stroke', ['Blood thinners can help lower the risk of another stroke from atrial fibrillation.']),
+        it('us-st-statin', 'Statin therapy', 'us-nhlbi-stroke', ['Statin therapy has been found to be protective against stroke, but it should not be used by pregnant women.']),
+      ],
+    },
+    GB: {
+      activity: [it('gb-st-physio', 'Physiotherapy and exercises', 'uk-stroke-recovery', ['physiotherapy and exercises to help with movement'])],
+    },
+    CA: {
+      moderate: [
+        it('ca-st-sodium', 'Sodium and sugar', 'ca-hlbc-stroke', ['Limit sodium and sugar.']),
+        it('ca-st-alcohol', 'Alcohol', 'ca-hlbc-stroke', ['If you drink alcohol, try to drink less.']),
+      ],
+      activity: [
+        it('ca-st-exercise', 'Moderate to vigorous exercise', 'ca-hlbc-stroke', ['Be active. Get at least 2½ hours of moderate to vigorous exercise a week.']),
+        it('ca-st-walking', 'Walking', 'ca-hlbc-stroke', ['Walking is a good choice.']),
+        it('ca-st-weight', 'Weight', 'ca-hlbc-stroke', ['Stay at a healthy weight.']),
+        it('ca-st-smoke', 'Do not smoke', 'ca-hlbc-stroke', ["Don't smoke."]),
+        it('ca-st-rehab', 'Stroke rehabilitation', 'ca-hlbc-stroke', ['Attend stroke rehabilitation (rehab) if recommended.']),
+      ],
+      meds: [it('ca-st-tpa', 'Tissue plasminogen activator (TPA)', 'ca-hlbc-stroke', ['You may get a clot-dissolving medicine called tissue plasminogen activator (TPA).'])],
     },
   },
 };

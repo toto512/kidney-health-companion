@@ -96,6 +96,9 @@ for (const [id, src] of Object.entries(TILE_SOURCES)) {
   const text = await page(id);
   if (typeof text !== 'string') { unreadable++; dateIssues.push(`${id} | not readable by the script (${text.error.slice(0, 60)}): check the date by eye, stored "${src.dateText ?? 'no date'}"`); continue; }
   const found = [...text.matchAll(DATE_RE)].map((m) => ({ label: m[1], text: `${m[1]} ${m[2]}`, date: reviewDate(m[2]) }));
+  // Some pages (CDC) show a bare date with no label but state it in a page tag such as last_reviewed: read those too.
+  const raw = pageRaw.get(id) ?? '';
+  for (const m of raw.matchAll(/last[_-]reviewed["']?\s*(?:content\s*=\s*|[:=]\s*)["']?([A-Za-z]+\.? \d{1,2}, \d{4}|\d{4}-\d{2}-\d{2})/gi)) found.push({ label: 'last reviewed', text: `last reviewed ${m[1].toLowerCase()} (page tag)`, date: /^\d{4}-\d{2}-\d{2}$/.test(m[1]) ? new Date(m[1]) : reviewDate(m[1]) });
   const reviewed = found.filter((f) => f.label !== 'next review due');
   const next = found.filter((f) => f.label === 'next review due');
   const seen = [...new Set(found.map((f) => f.text))].slice(0, 4).join(' ; ') || 'no date text found';

@@ -155,6 +155,17 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'ca-hlbc-iron': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/iron-deficiency-anemia', dateText: 'Current as of: September 8, 2022', checkedOn: C },
   'uk-hyperthyroid': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/overactive-thyroid-hyperthyroidism/', dateText: 'Page last reviewed: 11 April 2023', nextReviewDue: '2026-04-11', checkedOn: C },
   'ca-hlbc-hyperthyroid': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/hyperthyroidism', dateText: 'Current as of: March 1, 2023', checkedOn: C },
+  'uk-bronchitis': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/bronchitis/', dateText: 'Page last reviewed: 18 August 2026', nextReviewDue: '2029-08-18', checkedOn: C },
+  'ca-hlbc-bronchitis': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/acute-bronchitis', dateText: 'Current as of: November 14, 2022', checkedOn: C },
+  'uk-sinusitis': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/sinusitis-sinus-infection/', dateText: 'Page last reviewed: 31 January 2024', nextReviewDue: '2027-01-31', checkedOn: C },
+  'ca-hlbc-sinusitis': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/sinusitis', dateText: 'Current as of: March 1, 2023', checkedOn: C },
+  'uk-bronchiectasis': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/bronchiectasis/', dateText: 'Page last reviewed: 11 June 2025', nextReviewDue: '2028-06-11', checkedOn: C },
+  'ca-hlbc-bronchiectasis': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/bronchiectasis', dateText: 'Current as of: November 14, 2022', checkedOn: C },
+  'us-niams-cts': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/carpal-tunnel-syndrome/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
+  'uk-cts': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/carpal-tunnel-syndrome/', dateText: 'Page last reviewed: 17 April 2024', nextReviewDue: '2027-04-17', checkedOn: C },
+  'ca-hlbc-cts': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/carpal-tunnel-syndrome', dateText: 'Current as of: November 9, 2022', checkedOn: C },
+  'uk-pf': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/plantar-fasciitis/', dateText: 'Page last reviewed: 14 February 2025', nextReviewDue: '2028-02-14', checkedOn: C },
+  'ca-hlbc-pf': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/plantar-fasciitis', dateText: 'Current as of: November 9, 2022', checkedOn: C },
 };
 
 type Tiles = Partial<Record<TileKey, TileItem[]>>;
@@ -1624,6 +1635,145 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       ],
     },
   },
+  // Batch 12 (read 2026-11-18): acute bronchitis, chronic sinusitis, bronchiectasis, carpal tunnel syndrome, plantar fasciitis. Gaps: no US page could be read for bronchitis, sinusitis, bronchiectasis or plantar fasciitis (CDC pages did not load, no NIH page tried); only the carpal tunnel US page (NIAMS, undated). All new sources are in PENDING_SOURCES until the verify script says OK.
+  'acute-bronchitis': {
+    US: {},
+    GB: {
+      avoid: [it('gb-bron-contact', 'Contact with other people if you have a high temperature', 'uk-bronchitis', ['try to stay at home and avoid contact with other people if you have a high temperature'])],
+      activity: [
+        it('gb-bron-fluids', 'Drink plenty of fluids', 'uk-bronchitis', ['drink plenty of fluids']),
+        it('gb-bron-smoke', 'Do not smoke', 'uk-bronchitis', ['do not smoke']),
+        it('gb-bron-cover', 'Cover your mouth and nose when you cough or sneeze', 'uk-bronchitis', ['cover your mouth and nose with a tissue when you cough or sneeze']),
+      ],
+      home: [it('gb-bron-honey', 'Honey in a warm drink', 'uk-bronchitis', ['try adding honey to a warm drink to help soothe your throat'])],
+      meds: [
+        it('gb-bron-pain', 'Painkillers like paracetamol or ibuprofen', 'uk-bronchitis', ['take painkillers like paracetamol or ibuprofen to help with pain and bring down a high temperature']),
+        it('gb-bron-antibiotics', 'Antibiotics', 'uk-bronchitis', ['Antibiotics may be offered if your bronchitis is caused by a more serious infection.']),
+      ],
+    },
+    CA: {
+      activity: [
+        it('ca-bron-rest', 'Rest more than usual', 'ca-hlbc-bronchitis', ['Rest more than usual.']),
+        it('ca-bron-fluids', 'Drink plenty of fluids', 'ca-hlbc-bronchitis', ["Drink plenty of fluids so you don't get dehydrated."]),
+        it('ca-bron-smoke', 'Do not smoke', 'ca-hlbc-bronchitis', ["Don't smoke."]),
+      ],
+      meds: [
+        it('ca-bron-antibiotics', 'Antibiotics', 'ca-hlbc-bronchitis', ["Antibiotics don't help with viral bronchitis."]),
+        it('ca-bron-cough', 'Cough medicines', 'ca-hlbc-bronchitis', ['Cough medicines may not be safe for children younger than 6 or for people who have certain health problems.']),
+        it('ca-bron-aspirin', 'Aspirin', 'ca-hlbc-bronchitis', ["Don't give aspirin to anyone younger than age 18."]),
+      ],
+    },
+  },
+  'chronic-sinusitis': {
+    US: {},
+    GB: {
+      avoid: [it('gb-sinus-allergies', 'Things that trigger your allergies', 'uk-sinusitis', ['avoiding things that trigger your allergies'])],
+      activity: [it('gb-sinus-smoke', 'Not smoking', 'uk-sinusitis', ['not smoking'])],
+      meds: [
+        it('gb-sinus-pain', 'Painkillers such as paracetamol or ibuprofen', 'uk-sinusitis', ['taking painkillers, such as paracetamol or ibuprofen']),
+        it('gb-sinus-antibiotics', 'Antibiotics', 'uk-sinusitis', ['Rarely, you may need antibiotics.']),
+      ],
+    },
+    CA: {
+      avoid: [
+        it('ca-sinus-smoke', 'Cigarette, cigar, and pipe smoke', 'ca-hlbc-sinusitis', ['Avoid cigarette, cigar, and pipe smoke in your home and workplace.']),
+        it('ca-sinus-dry', 'Breathing dry air', 'ca-hlbc-sinusitis', ['Avoid breathing dry air.']),
+        it('ca-sinus-allergy', 'Things that trigger your allergy attacks', 'ca-hlbc-sinusitis', ['Avoid the things that trigger your allergy attacks if you have allergies.']),
+        it('ca-sinus-contact', 'Contact with people who have colds', 'ca-hlbc-sinusitis', ['Avoid contact with people who have colds and other upper respiratory infections.']),
+      ],
+      activity: [it('ca-sinus-fluids', 'Drinking lots of fluids and using saline nasal washes', 'ca-hlbc-sinusitis', ['This includes drinking lots of fluids and using saline nasal washes.'])],
+      home: [it('ca-sinus-saline', 'Saline nasal washes', 'ca-hlbc-sinusitis', ['Use saline (saltwater) nasal washes.'])],
+      meds: [
+        it('ca-sinus-steroid', 'Steroid nasal spray', 'ca-hlbc-sinusitis', ['Try a steroid nasal spray.']),
+        it('ca-sinus-directed', 'Take antibiotics as directed', 'ca-hlbc-sinusitis', ['If the doctor prescribed antibiotics, take them as directed.']),
+        it('ca-sinus-course', 'Full course of antibiotics', 'ca-hlbc-sinusitis', ['You need to take the full course of antibiotics.']),
+        it('ca-sinus-acetaminophen', 'Too much acetaminophen', 'ca-hlbc-sinusitis', ['Too much acetaminophen (Tylenol) can be harmful.']),
+      ],
+    },
+  },
+  bronchiectasis: {
+    US: {},
+    GB: {
+      meds: [
+        it('gb-bronchi-inhalers', 'Inhalers', 'uk-bronchiectasis', ['You may also be offered other medicines, such as inhalers to help your breathing.']),
+        it('gb-bronchi-rescue', 'Antibiotics to keep at home', 'uk-bronchiectasis', ['You may be given antibiotics to keep at home (a rescue pack) for when you get symptoms of a chest infection.']),
+      ],
+    },
+    CA: {
+      activity: [
+        it('ca-bronchi-fluids', 'Drink plenty of fluids', 'ca-hlbc-bronchiectasis', ["Drink plenty of fluids. This helps keep mucus thin and slippery so it's easier to cough up."]),
+        it('ca-bronchi-active', 'Be active', 'ca-hlbc-bronchiectasis', ['Be active. Activity helps loosen mucus, encourages coughing, improves oxygen flow, and makes you feel better.']),
+        it('ca-bronchi-smoke', 'Do not smoke or allow others to smoke around you', 'ca-hlbc-bronchiectasis', ["Don't smoke or allow others to smoke around you."]),
+        it('ca-bronchi-airway', 'Airway clearance techniques', 'ca-hlbc-bronchiectasis', ['Your doctor may teach you airway clearance techniques to help you cough up mucus.']),
+      ],
+      meds: [it('ca-bronchi-follow', "Follow your doctor's instructions for taking your medicines", 'ca-hlbc-bronchiectasis', ["Follow your doctor's instructions for taking your medicines."])],
+    },
+  },
+  'carpal-tunnel': {
+    US: {
+      activity: [
+        it('us-cts-rest', 'Resting your hands periodically', 'us-niams-cts', ['Resting your hands periodically.']),
+        it('us-cts-repetitive', 'Minimizing repetitive movements', 'us-niams-cts', ['Minimizing repetitive movements.']),
+        it('us-cts-breaks', 'Short breaks when doing repetitive tasks', 'us-niams-cts', ['Taking short breaks when doing repetitive tasks with your hands.']),
+      ],
+      home: [
+        it('us-cts-ice', 'Ice packs', 'us-niams-cts', ['Using ice packs as needed.']),
+        it('us-cts-splint', 'Splint on the hand and wrist at night', 'us-niams-cts', ['Using a splint on the hand and wrist at night is a common initial treatment option for CTS symptoms.']),
+      ],
+      meds: [
+        it('us-cts-prescribed', 'Taking medications as prescribed', 'us-niams-cts', ['Taking medications as prescribed by your doctor.']),
+        it('us-cts-steroid', 'Steroid injection', 'us-niams-cts', ['An injection of steroid into your carpal tunnel can alleviate symptoms of CTS temporarily.']),
+      ],
+    },
+    GB: {
+      activity: [it('gb-cts-exercises', 'Hand exercises', 'uk-cts', ["There's a small amount of evidence to suggest hand exercises help ease the symptoms of CTS."])],
+      home: [it('gb-cts-splint', 'Wrist splint', 'uk-cts', ['A wrist splint is something you wear on your hand to keep your wrist straight.'])],
+      meds: [
+        it('gb-cts-pain', 'Painkillers like paracetamol or ibuprofen', 'uk-cts', ['Painkillers like paracetamol or ibuprofen may help carpal tunnel pain short-term.']),
+        it('gb-cts-steroid', 'Steroid injections', 'uk-cts', ['Steroid injections are not always a cure.']),
+      ],
+    },
+    CA: {
+      activity: [
+        it('ca-cts-rest', 'Rest your fingers, hand, and wrist', 'ca-hlbc-cts', ['Rest your fingers, hand, and wrist.']),
+        it('ca-cts-stop', 'Stop activities if they cause numbness and pain', 'ca-hlbc-cts', ['Stop activities if they cause numbness and pain.']),
+        it('ca-cts-exercises', 'Exercises for flexibility and strength', 'ca-hlbc-cts', ['Talk to your doctor about starting exercises for flexibility and strength for your arm and wrist.']),
+      ],
+      home: [it('ca-cts-splint', 'Wear a wrist splint at night', 'ca-hlbc-cts', ['Wear a wrist splint at night.'])],
+      meds: [it('ca-cts-medicine', 'Medicine for swelling, inflammation, and pain', 'ca-hlbc-cts', ['Medicine may relieve swelling, inflammation, and pain in the wrist or hand caused by carpal tunnel syndrome.'])],
+    },
+  },
+  'plantar-fasciitis': {
+    US: {},
+    GB: {
+      moderate: [
+        it('gb-pf-standing', 'Walk or stand for long periods', 'uk-pf', ['do not walk or stand for long periods']),
+        it('gb-pf-barefoot', 'Walk barefoot on hard surfaces', 'uk-pf', ['try not to walk barefoot on hard surfaces']),
+      ],
+      activity: [
+        it('gb-pf-rest', 'Rest and raise your foot', 'uk-pf', ['rest and raise your foot on a stool when you can']),
+        it('gb-pf-stretch', 'Gentle exercises to stretch the sole of your foot and your heel', 'uk-pf', ['try regular gentle exercises to stretch the sole of your foot and your heel']),
+        it('gb-pf-shoes', 'Shoes with cushioned heels and arch support', 'uk-pf', ['wear shoes with cushioned heels and good arch support']),
+        it('gb-pf-heels', 'High heels or tight pointy shoes', 'uk-pf', ['do not wear high heels or tight pointy shoes']),
+        it('gb-pf-weight', 'Lose weight if overweight', 'uk-pf', ["try to lose weight if you're overweight"]),
+      ],
+      home: [
+        it('gb-pf-ice', 'Ice pack on the painful area', 'uk-pf', ['put an ice pack (or bag of frozen peas) in a towel on the painful area for up to 20 minutes every 2 to 3 hours']),
+        it('gb-pf-insoles', 'Insoles or heel pads', 'uk-pf', ['use insoles or heel pads in your shoes']),
+      ],
+      meds: [it('gb-pf-pain', 'Paracetamol or ibuprofen gel or tablets', 'uk-pf', ['take painkillers like paracetamol or ibuprofen gel, or ibuprofen tablets if you need them'])],
+    },
+    CA: {
+      moderate: [it('ca-pf-hard', 'Walk or run on hard surfaces', 'ca-hlbc-pf', ['Try not to walk or run on hard surfaces.'])],
+      activity: [
+        it('ca-pf-rest', 'Give your feet a rest', 'ca-hlbc-pf', ['Give your feet a rest.']),
+        it('ca-pf-cutback', 'Cut back on activities that make your foot hurt', 'ca-hlbc-pf', ['Cut back on activities that make your foot hurt.']),
+        it('ca-pf-stretch', 'Stretch your toes and calves', 'ca-hlbc-pf', ['Stretch your toes and calves several times a day.']),
+        it('ca-pf-shoes', 'Shoes with arch support and a cushioned sole', 'ca-hlbc-pf', ['Pick shoes with good arch support and a cushioned sole.']),
+      ],
+      home: [it('ca-pf-ice', 'Resting and icing your heel', 'ca-hlbc-pf', ['First, try resting and icing your heel.'])],
+    },
+  },
 };
 
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
@@ -1658,7 +1808,7 @@ export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !
 export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
 export const PENDING_SOURCES: string[] = [
-  'us-niddk-crohn-eat', 'uk-ibd', 'us-niddk-gall-eat', 'uk-gallstones', 'ca-hlbc-gallstones', 'us-niddk-ulcer', 'uk-ulcer', 'us-nhlbi-anemia', 'uk-iron', 'ca-hlbc-iron', 'uk-hyperthyroid', 'ca-hlbc-hyperthyroid',
+  'uk-bronchitis', 'ca-hlbc-bronchitis', 'uk-sinusitis', 'ca-hlbc-sinusitis', 'uk-bronchiectasis', 'ca-hlbc-bronchiectasis', 'us-niams-cts', 'uk-cts', 'ca-hlbc-cts', 'uk-pf', 'ca-hlbc-pf',
 ];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);

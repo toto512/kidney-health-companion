@@ -143,6 +143,18 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'us-ninds-ms': { country: 'US', publisher: 'NINDS (US National Institutes of Health)', type: 'government', url: 'https://www.ninds.nih.gov/health-information/disorders/multiple-sclerosis-ms', dateText: 'Last reviewed on December 17, 2025', checkedOn: C },
   'uk-ms': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/multiple-sclerosis/', dateText: 'Page last reviewed: 16 August 2024', nextReviewDue: '2027-08-16', checkedOn: C },
   'ca-hlbc-ms': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/multiple-sclerosis', dateText: 'Current as of: August 25, 2022', checkedOn: C },
+  'us-niddk-crohn-eat': { country: 'US', publisher: 'NIDDK (US National Institutes of Health), page on Crohn\'s disease', type: 'government', url: 'https://www.niddk.nih.gov/health-information/digestive-diseases/crohns-disease/eating-diet-nutrition', dateText: 'Last Reviewed July 2024', checkedOn: C },
+  'uk-ibd': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/inflammatory-bowel-disease/', dateText: 'Page last reviewed: 11 September 2026', nextReviewDue: '2029-09-11', checkedOn: C },
+  'us-niddk-gall-eat': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/digestive-diseases/gallstones/eating-diet-nutrition', dateText: 'Last Reviewed November 2017', checkedOn: C },
+  'uk-gallstones': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/gallstones/', dateText: 'Page last reviewed: 11 August 2025', nextReviewDue: '2028-08-11', checkedOn: C },
+  'ca-hlbc-gallstones': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gallstones', dateText: 'Current as of: March 22, 2023', checkedOn: C },
+  'us-niddk-ulcer': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/digestive-diseases/peptic-ulcers-stomach-ulcers/treatment', dateText: 'Last Reviewed September 2022', checkedOn: C },
+  'uk-ulcer': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/stomach-ulcer/', dateText: 'Page last reviewed: 12 August 2025', nextReviewDue: '2028-08-12', checkedOn: C },
+  'us-nhlbi-anemia': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/anemia/treatment', dateText: 'Last updated on March 24, 2022', checkedOn: C },
+  'uk-iron': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/iron-deficiency-anaemia/', dateText: 'Page last reviewed: 26 January 2024', nextReviewDue: '2027-01-26', checkedOn: C },
+  'ca-hlbc-iron': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/iron-deficiency-anemia', dateText: 'Current as of: September 8, 2022', checkedOn: C },
+  'uk-hyperthyroid': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/overactive-thyroid-hyperthyroidism/', dateText: 'Page last reviewed: 11 April 2023', nextReviewDue: '2026-04-11', checkedOn: C },
+  'ca-hlbc-hyperthyroid': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/hyperthyroidism', dateText: 'Current as of: March 1, 2023', checkedOn: C },
 };
 
 type Tiles = Partial<Record<TileKey, TileItem[]>>;
@@ -1493,6 +1505,125 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       meds: [it('ca-ms-medicines', 'Medicines may help lower attacks', 'ca-hlbc-ms', ['MS has no cure, but medicines may help lower the number of attacks and make them less severe.'])],
     },
   },
+  // Batch 11 (read 2026-11-18): inflammatory bowel disease, gallstones, stomach ulcer, iron deficiency anemia, overactive thyroid. Gaps: IBD US lines come from the NIDDK Crohn's disease page only; HealthLink BC blocks reading its Crohn's and stomach ulcer pages; no US overactive thyroid page could be read. All new sources are in PENDING_SOURCES until the verify script says OK.
+  ibd: {
+    US: {
+      activity: [
+        it('us-ibd-diary', 'Keep a food diary', 'us-niddk-crohn-eat', ['Your doctor may suggest keeping a food diary to help identify foods that seem to make your symptoms worse.']),
+        it('us-ibd-talk', 'Talk with your doctor about foods related to your symptoms', 'us-niddk-crohn-eat', ['Talk with your doctor about any foods that seem to be related to your symptoms.']),
+        it('us-ibd-fruit', 'Eating more fruits and vegetables', 'us-niddk-crohn-eat', ["Your doctor may recommend eating more fruits and vegetables for Crohn's disease."]),
+      ],
+      meds: [it('us-ibd-supplements', 'Dietary supplements', 'us-niddk-crohn-eat', ["Your doctor may also recommend dietary supplements if your body doesn't absorb enough nutrients."])],
+    },
+    GB: {
+      activity: [it('gb-ibd-support', 'Support from other people with IBD', 'uk-ibd', ['You may find it helpful to get support from other people with IBD, either at a local support group or online.'])],
+    },
+    CA: {},
+  },
+  gallstones: {
+    US: {
+      avoid: [it('us-gall-fats', 'Fats found in desserts and fried foods', 'us-niddk-gall-eat', ['Avoid unhealthy fats, like those often found in desserts and fried foods.'])],
+      moderate: [it('us-gall-carbs', 'Refined carbohydrates and sugar', 'us-niddk-gall-eat', ['Eat fewer refined carbohydrates and less sugar.'])],
+      activity: [
+        it('us-gall-oils', 'Fish oil and olive oil', 'us-niddk-gall-eat', ['Eat healthy fats, like fish oil and olive oil, to help your gallbladder contract and empty on a regular basis.']),
+        it('us-gall-talk', 'Talk with your health care professional before changes to your eating plan', 'us-niddk-gall-eat', ['Talk with your health care professional before you make any changes to your eating plan.']),
+      ],
+    },
+    GB: {
+      avoid: [it('gb-gall-foods', 'Foods that cause symptoms', 'uk-gallstones', ['want to avoid foods that cause symptoms'])],
+      moderate: [it('gb-gall-lowfat', 'Low-fat diet', 'uk-gallstones', ['be advised to eat a low-fat diet'])],
+      meds: [
+        it('gb-gall-pain', 'Painkillers such as paracetamol and ibuprofen', 'uk-gallstones', ['take painkillers, such as paracetamol and ibuprofen']),
+        it('gb-gall-stronger', 'Stronger painkillers for severe pain', 'uk-gallstones', ['be offered stronger painkillers for severe pain if you need it']),
+      ],
+    },
+    CA: {
+      avoid: [it('ca-gall-fatty', 'Foods that cause symptoms, especially fatty foods', 'ca-hlbc-gallstones', ['Avoid foods that cause symptoms, especially fatty foods.'])],
+      activity: [
+        it('ca-gall-meals', 'Eat regular, balanced meals', 'ca-hlbc-gallstones', ['Eat regular, balanced meals.']),
+        it('ca-gall-rest', 'Rest until you feel better', 'ca-hlbc-gallstones', ['Rest until you feel better.']),
+        it('ca-gall-weight', 'Lose weight slowly and sensibly', 'ca-hlbc-gallstones', ['If you need to lose weight, do so slowly and sensibly.']),
+      ],
+      meds: [it('ca-gall-prescription', 'Prescription medicine for pain', 'ca-hlbc-gallstones', ['If the doctor gave you a prescription medicine for pain, take it as prescribed.'])],
+    },
+  },
+  'stomach-ulcer': {
+    US: {
+      activity: [it('us-ulcer-smoke', 'Quitting smoking', 'us-niddk-ulcer', ['If you smoke, quitting smoking can lower your risk for peptic ulcers.'])],
+      meds: [
+        it('us-ulcer-doses', 'Take all doses exactly as your doctor prescribes', 'us-niddk-ulcer', ['If you are given medicines, take all doses exactly as your doctor prescribes.']),
+        it('us-ulcer-early', 'Stop taking your medicine early', 'us-niddk-ulcer', ['If you stop taking your medicine early, some bacteria may survive and persist in your stomach.']),
+        it('us-ulcer-nsaids', 'NSAIDs', 'us-niddk-ulcer', ['If you have a peptic ulcer caused by taking NSAIDs, your doctor may recommend changing your medicines.']),
+      ],
+    },
+    GB: {
+      moderate: [
+        it('gb-ulcer-triggers', 'Food or drink that triggers your symptoms', 'uk-ulcer', ['do not have food or drink that triggers your symptoms, which can include fatty or spicy foods, coffee and chocolate']),
+        it('gb-ulcer-alcohol', 'Too much alcohol', 'uk-ulcer', ['do not drink too much alcohol']),
+      ],
+      activity: [
+        it('gb-ulcer-meals', 'Eat smaller meals', 'uk-ulcer', ['eat smaller meals']),
+        it('gb-ulcer-evening', 'Eat your evening meal before going to bed', 'uk-ulcer', ['eat your evening meal 3 to 4 hours before going to bed']),
+        it('gb-ulcer-smoke', 'Do not smoke', 'uk-ulcer', ['do not smoke']),
+        it('gb-ulcer-stress', 'Manage stress', 'uk-ulcer', ['take steps to manage stress']),
+      ],
+      meds: [it('gb-ulcer-acid', 'Medicines to reduce stomach acid', 'uk-ulcer', ['medicines to reduce the amount of acid in your stomach, such as proton pump inhibitors'])],
+    },
+    CA: {},
+  },
+  'iron-anemia': {
+    US: {
+      activity: [it('us-iron-eating', 'Eating habits for everyone', 'us-nhlbi-anemia', ['Healthy eating habits are essential for everyone.'])],
+      meds: [it('us-iron-marrow', 'Medicines to help your bone marrow make more red blood cells', 'us-nhlbi-anemia', ['Your doctor may prescribe medicines to help your bone marrow make more red blood cells.'])],
+    },
+    GB: {
+      moderate: [it('gb-iron-limit', 'Large amounts of these foods and drinks', 'uk-iron', ['Large amounts of these foods and drinks make it harder for your body to absorb iron.'])],
+      activity: [
+        it('gb-iron-food', 'Taking the tablets with or soon after food', 'uk-iron', ['Try taking the tablets with or soon after food to reduce the chance of side effects.']),
+        it('gb-iron-juice', 'Orange juice after a tablet', 'uk-iron', ["Drinking orange juice after you've taken a tablet may help your body absorb the iron."]),
+      ],
+      meds: [
+        it('gb-iron-keep', 'Keep taking the tablets', 'uk-iron', ["It's important to keep taking the tablets, even if you get side effects."]),
+        it('gb-iron-children', 'Iron supplement tablets out of the reach of children', 'uk-iron', ['Keep iron supplement tablets out of the reach of children.']),
+      ],
+    },
+    CA: {
+      activity: [
+        it('ca-iron-steam', 'Steam vegetables to keep their iron content', 'ca-hlbc-iron', ['Steam vegetables to help them keep their iron content.']),
+        it('ca-iron-vitc', 'Vitamin C or orange juice with your pills', 'ca-hlbc-iron', ['Take vitamin C (ascorbic acid) or drink orange juice with your pills.']),
+        it('ca-iron-stomach', 'Take iron on an empty stomach', 'ca-hlbc-iron', ['Take iron on an empty stomach, if you can.']),
+      ],
+      meds: [
+        it('ca-iron-doctor', 'Do not take iron pills without checking with your doctor', 'ca-hlbc-iron', ['Do not take iron pills without checking with your doctor.']),
+        it('ca-iron-long', 'Take iron pills for as long as your doctor tells you', 'ca-hlbc-iron', ['Take iron pills for as long as your doctor tells you to.']),
+        it('ca-iron-antacids', 'Antacids or tetracycline', 'ca-hlbc-iron', ["Don't take your iron pills within 2 hours of taking antacids or tetracycline."]),
+        it('ca-iron-children', 'Keep iron pills out of the reach of children', 'ca-hlbc-iron', ['Keep iron pills out of the reach of children.']),
+      ],
+    },
+  },
+  'overactive-thyroid': {
+    US: {},
+    GB: {
+      meds: [it('gb-thy-medicine', 'Medicine that stops your thyroid producing too much of the thyroid hormones', 'uk-hyperthyroid', ['medicine that stops your thyroid producing too much of the thyroid hormones'])],
+    },
+    CA: {
+      activity: [
+        it('ca-thy-kelp', 'Do not eat kelp', 'ca-hlbc-hyperthyroid', ['Do not eat kelp.', 'Kelp is high in iodine, which can make hyperthyroidism worse.']),
+        it('ca-thy-salt', 'Iodized salt, bread and seafood', 'ca-hlbc-hyperthyroid', ['You can use iodized salt and eat bread and seafood.']),
+        it('ca-thy-calcium', 'Get enough calcium', 'ca-hlbc-hyperthyroid', ['Make sure you get enough calcium.']),
+        it('ca-thy-smoke', 'Do not smoke', 'ca-hlbc-hyperthyroid', ['Do not smoke.']),
+      ],
+      home: [
+        it('ca-thy-eyes', 'Artificial tears, eye drops, and sunglasses', 'ca-hlbc-hyperthyroid', ['Use artificial tears, eye drops, and sunglasses to protect your eyes from dryness, wind, and sun.']),
+        it('ca-thy-relax', 'Biofeedback, guided imagery, meditation', 'ca-hlbc-hyperthyroid', ['Learn to use biofeedback, guided imagery, meditation, or other methods to relax.']),
+      ],
+      meds: [
+        it('ca-thy-prescribed', 'Take your medicines exactly as prescribed', 'ca-hlbc-hyperthyroid', ['Take your medicines exactly as prescribed.']),
+        it('ca-thy-time', 'Thyroid medicine at the same time each day', 'ca-hlbc-hyperthyroid', ['You need to take the thyroid medicine at the same time each day.']),
+        it('ca-thy-anti', 'Antithyroid medicine', 'ca-hlbc-hyperthyroid', ['Antithyroid medicine controls hyperthyroidism in many people.']),
+      ],
+    },
+  },
 };
 
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
@@ -1527,7 +1658,7 @@ export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !
 export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
 export const PENDING_SOURCES: string[] = [
-  'us-ninds-epilepsy', 'uk-epilepsy', 'ca-hlbc-epilepsy', 'us-niddk-celiac', 'ca-hlbc-celiac', 'us-niams-psoriasis', 'uk-psoriasis', 'ca-hlbc-psoriasis', 'us-niams-eczema', 'uk-eczema', 'us-ninds-ms', 'uk-ms', 'ca-hlbc-ms',
+  'us-niddk-crohn-eat', 'uk-ibd', 'us-niddk-gall-eat', 'uk-gallstones', 'ca-hlbc-gallstones', 'us-niddk-ulcer', 'uk-ulcer', 'us-nhlbi-anemia', 'uk-iron', 'ca-hlbc-iron', 'uk-hyperthyroid', 'ca-hlbc-hyperthyroid',
 ];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);

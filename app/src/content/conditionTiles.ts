@@ -180,9 +180,9 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'uk-gastritis': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/gastritis/', dateText: 'Page last reviewed: 05 August 2026', nextReviewDue: '2029-08-05', checkedOn: C },
   'ca-hlbc-gastritis': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gastritis', dateText: 'Current as of: March 22, 2023', checkedOn: C },
   'uk-lupus': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/lupus/', dateText: 'Page last reviewed: 19 July 2023', nextReviewDue: '2026-07-19', checkedOn: C },
-  'us-niams-lupus': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/lupus/diagnosis-treatment-and-steps-to-take', dateText: null, checkedOn: C },
+  'us-niams-lupus': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/lupus/diagnosis-treatment-and-steps-to-take', dateText: 'Last Reviewed October 2022', checkedOn: C },
   'uk-varicose': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/varicose-veins/', dateText: 'Page last reviewed: 01 July 2024', nextReviewDue: '2027-07-01', checkedOn: C },
-  'uk-pancreatitis': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/pancreatitis/', dateText: 'Page last reviewed: 11 March 2026', nextReviewDue: '2029-03-11', checkedOn: C },
+  'uk-pancreatitis': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/chronic-pancreatitis/', dateText: 'Page last reviewed: 20 October 2025', nextReviewDue: '2028-10-20', checkedOn: C },
   'us-niddk-pancreatitis': { country: 'US', publisher: NIDDK, type: 'government', url: 'https://www.niddk.nih.gov/health-information/digestive-diseases/pancreatitis/eating-diet-nutrition', dateText: 'Last Reviewed November 2017', checkedOn: C },
   'uk-as': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/ankylosing-spondylitis/', dateText: 'Page last reviewed: 05 January 2023', nextReviewDue: '2026-01-05', checkedOn: C },
 };
@@ -1904,7 +1904,7 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       meds: [it('ca-ipf-oxygen', 'Medicines and oxygen', 'ca-hlbc-pulmfib', ['Treatment includes medicines and oxygen to ease shortness of breath.'])],
     },
   },
-  // Batch 14 (read 2026-11-18): gastritis, lupus, leg vein problems (venous insufficiency), chronic pancreatitis, ankylosing spondylitis. Substituted for OCD and schizophrenia (NHS pages for both load as menus without usable lines). Gaps: venous insufficiency has only the NHS varicose veins page (no US or Canadian page readable); NHS pancreatitis page covers pancreatitis in general; ankylosing spondylitis has one UK line; HealthLink BC lupus, pancreatitis, venous and ankylosing spondylitis pages gave nothing usable. All new sources are in PENDING_SOURCES until the verify script says OK.
+  // Batch 14 (read 2026-11-18): gastritis, lupus, leg vein problems (venous insufficiency), chronic pancreatitis, ankylosing spondylitis. Substituted for OCD and schizophrenia (NHS pages for both load as menus without usable lines). Gaps: venous insufficiency has only the NHS varicose veins page (no US or Canadian page readable); UK pancreatitis uses the NHS chronic pancreatitis page; ankylosing spondylitis has one UK line; HealthLink BC lupus, pancreatitis, venous and ankylosing spondylitis pages gave nothing usable. All new sources are in PENDING_SOURCES until the verify script says OK.
   gastritis: {
     US: {},
     GB: {
@@ -1979,8 +1979,11 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       activity: [it('us-pan-fluids', 'Drink plenty of fluids', 'us-niddk-pancreatitis', ['If you have pancreatitis, drink plenty of fluids and limit caffeine.'])],
     },
     GB: {
-      moderate: [it('gb-pan-alcohol', 'Drink less alcohol, or not drink any alcohol at all', 'uk-pancreatitis', ['drink less alcohol, or not drink any alcohol at all'])],
-      activity: [it('gb-pan-smoke', 'Stop smoking', 'uk-pancreatitis', ['stop smoking'])],
+      activity: [
+        it('gb-pan-both', 'Not drinking alcohol and not smoking', 'uk-pancreatitis', ['not drinking alcohol and not smoking can help slow it down and reduce the risk of getting other problems']),
+        it('gb-pan-smoke', 'If you smoke, giving up can help', 'uk-pancreatitis', ['if you smoke, giving up can help slow down the damage to the pancreas']),
+        it('gb-pan-diet', 'Eat a balanced diet', 'uk-pancreatitis', ['eat a healthy, balanced diet']),
+      ],
     },
     CA: {},
   },

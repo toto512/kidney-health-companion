@@ -5,8 +5,8 @@
 import { TILES, TILE_SOURCES } from '../src/content/conditionTiles.ts';
 
 const flat = (s) => s.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ')
-  .replace(/&nbsp;|&#160;/g, ' ').replace(/&amp;/g, '&').replace(/&#0?39;|&apos;|&rsquo;|’/g, "'").replace(/&quot;|“|”/g, '"')
-  .replace(/&ndash;|&mdash;|–|—/g, '-').replace(/&frac12;/g, '½').replace(/\s+/g, ' ').trim().toLowerCase();
+  .replace(/&nbsp;|&#160;/g, ' ').replace(/&amp;/g, '&').replace(/&#0?39;|&#x27;|&#x2019;|&#8217;|&apos;|&rsquo;|’/g, "'").replace(/&quot;|“|”/g, '"')
+  .replace(/&ndash;|&mdash;|–|—/g, '-').replace(/&frac12;/g, '½').replace(/\s+/g, ' ').replace(/ ([.,;:!?)])/g, '$1').replace(/\( /g, '(').trim().toLowerCase();
 
 const pages = new Map();
 async function page(id) {
@@ -14,7 +14,7 @@ async function page(id) {
   let res;
   try {
     const r = await fetch(TILE_SOURCES[id].url, { headers: { 'user-agent': 'health-companion-tile-check/1.0' }, redirect: 'follow' });
-    res = r.ok ? flat(await r.text()) : `HTTP ${r.status}`;
+    res = r.ok ? (/pdf/i.test(r.headers.get('content-type') ?? '') || /\.pdf($|\?)/i.test(TILE_SOURCES[id].url) ? { error: 'PDF, text cannot be read by this script: open the PDF and search for the line' } : flat(await r.text())) : `HTTP ${r.status}`;
     if (!r.ok) res = { error: res };
   } catch (e) {
     res = { error: String(e.message ?? e) };

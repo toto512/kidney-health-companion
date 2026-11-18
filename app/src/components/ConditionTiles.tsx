@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { Body } from '@/components/ui';
-import { TILE_KEYS, TILE_SOURCES, tileItems, type FoodGroup, type TileItem, type TileKey } from '@/content/conditionTiles';
+import { TILE_KEYS, TILE_SOURCES, tileItems, visibleGroups, type FoodGroup, type TileItem, type TileKey } from '@/content/conditionTiles';
 import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
 import { loadMyMeds } from '@/lib/userMedications';
@@ -111,7 +111,7 @@ function Detail({ item, tile, conditionLabel, accent, mine, onBack }: { item: Ti
       <Pressable accessibilityRole="link" onPress={() => Linking.openURL(s.url)} style={{ minHeight: 56, justifyContent: 'center' }}>
         <Text style={{ fontSize: font.label, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>{t('cond.openPage')}</Text>
       </Pressable>
-      {item.foodGroups?.length ? <FoodGroups groups={item.foodGroups} accent={accent} /> : null}
+      {visibleGroups(item).length ? <FoodGroups groups={visibleGroups(item)} accent={accent} /> : null}
       <Text style={{ fontSize: font.body, color: color.muted }}>{t('tiles.askDoctor')}</Text>
     </View>
   );

@@ -105,7 +105,7 @@ describe('batch 1 coverage', () => {
 describe('unverified items', () => {
   it('hidden ids exist, and none is returned by tileItems', () => {
     for (const id of UNVERIFIED) {
-      expect(all.some((a) => a.item.id === id), id).toBe(true);
+      expect(all.some((a) => a.item.id === id.split('@')[0]), id).toBe(true);
       for (const { cond, country, tile } of all) expect(tileItems(cond, country as 'US', tile as 'avoid').some((i) => i.id === id)).toBe(false);
     }
   });

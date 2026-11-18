@@ -55,13 +55,13 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
         ]),
         it('us-ckd-phosphorus', 'Phosphorus', 'us-niddk-phosphorus-tips', ['Most people with CKD need to eat foods with less phosphorus than they are used to eating.'], undefined, [
           { src: 'us-niddk-phosphorus-tips', quote: 'Phosphorus is found naturally in foods rich in protein, such as meat, poultry, fish, nuts, beans, and dairy products.', foods: ['meat', 'poultry', 'fish', 'nuts', 'beans', 'dairy products'] },
-          { src: 'us-cdc-diabetes-kidney-food', quote: 'Meat, dairy, beans, nuts, whole-grain bread, and dark-colored sodas are high in phosphorus.', foods: ['meat', 'dairy', 'beans', 'nuts', 'whole-grain bread', 'dark-colored sodas'] },
-          { src: 'us-niddk-ckd-children-nutrition', quote: 'Foods higher in phosphorus include', list: true, foods: ['beans, lentils, nuts', 'bran cereals, oatmeal', 'cola, some bottled iced tea', 'dairy foods (milk, cheese, yogurt)', 'ice cream', 'processed meats (hot dogs, canned meat)'] },
         ]),
         it('us-ckd-fats', 'Saturated and trans fats', 'us-niddk-ckd-eat', ['Limit saturated and trans fats.']),
         it('us-ckd-alcohol', 'Alcohol', 'us-niddk-ckd-eat', ['Limit alcohol.']),
         it('us-ckd-meat-dairy', 'Meat and dairy foods', 'us-niddk-ckd-eat', ['limit how much meat and dairy foods you consume'], undefined, [
           { src: 'us-niddk-potassium-tips', quote: 'Eat smaller portions of foods high in protein at meals and for snacks: meat, poultry, fish, beans, dairy, and nuts.', foods: ['meat', 'poultry', 'fish', 'beans', 'dairy', 'nuts'] },
+          { src: 'us-cdc-diabetes-kidney-food', quote: 'Meat, dairy, beans, nuts, whole-grain bread, and dark-colored sodas are high in phosphorus.', foods: ['meat', 'dairy', 'beans', 'nuts', 'whole-grain bread', 'dark-colored sodas'] },
+          { src: 'us-niddk-ckd-children-nutrition', quote: 'Foods higher in phosphorus include', list: true, foods: ['beans, lentils, nuts', 'bran cereals, oatmeal', 'cola, some bottled iced tea', 'dairy foods (milk, cheese, yogurt)', 'ice cream', 'processed meats (hot dogs, canned meat)'] },
         ]),
       ],
       activity: [
@@ -224,8 +224,12 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
 };
 
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
-export const UNVERIFIED: string[] = ['gb-hbp-weight'];
+// An entry is an item id, or "itemId@sourceId" to hide only that item's food group from one source.
+// The two NIDDK PDFs cannot be read by the script: the lines were read by hand-run page fetch on 2026-11-18 and stay hidden until James confirms them in the PDF.
+export const UNVERIFIED: string[] = ['us-ckd-phosphorus', 'us-ckd-meat-dairy@us-niddk-potassium-tips'];
 const shown = (i: TileItem) => !UNVERIFIED.includes(i.id);
+export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`);
+export const visibleGroups = (i: TileItem) => (i.foodGroups ?? []).filter((g) => groupShown(i.id, g));
 
 // True once a condition has been checked for the country, even when every tile came out empty (the tiles then say so).
 export const hasTiles = (conditionId: string, country: Country) => !!TILES[conditionId]?.[country];

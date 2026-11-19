@@ -60,6 +60,7 @@ export function validateTask(i: TaskInput): { ok: true; value: TaskValid } | { o
   if (title.length > MAX_TITLE) return { ok: false, error: 'Use 60 letters or fewer for the task.' };
   return { ok: true, value: { template_key: null, title, time_of_day: i.time, days: i.days } };
 }
+export const slotsLeft = (count: number): number => Math.max(0, MAX_TASKS - count);
 export const canAddMore = (count: number): boolean => count < MAX_TASKS;
 
 // Tasks due on a date, in time-of-day order (then the order they were added).

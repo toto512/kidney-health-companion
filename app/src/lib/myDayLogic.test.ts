@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { DICTS } from '../i18n/strings';
 import { LANGUAGES, translate } from '../i18n/core';
 import { trError } from '../i18n/labels';
-import { canAddMore, dayBit, DAY_BITS, daysSummary, dueTasks, EVERY_DAY, groupByTime, isDueOn, isValidDays, localDateKey, MAX_TASKS, MAX_TITLE, progress, Task, TEMPLATES, TIMES, toggleDay, validateTask, weekdayName } from './myDayLogic';
+import { canAddMore, dayBit, DAY_BITS, daysSummary, dueTasks, EVERY_DAY, groupByTime, isDueOn, isValidDays, localDateKey, MAX_TASKS, MAX_TITLE, progress, slotsLeft, Task, TEMPLATES, TIMES, toggleDay, validateTask, weekdayName } from './myDayLogic';
 
 const mon = new Date(2024, 0, 1); // Monday 1 January 2024
 const sun = new Date(2024, 0, 7);
@@ -99,6 +99,7 @@ describe('validateTask', () => {
   it('the list holds at most 20 tasks', () => {
     expect(canAddMore(MAX_TASKS - 1)).toBe(true);
     expect(canAddMore(MAX_TASKS)).toBe(false);
+    expect([slotsLeft(0), slotsLeft(18), slotsLeft(MAX_TASKS), slotsLeft(25)]).toEqual([20, 2, 0, 0]);
   });
 });
 

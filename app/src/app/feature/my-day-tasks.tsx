@@ -1,13 +1,13 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { ScrollView, Text } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { DayPicker } from '@/components/DayPicker';
 import { BigButton, Body, DisclaimerFooter, Field, H1, H2, Panel, Screen, Segmented } from '@/components/ui';
 import { templateName, timeLabel, trError } from '@/i18n/labels';
 import { useI18n } from '@/i18n/I18nProvider';
 import { addTask, deleteTask, loadTasks, updateTask } from '@/lib/myDay';
-import { canAddMore, daysSummary, EVERY_DAY, MAX_TASKS, MAX_TITLE, Task, TEMPLATES, TemplateKey, TimeOfDay, TIMES, validateTask } from '@/lib/myDayLogic';
-import { font, useColors } from '@/theme/tokens';
+import { canAddMore, daysSummary, EVERY_DAY, MAX_TASKS, MAX_TITLE, slotsLeft, Task, TEMPLATES, TemplateKey, TimeOfDay, TIMES, validateTask } from '@/lib/myDayLogic';
+import { font, MIN_TOUCH, useColors } from '@/theme/tokens';
 
 type Form = { id: string | null; template: string | null; title: string; time: TimeOfDay; days: number };
 
@@ -17,13 +17,14 @@ export default function MyDayTasks() {
   const color = useColors();
   const [list, setList] = useState<Task[] | null>(null);
   const [form, setForm] = useState<Form | null>(null);
+  const [pick, setPick] = useState<{ time: TimeOfDay; keys: TemplateKey[]; days: number } | null>(null);
   const [confirmDel, setConfirmDel] = useState<string | null>(null);
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
   // "Add" on a My day heading arrives with that time of day: open the own-task form with it chosen.
   const { add } = useLocalSearchParams<{ add?: string }>();
   useEffect(() => {
-    if (add && (TIMES as readonly string[]).includes(add)) setForm({ id: null, template: null, title: '', time: add as TimeOfDay, days: EVERY_DAY });
+    if (add && (TIMES as readonly string[]).includes(add)) setPick({ time: add as TimeOfDay, keys: [], days: EVERY_DAY });
   }, [add]);
 
   const reload = useCallback(async () => {
@@ -54,6 +55,28 @@ export default function MyDayTasks() {
     setForm(null);
     await reload();
   }
+  // Adds every ticked menu task with the shared time and days. Stops at the first real failure and keeps what was saved.
+  async function savePick() {
+    if (!pick) return;
+    setErr('');
+    if (pick.keys.length === 0) { setErr(t('myday.pickNone')); return; }
+    setBusy(true);
+    let failure = '';
+    const added: TemplateKey[] = [];
+    for (const key of pick.keys) {
+      const r = validateTask({ template: key, title: '', time: pick.time, days: pick.days });
+      if (!r.ok) { failure = trError(t, r.error); break; }
+      const res = await addTask(r.value);
+      if (res === 'ok' || res === 'duplicate') { added.push(key); continue; }
+      failure = res === 'limit' ? t('myday.errLimit', { max: MAX_TASKS }) : t('myday.errSave');
+      break;
+    }
+    setBusy(false);
+    await reload();
+    if (failure) { setPick({ ...pick, keys: pick.keys.filter((k) => !added.includes(k)) }); setErr(failure); return; }
+    setPick(null);
+    goBack();
+  }
   async function remove(id: string) {
     setBusy(true);
     const ok = await deleteTask(id);
@@ -62,6 +85,7 @@ export default function MyDayTasks() {
     await reload();
   }
   const goBack = () => (router.canGoBack() ? router.back() : router.replace('/feature/my-day'));
+  const room = list ? slotsLeft(list.length) : 0;
   const menu = list ? TEMPLATES.filter((tp) => !list.some((x) => x.template_key === tp.key)) : [];
 
   return (
@@ -71,7 +95,7 @@ export default function MyDayTasks() {
         <Body>{t('myday.editIntro', { max: MAX_TASKS })}</Body>
         {err ? <Text accessibilityRole="alert" style={{ color: color.danger, fontSize: font.body, fontWeight: '600' }}>{err}</Text> : null}
         {list === null && !err ? <Body>{t('emergency.loading')}</Body> : null}
-        {list && list.length === 0 && !form ? <Body>{t('myday.empty')}</Body> : null}
+        {list && list.length === 0 && !form && !pick ? <Body>{t('myday.empty')}</Body> : null}
 
         {list?.map((x) => (
           <Panel key={x.id}>
@@ -92,6 +116,33 @@ export default function MyDayTasks() {
           </Panel>
         ))}
 
+        {pick && list ? (
+          <Panel>
+            <H2>{t('myday.pickTitle', { time: timeLabel(t, pick.time) })}</H2>
+            <Body>{t('myday.pickIntro')}</Body>
+            <Body>{t('myday.pickSlots', { n: room })}</Body>
+            {room > 0 ? <BigButton variant="secondary" label={t('myday.addOwn')} onPress={() => { setErr(''); setForm({ id: null, template: null, title: '', time: pick.time, days: pick.days }); setPick(null); }} /> : <Body tone="danger">{t('myday.pickFull')}</Body>}
+            {menu.length === 0 ? <Body>{t('myday.pickAllAdded')}</Body> : null}
+            {menu.map((tp) => {
+              const on = pick.keys.includes(tp.key);
+              const blocked = !on && pick.keys.length >= room;
+              return (
+                <Pressable key={tp.key} accessibilityRole="checkbox" accessibilityState={{ checked: on, disabled: blocked }} accessibilityLabel={templateName(t, tp.key)} disabled={blocked}
+                  onPress={() => { setErr(''); setPick({ ...pick, keys: on ? pick.keys.filter((k) => k !== tp.key) : [...pick.keys, tp.key] }); }}
+                  style={{ minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 16, opacity: blocked ? 0.4 : 1 }}>
+                  <View accessible={false} style={{ width: 40, height: 40, borderRadius: 10, borderWidth: 3, borderColor: color.primary, backgroundColor: on ? color.primary : color.bg, alignItems: 'center', justifyContent: 'center' }}>
+                    {on ? <Text style={{ color: color.primaryText, fontSize: 26, fontWeight: '800' }}>✓</Text> : null}
+                  </View>
+                  <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: color.text }}>{templateName(t, tp.key)}</Text>
+                </Pressable>
+              );
+            })}
+            <DayPicker label={t('myday.daysLabel')} value={pick.days} onChange={(v) => { setPick({ ...pick, days: v }); setErr(''); }} />
+            <BigButton label={busy ? t('myday.saving') : t('myday.pickSave')} disabled={busy} onPress={() => void savePick()} />
+            <BigButton variant="secondary" label={t('myday.cancel')} onPress={() => { setPick(null); setErr(''); }} />
+          </Panel>
+        ) : null}
+
         {form ? (
           <Panel>
             <H2>{form.id ? t('myday.formChange') : t('myday.formAdd')}</H2>
@@ -105,7 +156,7 @@ export default function MyDayTasks() {
           </Panel>
         ) : null}
 
-        {!form && list && canAddMore(list.length) ? (
+        {!form && !pick && list && canAddMore(list.length) ? (
           <>
             <BigButton label={t('myday.addOwn')} onPress={() => { setErr(''); setForm({ id: null, template: null, title: '', time: 'morning', days: EVERY_DAY }); }} />
             {menu.length ? <H2>{t('myday.menuTitle')}</H2> : <Body>{t('myday.menuAllAdded')}</Body>}
@@ -114,7 +165,7 @@ export default function MyDayTasks() {
             ))}
           </>
         ) : null}
-        {list && !canAddMore(list.length) && !form ? <Body>{t('myday.full', { max: MAX_TASKS })}</Body> : null}
+        {list && !canAddMore(list.length) && !form && !pick ? <Body>{t('myday.full', { max: MAX_TASKS })}</Body> : null}
 
         <BigButton variant="secondary" label={t('myday.back')} onPress={goBack} />
         <DisclaimerFooter />

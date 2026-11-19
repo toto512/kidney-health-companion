@@ -32,11 +32,22 @@ const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
 const finalUrls = new Map();
 const redirects = [];
 const pages = new Map();
+// Same headers as the plain browser-style request that returned HTTP 200 on 2026-11-19. A 503 or 429 is often a temporary overload,
+// so retry twice with a pause before the line is reported as MANUAL.
+async function fetchRetry(url) {
+  let r;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    r = await fetch(url, { headers: { 'user-agent': UA, accept: 'text/html,application/xhtml+xml', 'accept-language': 'en' }, redirect: 'follow' });
+    if (r.status !== 503 && r.status !== 429) return r;
+    if (attempt < 3) await new Promise((done) => setTimeout(done, attempt * 4000));
+  }
+  return r;
+}
 async function page(id) {
   if (pages.has(id)) return pages.get(id);
   let res;
   try {
-    const r = await fetch(TILE_SOURCES[id].url, { headers: { 'user-agent': UA, accept: 'text/html,application/xhtml+xml', 'accept-language': 'en' }, redirect: 'follow' });
+    const r = await fetchRetry(TILE_SOURCES[id].url);
     finalUrls.set(id, r.url);
     const path = (u) => new URL(u).pathname.replace(/\/+$/, '');
     if (r.ok && path(r.url) !== path(TILE_SOURCES[id].url)) { redirects.push(`${id}: ${TILE_SOURCES[id].url} -> ${r.url}`); res = { error: `REDIRECTED to ${r.url}: the stored address no longer shows this page, re-source it` }; }

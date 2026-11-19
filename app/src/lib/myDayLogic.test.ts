@@ -1,8 +1,8 @@
 // @ts-ignore node types are not installed in this Expo project; vitest runs on node
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { DICTS } from '../i18n/strings';
-import { LANGUAGES } from '../i18n/core';
+import { LANGUAGES, translate } from '../i18n/core';
 import { trError } from '../i18n/labels';
 import { canAddMore, dayBit, DAY_BITS, daysSummary, dueTasks, EVERY_DAY, groupByTime, isDueOn, isValidDays, localDateKey, MAX_TASKS, MAX_TITLE, progress, Task, TEMPLATES, TIMES, toggleDay, validateTask, weekdayName } from './myDayLogic';
 
@@ -128,5 +128,26 @@ describe('weekday names follow the language', () => {
   it('summary says every day or lists the days', () => {
     expect(daysSummary(EVERY_DAY, 'en', 'every day')).toBe('every day');
     expect(daysSummary(1 | 4, 'en', 'every day')).toBe('Mon, Wed');
+  });
+});
+
+describe('every My day word resolves, on every screen, in every language', () => {
+  const walk = (dir: URL): string[] => readdirSync(dir, { withFileTypes: true }).flatMap((e: { name: string; isDirectory(): boolean }) =>
+    e.isDirectory() ? walk(new URL(`${e.name}/`, dir)) : /\.(ts|tsx)$/.test(e.name) && !/\.test\./.test(e.name) ? [new URL(e.name, dir).pathname] : []);
+  const used = new Set<string>();
+  for (const f of walk(new URL('../', import.meta.url))) {
+    for (const m of readFileSync(f, 'utf8').matchAll(/['"`]((?:err\.)?myday\.[A-Za-z.-]*[A-Za-z])['"`]/g)) used.add(m[1]);
+  }
+  for (const t of TEMPLATES) used.add(`myday.tpl.${t.key}`);
+  for (const x of TIMES) used.add(`myday.time.${x}`);
+  it('finds the keys the screens use (guards the scan itself)', () => {
+    for (const k of ['myday.title', 'myday.cardNone', 'myday.formAdd', 'myday.allDays', 'myday.time.morning', 'myday.tpl.blood-pressure']) expect(used.has(k), k).toBe(true);
+  });
+  it('each key has real text in all four languages, not the key itself', () => {
+    for (const l of LANGUAGES) for (const k of used) {
+      const v = DICTS[l.code][k];
+      expect(v, `${l.code} ${k}`).toBeTruthy();
+      expect(translate(DICTS, l.code, k), `${l.code} ${k}`).not.toBe(k);
+    }
   });
 });

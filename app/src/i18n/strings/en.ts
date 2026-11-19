@@ -659,6 +659,7 @@ export const en = {
   "myday.save": "Save",
   "myday.cancel": "Cancel",
   "myday.addOwn": "Add my own task",
+  "myday.addShort": "Add",
   "myday.menuTitle": "Or choose from the list",
   "myday.menuAllAdded": "You have added everything on the list.",
   "myday.full": "Your list is full ({max} tasks). Remove one to add another.",

@@ -7,7 +7,7 @@ import { templateName, timeLabel } from '@/i18n/labels';
 import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
 import { loadDone, loadTasks, setDone } from '@/lib/myDay';
-import { groupByTime, localDateKey, progress, Task, TemplateLink, templateFor } from '@/lib/myDayLogic';
+import { canAddMore, groupByTime, localDateKey, progress, Task, TemplateLink, templateFor, TIMES } from '@/lib/myDayLogic';
 import { font, MIN_TOUCH, useColors } from '@/theme/tokens';
 
 // The tool a row can open. The words are the same ones the Today cards use.
@@ -79,12 +79,20 @@ export default function MyDay() {
         {p && p.total > 0 ? <Text accessibilityLiveRegion="polite" style={{ fontSize: font.h2, fontWeight: '800', color: color.text }}>{t('myday.progress', { done: p.done, total: p.total })}</Text> : null}
         {tasks && tasks.length === 0 ? <Body>{t('myday.empty')}</Body> : null}
         {tasks && tasks.length > 0 && p?.total === 0 ? <Body>{t('myday.noneToday')}</Body> : null}
-        {groups.map((g) => (
-          <View key={g.time} style={{ gap: 12 }}>
-            <H2>{timeLabel(t, g.time)}</H2>
-            {g.tasks.map(row)}
+        {tasks ? TIMES.map((time) => (
+          <View key={time} style={{ gap: 12 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+              <View style={{ flexShrink: 1 }}><H2>{timeLabel(t, time)}</H2></View>
+              {canAddMore(tasks.length) ? (
+                <Pressable accessibilityRole="button" accessibilityLabel={`${t('myday.addOwn')}: ${timeLabel(t, time)}`} onPress={() => router.push({ pathname: '/feature/my-day-tasks', params: { add: time } })}
+                  style={{ minHeight: MIN_TOUCH, minWidth: 96, paddingHorizontal: 16, borderRadius: 999, borderWidth: 2, borderColor: color.primary, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ fontSize: font.label, fontWeight: '700', color: color.primary }}>{t('myday.addShort')}</Text>
+                </Pressable>
+              ) : null}
+            </View>
+            {(groups.find((g) => g.time === time)?.tasks ?? []).map(row)}
           </View>
-        ))}
+        )) : null}
         {tasks ? <BigButton variant={tasks.length === 0 ? undefined : 'secondary'} label={tasks.length === 0 ? t('myday.start') : t('myday.change')} onPress={() => router.push('/feature/my-day-tasks')} /> : null}
         <Body>{t('myday.note')}</Body>
         <BigButton variant="secondary" label={t('myday.back')} onPress={goBack} />

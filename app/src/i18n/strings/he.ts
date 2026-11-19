@@ -660,6 +660,7 @@ export const he: Record<Key, string> = {
   "myday.save": "שמירה",
   "myday.cancel": "ביטול",
   "myday.addOwn": "הוספת משימה משלי",
+  "myday.addShort": "הוספה",
   "myday.menuTitle": "או בחרו מהרשימה",
   "myday.menuAllAdded": "הוספתם כבר את כל מה שברשימה.",
   "myday.full": "הרשימה מלאה ({max} משימות). הסירו משימה כדי להוסיף אחרת.",

@@ -660,6 +660,7 @@ export const fr: Record<Key, string> = {
   "myday.save": "Enregistrer",
   "myday.cancel": "Annuler",
   "myday.addOwn": "Ajouter ma propre tâche",
+  "myday.addShort": "Ajouter",
   "myday.menuTitle": "Ou choisissez dans la liste",
   "myday.menuAllAdded": "Vous avez ajouté tout ce qui figure dans la liste.",
   "myday.full": "Votre liste est pleine ({max} tâches). Retirez-en une pour en ajouter une autre.",

@@ -1,5 +1,5 @@
-import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, Text } from 'react-native';
 import { DayPicker } from '@/components/DayPicker';
 import { BigButton, Body, DisclaimerFooter, Field, H1, H2, Panel, Screen, Segmented } from '@/components/ui';
@@ -20,6 +20,11 @@ export default function MyDayTasks() {
   const [confirmDel, setConfirmDel] = useState<string | null>(null);
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
+  // "Add" on a My day heading arrives with that time of day: open the own-task form with it chosen.
+  const { add } = useLocalSearchParams<{ add?: string }>();
+  useEffect(() => {
+    if (add && (TIMES as readonly string[]).includes(add)) setForm({ id: null, template: null, title: '', time: add as TimeOfDay, days: EVERY_DAY });
+  }, [add]);
 
   const reload = useCallback(async () => {
     const l = await loadTasks();

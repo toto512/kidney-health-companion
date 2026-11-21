@@ -4,7 +4,7 @@ import { Lang, localeTag } from '../i18n/core';
 
 export const MAX_TASKS = 20;
 export const MAX_TITLE = 60;
-export const TIMES = ['morning', 'midday', 'evening', 'bedtime'] as const;
+export const TIMES = ['morning', 'midday', 'afternoon', 'evening', 'bedtime'] as const;
 export type TimeOfDay = (typeof TIMES)[number];
 export const isTime = (v: unknown): v is TimeOfDay => typeof v === 'string' && (TIMES as readonly string[]).includes(v);
 
@@ -20,31 +20,52 @@ export const isValidDays = (n: unknown): n is number => typeof n === 'number' &&
 export const localDateKey = (d: Date): string =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
-// Menu templates. The words come from the language files (myday.tpl.<key>). No amounts: the person adds any number themselves.
-// `link` is an existing screen the row can open; the tick is always manual.
+// Menu templates. The words come from the language files (myday.tpl.<key>, and myday.hint.<key> for a short hint). No amounts: the person adds any number themselves.
+// `link` is an existing screen the row can open; the tick is always manual. `habit` tasks repeat every day with no day choice; the rest are chores with their own days.
+// `legacy` tasks are no longer on the menu but stay valid so tasks people saved earlier still show and work.
 export type TemplateLink = '/feature/medications' | '/feature/blood-pressure' | '/feature/my-people' | '/feature/conditions';
 export const TEMPLATES = [
-  { key: 'medicines', time: 'morning', days: EVERY_DAY, link: '/feature/medications' },
-  { key: 'blood-pressure', time: 'morning', days: EVERY_DAY, link: '/feature/blood-pressure' },
-  { key: 'meal', time: 'midday', days: EVERY_DAY },
-  { key: 'water', time: 'midday', days: EVERY_DAY, link: '/feature/conditions' }, // Fluid advice from the official condition pages. No target.
+  // Morning
+  { key: 'bathroom', time: 'morning', days: EVERY_DAY, habit: true },
+  { key: 'wash-dress', time: 'morning', days: EVERY_DAY, habit: true },
+  { key: 'breakfast', time: 'morning', days: EVERY_DAY, habit: true },
+  { key: 'medicines', time: 'morning', days: EVERY_DAY, habit: true, link: '/feature/medications' },
+  { key: 'blood-pressure', time: 'morning', days: EVERY_DAY, habit: true, link: '/feature/blood-pressure' },
+  { key: 'calendar', time: 'morning', days: EVERY_DAY },
+  // Midday
+  { key: 'lunch', time: 'midday', days: EVERY_DAY, habit: true },
+  { key: 'water', time: 'midday', days: EVERY_DAY, habit: true, link: '/feature/conditions' }, // "Follow my fluid advice": official condition pages, no target
   { key: 'walk', time: 'midday', days: EVERY_DAY },
+  { key: 'chore', time: 'midday', days: EVERY_DAY },
+  { key: 'mail', time: 'midday', days: EVERY_DAY },
+  // Afternoon
+  { key: 'rest', time: 'afternoon', days: EVERY_DAY, habit: true },
+  { key: 'social', time: 'afternoon', days: EVERY_DAY },
+  { key: 'afternoon-medicines', time: 'afternoon', days: EVERY_DAY, habit: true, link: '/feature/medications' },
+  // Evening
+  { key: 'dinner', time: 'evening', days: EVERY_DAY, habit: true },
+  { key: 'evening-medicines', time: 'evening', days: EVERY_DAY, habit: true, link: '/feature/medications' },
   { key: 'call', time: 'evening', days: EVERY_DAY, link: '/feature/my-people' },
-  { key: 'bed', time: 'bedtime', days: EVERY_DAY },
-  { key: 'pillbox', time: 'morning', days: 64, link: '/feature/medications' }, // Sunday
-  { key: 'mail', time: 'midday', days: 1 }, // Monday
-  { key: 'groceries', time: 'midday', days: 32 }, // Saturday
-  { key: 'laundry', time: 'midday', days: 4 }, // Wednesday
-  { key: 'appointments', time: 'midday', days: 1 }, // Monday
-] as const satisfies readonly { key: string; time: TimeOfDay; days: number; link?: TemplateLink }[];
+  // Bedtime
+  { key: 'night-medicines', time: 'bedtime', days: EVERY_DAY, habit: true, link: '/feature/medications' },
+  { key: 'walkways', time: 'bedtime', days: EVERY_DAY, habit: true },
+  { key: 'clothes', time: 'bedtime', days: EVERY_DAY, habit: true },
+  // Earlier menu tasks, kept valid for tasks already saved
+  { key: 'meal', time: 'midday', days: EVERY_DAY, habit: true, legacy: true },
+  { key: 'bed', time: 'bedtime', days: EVERY_DAY, habit: true, legacy: true },
+  { key: 'pillbox', time: 'morning', days: 64, link: '/feature/medications', legacy: true }, // Sunday
+  { key: 'groceries', time: 'midday', days: 32, legacy: true }, // Saturday
+  { key: 'laundry', time: 'midday', days: 4, legacy: true }, // Wednesday
+  { key: 'appointments', time: 'midday', days: 1, legacy: true }, // Monday
+] as const satisfies readonly { key: string; time: TimeOfDay; days: number; link?: TemplateLink; habit?: true; legacy?: true }[];
 export type TemplateKey = (typeof TEMPLATES)[number]['key'];
-// Daily habits repeat every day with no day choice. Every other menu task is a chore with its own days.
-export const HABIT_KEYS = ['medicines', 'blood-pressure', 'meal', 'water', 'bed'] as const satisfies readonly TemplateKey[];
-export const isHabit = (key: string): boolean => (HABIT_KEYS as readonly string[]).includes(key);
-// The menu under a time-of-day heading: only the tasks whose usual time is that heading, so nothing is filed under the wrong time.
-export const menuAt = (time: TimeOfDay): Template[] => (TEMPLATES as readonly Template[]).filter((t) => t.time === time);
-export type Template = { key: TemplateKey; time: TimeOfDay; days: number; link?: TemplateLink };
+export type Template = { key: TemplateKey; time: TimeOfDay; days: number; link?: TemplateLink; habit?: true; legacy?: true };
 export const templateFor = (key: string | null): Template | undefined => (TEMPLATES as readonly Template[]).find((t) => t.key === key);
+// What the person can pick from. Daily habits repeat every day with no day choice; chores keep a day choice.
+export const MENU: readonly Template[] = (TEMPLATES as readonly Template[]).filter((t) => !t.legacy);
+export const isHabit = (key: string): boolean => templateFor(key)?.habit === true;
+// The menu under a time-of-day heading: only the tasks whose usual time is that heading, so nothing is filed under the wrong time.
+export const menuAt = (time: TimeOfDay): Template[] => MENU.filter((t) => t.time === time);
 
 // A saved task. Exactly one of template_key and title is set.
 export type Task = { id: string; template_key: TemplateKey | null; title: string | null; time_of_day: TimeOfDay; days: number };

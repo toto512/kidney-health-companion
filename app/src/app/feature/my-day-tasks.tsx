@@ -3,10 +3,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { DayPicker } from '@/components/DayPicker';
 import { BigButton, Body, DisclaimerFooter, Field, H1, H2, Panel, Screen, Segmented } from '@/components/ui';
-import { templateName, timeLabel, trError } from '@/i18n/labels';
+import { templateHint, templateName, timeLabel, trError } from '@/i18n/labels';
 import { useI18n } from '@/i18n/I18nProvider';
 import { addTask, deleteTask, loadTasks, updateTask } from '@/lib/myDay';
-import { canAddMore, daysSummary, EVERY_DAY, isHabit, MAX_TASKS, MAX_TITLE, menuAt, slotsLeft, Task, Template, TEMPLATES, TemplateKey, TimeOfDay, TIMES, validateTask } from '@/lib/myDayLogic';
+import { canAddMore, daysSummary, EVERY_DAY, isHabit, MAX_TASKS, MAX_TITLE, menuAt, MENU, slotsLeft, Task, Template, TemplateKey, TimeOfDay, TIMES, validateTask } from '@/lib/myDayLogic';
 import { font, MIN_TOUCH, useColors } from '@/theme/tokens';
 
 type Form = { id: string | null; template: string | null; title: string; time: TimeOfDay; days: number };
@@ -86,7 +86,7 @@ export default function MyDayTasks() {
   }
   const goBack = () => (router.canGoBack() ? router.back() : router.replace('/feature/my-day'));
   const room = list ? slotsLeft(list.length) : 0;
-  const menu = list ? TEMPLATES.filter((tp) => !list.some((x) => x.template_key === tp.key)) : [];
+  const menu = list ? MENU.filter((tp) => !list.some((x) => x.template_key === tp.key)) : [];
 
   return (
     <ScrollView keyboardShouldPersistTaps="handled">
@@ -100,6 +100,7 @@ export default function MyDayTasks() {
         {list?.map((x) => (
           <Panel key={x.id}>
             <H2>{nameOf(x)}</H2>
+            {templateHint(t, x.template_key) ? <Body>{templateHint(t, x.template_key)}</Body> : null}
             <Body>{t('myday.summary', { time: timeLabel(t, x.time_of_day), days: daysSummary(x.days, lang, t('myday.everyDay')) })}</Body>
             {confirmDel === x.id ? (
               <>
@@ -130,7 +131,10 @@ export default function MyDayTasks() {
                 <View accessible={false} style={{ width: 40, height: 40, borderRadius: 10, borderWidth: 3, borderColor: color.primary, backgroundColor: on ? color.primary : color.bg, alignItems: 'center', justifyContent: 'center' }}>
                   {on ? <Text style={{ color: color.primaryText, fontSize: 26, fontWeight: '800' }}>✓</Text> : null}
                 </View>
-                <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: color.text }}>{templateName(t, tp.key)}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{templateName(t, tp.key)}</Text>
+                  {templateHint(t, tp.key) ? <Text style={{ fontSize: font.body, color: color.muted }}>{templateHint(t, tp.key)}</Text> : null}
+                </View>
               </Pressable>
             );
           };

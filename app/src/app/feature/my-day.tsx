@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { BigButton, Body, DisclaimerFooter, H1, H2, Screen } from '@/components/ui';
 import { localeTag } from '@/i18n/core';
-import { templateName, timeLabel } from '@/i18n/labels';
+import { templateHint, templateName, timeLabel } from '@/i18n/labels';
 import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
 import { loadDone, loadTasks, setDone } from '@/lib/myDay';
@@ -48,14 +48,18 @@ export default function MyDay() {
     const isDone = done.has(task.id);
     const name = task.template_key ? templateName(t, task.template_key) : task.title ?? '';
     const link = templateFor(task.template_key)?.link;
+    const hint = templateHint(t, task.template_key);
     return (
       <View key={task.id} style={{ borderRadius: 20, borderWidth: 1, borderColor: color.border, backgroundColor: color.surface, padding: 16, gap: 8 }}>
-        <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: isDone }} accessibilityLabel={name} onPress={() => void toggle(task)}
+        <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: isDone }} accessibilityLabel={name} accessibilityHint={hint ?? undefined} onPress={() => void toggle(task)}
           style={{ minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 16 }}>
           <View accessible={false} style={{ width: 40, height: 40, borderRadius: 10, borderWidth: 3, borderColor: color.primary, backgroundColor: isDone ? color.primary : color.bg, alignItems: 'center', justifyContent: 'center' }}>
             {isDone ? <Text style={{ color: color.primaryText, fontSize: 26, fontWeight: '800' }}>✓</Text> : null}
           </View>
-          <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: color.text }}>{name}</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{name}</Text>
+            {hint ? <Text style={{ fontSize: font.body, color: color.muted }}>{hint}</Text> : null}
+          </View>
         </Pressable>
         {link ? (
           <Pressable accessibilityRole="link" accessibilityLabel={t('myday.openTool', { tool: t(TOOL_NAME[link]) })} onPress={() => router.push(link)} style={{ minHeight: MIN_TOUCH, justifyContent: 'center' }}>

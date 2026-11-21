@@ -47,13 +47,19 @@ export const trError = (t: T, msg: string) => {
   return m ? t('err.chars', { n: m[1] }) : msg;
 };
 
-// My day: menu task names and the four times of day.
+// My day: menu task names, short hints and the five times of day.
 const TPL: Record<TemplateKey, Key> = {
-  medicines: 'myday.tpl.medicines', 'blood-pressure': 'myday.tpl.blood-pressure', meal: 'myday.tpl.meal', water: 'myday.tpl.water', walk: 'myday.tpl.walk',
-  call: 'myday.tpl.call', bed: 'myday.tpl.bed', pillbox: 'myday.tpl.pillbox', mail: 'myday.tpl.mail', groceries: 'myday.tpl.groceries', laundry: 'myday.tpl.laundry', appointments: 'myday.tpl.appointments',
+  bathroom: 'myday.tpl.bathroom', 'wash-dress': 'myday.tpl.wash-dress', breakfast: 'myday.tpl.breakfast', medicines: 'myday.tpl.medicines', 'blood-pressure': 'myday.tpl.blood-pressure', calendar: 'myday.tpl.calendar',
+  lunch: 'myday.tpl.lunch', water: 'myday.tpl.water', walk: 'myday.tpl.walk', chore: 'myday.tpl.chore', mail: 'myday.tpl.mail',
+  rest: 'myday.tpl.rest', social: 'myday.tpl.social', 'afternoon-medicines': 'myday.tpl.afternoon-medicines',
+  dinner: 'myday.tpl.dinner', 'evening-medicines': 'myday.tpl.evening-medicines', call: 'myday.tpl.call',
+  'night-medicines': 'myday.tpl.night-medicines', walkways: 'myday.tpl.walkways', clothes: 'myday.tpl.clothes',
+  meal: 'myday.tpl.meal', bed: 'myday.tpl.bed', pillbox: 'myday.tpl.pillbox', groceries: 'myday.tpl.groceries', laundry: 'myday.tpl.laundry', appointments: 'myday.tpl.appointments',
 };
 export const templateName = (t: T, k: TemplateKey) => t(TPL[k]);
-const TIME: Record<TimeOfDay, Key> = { morning: 'myday.time.morning', midday: 'myday.time.midday', evening: 'myday.time.evening', bedtime: 'myday.time.bedtime' };
+const HINT: Partial<Record<TemplateKey, Key>> = { 'wash-dress': 'myday.hint.wash-dress', chore: 'myday.hint.chore', dinner: 'myday.hint.dinner', 'night-medicines': 'myday.hint.night-medicines' };
+export const templateHint = (t: T, k: string | null): string | null => { const h = k ? HINT[k as TemplateKey] : undefined; return h ? t(h) : null; };
+const TIME: Record<TimeOfDay, Key> = { morning: 'myday.time.morning', midday: 'myday.time.midday', afternoon: 'myday.time.afternoon', evening: 'myday.time.evening', bedtime: 'myday.time.bedtime' };
 export const timeLabel = (t: T, v: TimeOfDay) => t(TIME[v]);
 
 // Country names in the chosen language where the device supports it, else the English name.

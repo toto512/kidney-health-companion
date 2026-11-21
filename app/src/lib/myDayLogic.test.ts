@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { DICTS } from '../i18n/strings';
 import { LANGUAGES, translate } from '../i18n/core';
 import { trError } from '../i18n/labels';
-import { canAddMore, dayBit, DAY_BITS, daysSummary, dueTasks, EVERY_DAY, groupByTime, isDueOn, isValidDays, localDateKey, MAX_TASKS, MAX_TITLE, progress, slotsLeft, HABIT_KEYS, isHabit, menuAt, templateFor, Task, TEMPLATES, TIMES, toggleDay, validateTask, weekdayName } from './myDayLogic';
+import { canAddMore, dayBit, DAY_BITS, daysSummary, dueTasks, EVERY_DAY, groupByTime, isDueOn, isValidDays, localDateKey, MAX_TASKS, MAX_TITLE, progress, slotsLeft, isHabit, menuAt, MENU, templateFor, Task, TEMPLATES, TIMES, toggleDay, validateTask, weekdayName } from './myDayLogic';
 
 const mon = new Date(2024, 0, 1); // Monday 1 January 2024
 const sun = new Date(2024, 0, 7);
@@ -36,8 +36,10 @@ describe('days of the week', () => {
 });
 
 describe('template menu', () => {
-  it('has the 12 agreed tasks, each once, with a valid time and days', () => {
-    expect(TEMPLATES.map((t) => t.key)).toEqual(['medicines', 'blood-pressure', 'meal', 'water', 'walk', 'call', 'bed', 'pillbox', 'mail', 'groceries', 'laundry', 'appointments']);
+  it('has the 20 menu tasks in time order, each once, then the 6 earlier ones, with a valid time and days', () => {
+    expect(MENU.map((t) => t.key)).toEqual(['bathroom', 'wash-dress', 'breakfast', 'medicines', 'blood-pressure', 'calendar', 'lunch', 'water', 'walk', 'chore', 'mail', 'rest', 'social', 'afternoon-medicines', 'dinner', 'evening-medicines', 'call', 'night-medicines', 'walkways', 'clothes']);
+    expect(TEMPLATES.filter((t) => 'legacy' in t).map((t) => t.key)).toEqual(['meal', 'bed', 'pillbox', 'groceries', 'laundry', 'appointments']);
+    expect(new Set(TEMPLATES.map((t) => t.key)).size).toBe(TEMPLATES.length);
     for (const t of TEMPLATES) {
       expect(TIMES as readonly string[]).toContain(t.time);
       expect(isValidDays(t.days), t.key).toBe(true);
@@ -58,14 +60,15 @@ describe('template menu', () => {
     }
   });
   it('the database allows exactly these templates, times, days, limits and title length', () => {
-    const sql = readFileSync(new URL('../../../supabase/migrations/0013_my_day.sql', import.meta.url), 'utf8');
-    const list = (re: RegExp) => [...(sql.match(re)?.[1] ?? '').matchAll(/'([a-z-]+)'/g)].map((m) => m[1]);
-    expect(list(/template_key in \(([^)]*)\)/)).toEqual(TEMPLATES.map((t) => t.key));
-    expect(list(/time_of_day in \(([^)]*)\)/)).toEqual([...TIMES]);
-    expect(sql).toContain(`days between 1 and ${EVERY_DAY}`);
-    expect(sql).toContain(`length(title) between 1 and ${MAX_TITLE}`);
-    expect(sql).toContain(`>= ${MAX_TASKS} then`);
-    expect(sql).toContain(`up to ${MAX_TASKS} tasks`);
+    const base = readFileSync(new URL('../../../supabase/migrations/0013_my_day.sql', import.meta.url), 'utf8');
+    const more = readFileSync(new URL('../../../supabase/migrations/0014_my_day_more_templates.sql', import.meta.url), 'utf8');
+    const list = (sql: string, re: RegExp) => [...(sql.match(re)?.[1] ?? '').matchAll(/'([a-z-]+)'/g)].map((m) => m[1]);
+    expect(list(more, /template_key in \(([^;]*?)\)\);/)).toEqual(TEMPLATES.map((t) => t.key));
+    expect(list(more, /time_of_day in \(([^)]*)\)/)).toEqual([...TIMES]);
+    expect(base).toContain(`days between 1 and ${EVERY_DAY}`);
+    expect(base).toContain(`length(title) between 1 and ${MAX_TITLE}`);
+    expect(base).toContain(`>= ${MAX_TASKS} then`);
+    expect(base).toContain(`up to ${MAX_TASKS} tasks`);
   });
 });
 
@@ -82,7 +85,7 @@ describe('validateTask', () => {
       validateTask({ ...base, template: 'flying' }),
       validateTask({ ...base, title: '   ' }),
       validateTask({ ...base, title: 'a'.repeat(MAX_TITLE + 1) }),
-      validateTask({ ...base, time: 'afternoon' }),
+      validateTask({ ...base, time: 'supper' }),
       validateTask({ ...base, days: 0 }),
       validateTask({ ...base, days: 128 }),
     ];
@@ -141,6 +144,7 @@ describe('every My day word resolves, on every screen, in every language', () =>
   }
   for (const t of TEMPLATES) used.add(`myday.tpl.${t.key}`);
   for (const x of TIMES) used.add(`myday.time.${x}`);
+  for (const k of ['wash-dress', 'chore', 'dinner', 'night-medicines']) used.add(`myday.hint.${k}`);
   it('finds the keys the screens use (guards the scan itself)', () => {
     for (const k of ['myday.title', 'myday.cardNone', 'myday.formAdd', 'myday.allDays', 'myday.time.morning', 'myday.tpl.blood-pressure']) expect(used.has(k), k).toBe(true);
   });
@@ -154,18 +158,26 @@ describe('every My day word resolves, on every screen, in every language', () =>
 });
 
 describe('habits, chores and the menu under each heading', () => {
-  it('bedtime safety and the fluid item are daily habits; the rest are chores with days', () => {
-    expect(isHabit('bed')).toBe(true);
-    expect(isHabit('water')).toBe(true);
-    expect(isHabit('laundry')).toBe(false);
-    expect(TEMPLATES.filter((t) => isHabit(t.key)).map((t) => t.key).sort()).toEqual([...HABIT_KEYS].sort());
+  it('habits are the daily basics; chores are the rest and keep their day choice', () => {
+    const habits = TEMPLATES.filter((t) => isHabit(t.key)).map((t) => t.key);
+    expect(habits).toEqual(['bathroom', 'wash-dress', 'breakfast', 'medicines', 'blood-pressure', 'lunch', 'water', 'rest', 'afternoon-medicines', 'dinner', 'evening-medicines', 'night-medicines', 'walkways', 'clothes', 'meal', 'bed']);
+    for (const k of ['calendar', 'walk', 'chore', 'mail', 'social', 'call']) expect(isHabit(k), k).toBe(false);
   });
-  it('drink water now opens the conditions screen, with no fluid target', () => {
+  it('all four medicine rows open the medication list and stay generic ticks', () => {
+    for (const k of ['medicines', 'afternoon-medicines', 'evening-medicines', 'night-medicines']) expect(templateFor(k)?.link, k).toBe('/feature/medications');
+  });
+  it('drink water is the fluid advice item: opens conditions, no target', () => {
     expect(templateFor('water')?.link).toBe('/feature/conditions');
   });
   it('each heading shows only the menu tasks whose usual time it is', () => {
-    expect(menuAt('bedtime').map((t) => t.key)).toEqual(['bed']);
-    expect(menuAt('morning').map((t) => t.key)).toEqual(['medicines', 'blood-pressure', 'pillbox']);
-    expect(TIMES.flatMap((x) => menuAt(x)).length).toBe(TEMPLATES.length);
+    expect(menuAt('morning').map((t) => t.key)).toEqual(['bathroom', 'wash-dress', 'breakfast', 'medicines', 'blood-pressure', 'calendar']);
+    expect(menuAt('midday').map((t) => t.key)).toEqual(['lunch', 'water', 'walk', 'chore', 'mail']);
+    expect(menuAt('afternoon').map((t) => t.key)).toEqual(['rest', 'social', 'afternoon-medicines']);
+    expect(menuAt('evening').map((t) => t.key)).toEqual(['dinner', 'evening-medicines', 'call']);
+    expect(menuAt('bedtime').map((t) => t.key)).toEqual(['night-medicines', 'walkways', 'clothes']);
+    expect(TIMES.flatMap((x) => menuAt(x)).length).toBe(MENU.length);
+  });
+  it('a full day of the menu is exactly the 20-task limit', () => {
+    expect(MENU.length).toBe(MAX_TASKS);
   });
 });

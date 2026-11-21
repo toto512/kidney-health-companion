@@ -40,6 +40,12 @@ const ERR: Record<string, Key> = {
   'Choose a task from the list.': 'err.mydayTemplate',
   'Type what you want to do.': 'err.mydayTitle',
   'Use 60 letters or fewer for the task.': 'err.mydayTitleLong',
+  'Enter a title of 1 to 60 characters.': 'err.apptTitle',
+  'A note can be up to 200 characters.': 'err.apptNote',
+  'Enter a date as year-month-day, for example 2026-12-01.': 'err.apptCheck',
+  'Enter a time from 00:00 to 23:59.': 'err.apptCheck',
+  'Choose how often it repeats.': 'err.apptCheck',
+  'Choose when to be reminded.': 'err.apptCheck',
 };
 export const trError = (t: T, msg: string) => {
   if (ERR[msg]) return t(ERR[msg]);
@@ -66,3 +72,7 @@ export const timeLabel = (t: T, v: TimeOfDay) => t(TIME[v]);
 export function countryLabel(code: string, lang: Lang, fallback: string): string {
   try { return new Intl.DisplayNames([lang], { type: 'region' }).of(code) ?? fallback; } catch { return fallback; }
 }
+
+// Calendar: how an appointment repeats and when its in-app reminder shows.
+export const repeatLabel = (t: T, r: string) => t(r === 'weekly' ? 'cal.repeat.weekly' : r === 'monthly' ? 'cal.repeat.monthly' : 'cal.repeat.none');
+export const remindLabel = (t: T, m: number) => t(m === 60 ? 'cal.remind.60' : m === 1440 ? 'cal.remind.1440' : 'cal.remind.0');

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_LANG, format, formatDate, isRtl, languageFromTags, LANGUAGES, resolveLanguage, translate, nowHeading } from './core';
+import { DEFAULT_LANG, format, formatDate, isRtl, languageFromTags, LANGUAGES, resolveLanguage, translate, nowHeading, calendarDate } from './core';
 import { DICTS } from './strings';
 import { en } from './strings/en';
 
@@ -113,4 +113,11 @@ describe('Today heading with the real day and time', () => {
     expect(new Set(heads.map(strip)).size).toBe(LANGUAGES.length);
     for (const h of heads) { expect(h).toContain('\u206621:51\u2069'); expect(h).toMatch(/19/); }
   });
+});
+
+describe('calendarDate', () => {
+  const d = new Date(2026, 10, 19);
+  it('English is day first', () => expect(calendarDate(d, 'en', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })).toMatch(/^Thursday,? 19 November 2026$/));
+  it('month and year only', () => expect(calendarDate(d, 'en', { month: 'long', year: 'numeric' })).toBe('November 2026'));
+  it('French uses its own month name', () => expect(calendarDate(d, 'fr', { month: 'long', year: 'numeric' })).toBe('novembre 2026'));
 });

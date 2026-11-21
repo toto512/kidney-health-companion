@@ -17,3 +17,5 @@ Migration 0013 (my_day_tasks and my_day_done, "My day"): after the stub, run `ps
 Migration 0014 (My day: more menu tasks and an Afternoon time of day): after the stub, 0013 and its test, run `psql -f 0014_my_day_more_templates.test.sql`. It runs 0014 twice and checks that the new template keys, a kept older key and the Afternoon time are accepted, and that an unknown template, a second copy of a template and an unknown time are refused.
 
 Migration 0015 (My day: 30-task limit): after the stub, 0013 and 0014, run `psql -f 0015_my_day_limit_30.test.sql`. It runs 0015 twice, adds 30 tasks, checks the 31st is refused with the 30-task message and that another person is unaffected.
+
+Migration 0016 (appointments, the Calendar): after the stub, run `psql -f 0016_appointments.test.sql`. It runs 0016 twice and checks owner-only rows, title, note, date, time, repeat and reminder rules, that only the fields the person edits can be updated, the 100-appointment limit with its message, that another person and anon see nothing, and the two-step rule.

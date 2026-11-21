@@ -61,3 +61,6 @@ export function nowHeading(d: Date, l: Lang): string {
   const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   return `${day}, ${ltrIsolate(time)}`;
 }
+
+// A date in words for the calendar. English is day first ("Thursday 19 November 2026"), matching the Today heading.
+export const calendarDate = (d: Date, l: Lang, opts: Intl.DateTimeFormatOptions): string => new Intl.DateTimeFormat(l === 'en' ? 'en-GB' : localeTag(l), opts).format(d);

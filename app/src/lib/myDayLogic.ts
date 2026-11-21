@@ -23,7 +23,7 @@ export const localDateKey = (d: Date): string =>
 // Menu templates. The words come from the language files (myday.tpl.<key>, and myday.hint.<key> for a short hint). No amounts: the person adds any number themselves.
 // `link` is an existing screen the row can open; the tick is always manual. `habit` tasks repeat every day with no day choice; the rest are chores with their own days.
 // `legacy` tasks are no longer on the menu but stay valid so tasks people saved earlier still show and work.
-export type TemplateLink = '/feature/medications' | '/feature/blood-pressure' | '/feature/my-people' | '/feature/conditions';
+export type TemplateLink = '/feature/medications' | '/feature/blood-pressure' | '/feature/my-people' | '/feature/conditions' | '/feature/calendar';
 export const TEMPLATES = [
   // Morning
   { key: 'bathroom', time: 'morning', days: EVERY_DAY, habit: true },
@@ -31,7 +31,7 @@ export const TEMPLATES = [
   { key: 'breakfast', time: 'morning', days: EVERY_DAY, habit: true },
   { key: 'medicines', time: 'morning', days: EVERY_DAY, habit: true, link: '/feature/medications' },
   { key: 'blood-pressure', time: 'morning', days: EVERY_DAY, habit: true, link: '/feature/blood-pressure' },
-  { key: 'calendar', time: 'morning', days: EVERY_DAY },
+  { key: 'calendar', time: 'morning', days: EVERY_DAY, link: '/feature/calendar' },
   // Midday
   { key: 'lunch', time: 'midday', days: EVERY_DAY, habit: true },
   { key: 'water', time: 'midday', days: EVERY_DAY, habit: true, link: '/feature/conditions' }, // "Follow my fluid advice": official condition pages, no target
@@ -56,7 +56,7 @@ export const TEMPLATES = [
   { key: 'pillbox', time: 'morning', days: 64, link: '/feature/medications', legacy: true }, // Sunday
   { key: 'groceries', time: 'midday', days: 32, legacy: true }, // Saturday
   { key: 'laundry', time: 'midday', days: 4, legacy: true }, // Wednesday
-  { key: 'appointments', time: 'midday', days: 1, legacy: true }, // Monday
+  { key: 'appointments', time: 'midday', days: 1, legacy: true, link: '/feature/calendar' }, // Monday
 ] as const satisfies readonly { key: string; time: TimeOfDay; days: number; link?: TemplateLink; habit?: true; legacy?: true }[];
 export type TemplateKey = (typeof TEMPLATES)[number]['key'];
 export type Template = { key: TemplateKey; time: TimeOfDay; days: number; link?: TemplateLink; habit?: true; legacy?: true };

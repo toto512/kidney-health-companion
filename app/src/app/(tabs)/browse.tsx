@@ -30,7 +30,7 @@ export default function Browse() {
         <View style={s.grid}>
           {CATEGORIES.map((c) => (
             <Pressable key={c.id} accessibilityRole="button" accessibilityLabel={t(c.label)} style={s.cell}
-              onPress={() => (c.id === 'tasks' ? router.push('/feature/my-day') : router.push({ pathname: '/feature/[id]', params: { id: c.id } }))}>
+              onPress={() => (c.id === 'tasks' ? router.push('/feature/my-day') : c.id === 'appointments' ? router.push('/feature/calendar') : router.push({ pathname: '/feature/[id]', params: { id: c.id } }))}>
               <CategoryBadge icon={c.icon} accent={c.accent} size={52} />
               <Text style={s.label}>{t(c.label)}</Text>
             </Pressable>

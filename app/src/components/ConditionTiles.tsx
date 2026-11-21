@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Linking, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { BigButton, Body } from '@/components/ui';
 import { TILE_KEYS, TILE_SOURCES, tileItems, visibleGroups, type FoodGroup, type TileItem, type TileKey } from '@/content/conditionTiles';
 import { useI18n } from '@/i18n/I18nProvider';
@@ -52,7 +52,7 @@ export function ConditionTiles({ country, condition, conditionLabel, accent, oth
             {isOpen ? (
               items.length === 0
                 ? <Body>{k === 'home' ? t('tiles.noHome') : k === 'avoid' && tileItems(condition, country, 'moderate').length > 0 ? t('tiles.emptyAvoid') : t('tiles.empty')}</Body>
-                : <Row items={items} index={idx[k] ?? 0} onIndex={(n) => setIdx({ ...idx, [k]: n })} onOpen={(i) => setDetail({ tile: k, i })} accent={ac} mine={mine} />
+                : <Row title={t(TITLE[k])} items={items} index={idx[k] ?? 0} onIndex={(n) => setIdx({ ...idx, [k]: n })} onOpen={(i) => setDetail({ tile: k, i })} accent={ac} mine={mine} />
             ) : null}
             {isOpen ? <Text style={{ fontSize: font.body, color: color.muted }}>{t('tiles.askDoctor')}</Text> : null}
           </View>
@@ -62,42 +62,45 @@ export function ConditionTiles({ country, condition, conditionLabel, accent, oth
   );
 }
 
-// A big arrow button for the card row. The arrow points the way the page turns: reversed in right-to-left languages (the row itself mirrors there).
-function ArrowBtn({ glyph, label, onPress, disabled, accent }: { glyph: string; label: string; onPress: () => void; disabled?: boolean; accent: string }) {
-  return (
-    <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled: !!disabled }} disabled={disabled} onPress={onPress}
-      style={{ minHeight: 64, minWidth: 88, paddingHorizontal: 14, borderRadius: 12, borderWidth: 2, borderColor: accent, alignItems: 'center', justifyContent: 'center', opacity: disabled ? 0.3 : 1 }}>
-      <Text importantForAccessibility="no" style={{ fontSize: font.label + 14, lineHeight: font.label + 20, fontWeight: '800', color: accent }}>{glyph}</Text>
-    </Pressable>
-  );
-}
-
-function Row({ items, index, onIndex, onOpen, accent, mine }: { items: TileItem[]; index: number; onIndex: (n: number) => void; onOpen: (i: number) => void; accent: string; mine: string[] }) {
+// The same list the Food page uses: a bordered list, the chosen row highlighted with a big "Show details" button, one tap on another row chooses it.
+// Short lists have no inner scrolling; a long one scrolls inside its box (nestedScrollEnabled, so the page still scrolls from outside the box).
+const ROW_H = 72;
+const LIST_MAX = 380;
+function Row({ items, index, onIndex, onOpen, accent, mine, title }: { items: TileItem[]; index: number; onIndex: (n: number) => void; onOpen: (i: number) => void; accent: string; mine: string[]; title: string }) {
   const color = useColors();
-  const { t, rtl } = useI18n();
-  const ref = useRef<{ scrollTo: (o: { x: number; y?: number; animated?: boolean }) => void } | null>(null);
-  const [w, setW] = useState(0);
-  const go = useCallback((n: number) => { const c = Math.max(0, Math.min(items.length - 1, n)); onIndex(c); ref.current?.scrollTo({ x: c * w, animated: true }); }, [items.length, w, onIndex]);
+  const { t } = useI18n();
+  const sel = Math.max(0, Math.min(items.length - 1, index));
+  const scroller = useRef<{ scrollTo: (o: { x?: number; y?: number; animated?: boolean }) => void } | null>(null);
+  const tall = items.length * ROW_H + 8 > LIST_MAX;
+  const choose = (i: number) => { onIndex(i); if (tall) scroller.current?.scrollTo({ y: Math.max(0, i * ROW_H - ROW_H), animated: true }); };
+  const keys = Platform.OS === 'web' ? ({ tabIndex: 0, onKeyDown: (e: { key: string; preventDefault: () => void }) => {
+    const k: Record<string, () => void> = { ArrowDown: () => choose(Math.min(items.length - 1, sel + 1)), ArrowUp: () => choose(Math.max(0, sel - 1)), Enter: () => onOpen(sel) };
+    if (k[e.key]) { e.preventDefault(); k[e.key](); }
+  } } as object) : {};
   return (
-    <View style={{ gap: 8 }} onLayout={(e) => setW(e.nativeEvent.layout.width)}>
-      {w > 0 ? (
-        <ScrollView ref={ref as never} horizontal pagingEnabled showsHorizontalScrollIndicator={false} contentOffset={{ x: index * w, y: 0 }}
-          onMomentumScrollEnd={(e) => onIndex(Math.round(e.nativeEvent.contentOffset.x / w))}>
-          {items.map((item, i) => (
-            <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={`${item.title}. ${t('tiles.tapSee')}`} onPress={() => onOpen(i)}
-              style={{ width: w, minHeight: 110, borderRadius: 14, borderWidth: 2, borderColor: accent, backgroundColor: color.surface, padding: 14, justifyContent: 'center', gap: 6 }}>
-              <Text style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{item.title}</Text>
-              {item.medIds?.some((m) => mine.includes(m)) ? <Text style={{ fontSize: font.body, fontWeight: '700', color: accent }}>{t('tiles.inMeds')}</Text> : null}
-              <Text style={{ fontSize: font.body, color: color.muted }}>{t('tiles.tapSee')}</Text>
+    <View accessibilityRole="list" accessibilityLabel={title} {...keys}
+      style={{ height: tall ? LIST_MAX : undefined, borderWidth: 2, borderColor: color.border, borderRadius: 16, backgroundColor: color.surface, overflow: 'hidden' }}>
+      <ScrollView ref={scroller as never} nestedScrollEnabled scrollEnabled={tall}>
+        {items.map((item, i) => {
+          const on = i === sel;
+          const inMeds = item.medIds?.some((m) => mine.includes(m));
+          return (
+            <Pressable key={item.id} accessibilityRole="button" accessibilityState={{ selected: on }} accessibilityLabel={item.title} accessibilityHint={on ? t('tiles.tapSee') : undefined}
+              onPress={() => { if (on) onOpen(i); else choose(i); }}
+              style={{ minHeight: ROW_H - 8, flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 6, paddingStart: 14, paddingEnd: 8, margin: 4, borderRadius: 12, borderWidth: on ? 2 : 0, borderColor: accent, backgroundColor: on ? mix(accent, color.surface, 0.1) : 'transparent' }}>
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text style={{ fontSize: font.label, fontWeight: on ? '800' : '600', color: color.text }}>{item.title}</Text>
+                {inMeds ? <Text style={{ fontSize: font.body * 0.85, fontWeight: '700', color: accent }}>{t('tiles.inMeds')}</Text> : null}
+              </View>
+              {on ? (
+                <View accessible={false} importantForAccessibility="no-hide-descendants" style={{ minHeight: 56, minWidth: 120, paddingHorizontal: 12, borderRadius: 12, backgroundColor: color.primary, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ fontSize: font.body, fontWeight: '800', color: color.primaryText, textAlign: 'center' }}>{t('food.show')}</Text>
+                </View>
+              ) : null}
             </Pressable>
-          ))}
-        </ScrollView>
-      ) : null}
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-        <ArrowBtn glyph={rtl ? '→' : '←'} label={t('tiles.prev')} accent={accent} disabled={index <= 0} onPress={() => go(index - 1)} />
-        <Text accessibilityLiveRegion="polite" style={{ flex: 1, textAlign: 'center', fontSize: font.label, fontWeight: '700', color: color.text }}>{t('tiles.count', { n: index + 1, total: items.length })}</Text>
-        <ArrowBtn glyph={rtl ? '←' : '→'} label={t('tiles.next')} accent={accent} disabled={index >= items.length - 1} onPress={() => go(index + 1)} />
-      </View>
+          );
+        })}
+      </ScrollView>
     </View>
   );
 }

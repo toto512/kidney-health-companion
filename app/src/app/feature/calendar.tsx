@@ -3,9 +3,10 @@ import { useCallback, useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { BigButton, Body, DisclaimerFooter, H1, H2, Panel, Screen } from '@/components/ui';
 import { calendarDate, isRtl, ltrIsolate } from '@/i18n/core';
-import { remindLabel, repeatLabel, templateName, timeLabel } from '@/i18n/labels';
+import { calendarHint, remindLabel, repeatLabel, templateName, timeLabel } from '@/i18n/labels';
 import { useI18n } from '@/i18n/I18nProvider';
-import { loadAppointments } from '@/lib/appointments';
+import { loadAppointments, loadCalendarApp } from '@/lib/appointments';
+import { CalendarApp } from '@/lib/calendarApp';
 import { Appointment, cleanTime, itemsOn, markersFor, monthGrid, parseKey, shiftMonth, upcomingReminders, weekdayOrder, weekStartFor } from '@/lib/calendarLogic';
 import { loadTasks } from '@/lib/myDay';
 import { localDateKey, Task, weekdayName } from '@/lib/myDayLogic';
@@ -21,12 +22,14 @@ export default function Calendar() {
   const [selected, setSelected] = useState(() => localDateKey(new Date()));
   const [tasks, setTasks] = useState<Task[] | null>(null);
   const [appts, setAppts] = useState<Appointment[] | null>(null);
+  const [calApp, setCalApp] = useState<CalendarApp | null>(null);
   const [err, setErr] = useState('');
   const todayKey = localDateKey(now);
 
   useFocusEffect(useCallback(() => {
     let alive = true;
     setNow(new Date());
+    void loadCalendarApp().then((v) => { if (alive) setCalApp(v); });
     void Promise.all([loadTasks(), loadAppointments()]).then(([tk, ap]) => {
       if (!alive) return;
       if (!tk || !ap) { setErr(t('cal.errLoad')); return; }
@@ -138,6 +141,7 @@ export default function Calendar() {
               </Panel>
             ))}
             <BigButton label={t('cal.addAppt')} onPress={() => router.push({ pathname: '/feature/appointment', params: { date: selected } })} />
+            <Body>{calendarHint(t, calApp)}</Body>
             {appts?.some((a) => a.remind_minutes > 0) ? <Body>{t('cal.remindersNote')}</Body> : null}
 
             <H2>{t('cal.tasksHeading')}</H2>

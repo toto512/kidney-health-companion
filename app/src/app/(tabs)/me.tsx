@@ -32,6 +32,7 @@ export default function Me() {
           <Tile label={t('me.conditions')} icon="📋" onPress={() => router.push('/feature/choose-conditions')} />
           <Tile label={t('me.medicines')} icon="💊" onPress={() => router.push('/feature/choose-medicines')} />
           <Tile label={t('me.twoStep')} icon="🔐" onPress={() => router.push('/feature/two-step')} />
+          <Tile label={t('me.calendarApp')} icon="📅" onPress={() => router.push('/feature/calendar-app')} />
           <Tile label={t('me.language')} icon="🌐" onPress={() => router.push('/feature/language')} />
           <Tile label={t('me.settings')} icon="⚙️" onPress={() => router.push({ pathname: '/feature/[id]', params: { id: 'settings' } })} />
         </View>

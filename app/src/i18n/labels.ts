@@ -76,3 +76,7 @@ export function countryLabel(code: string, lang: Lang, fallback: string): string
 // Calendar: how an appointment repeats and when its in-app reminder shows.
 export const repeatLabel = (t: T, r: string) => t(r === 'weekly' ? 'cal.repeat.weekly' : r === 'monthly' ? 'cal.repeat.monthly' : 'cal.repeat.none');
 export const remindLabel = (t: T, m: number) => t(m === 60 ? 'cal.remind.60' : m === 1440 ? 'cal.remind.1440' : 'cal.remind.0');
+
+// Calendar the person says they use (optional step and Profile), and the short hint on the Calendar screen.
+export const calendarAppLabel = (t: T, v: string) => t(`calapp.${v}` as Key);
+export const calendarHint = (t: T, v: string | null) => t(v === 'google' || v === 'outlook' || v === 'apple' || v === 'other' ? (`cal.hint.${v}` as Key) : 'cal.hint.generic');

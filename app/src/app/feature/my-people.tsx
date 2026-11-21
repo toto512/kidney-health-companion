@@ -9,7 +9,6 @@ import { addContact, Contact, deleteContact, deviceCopyOn, loadContacts, setDevi
 import { useAuth } from '@/lib/auth';
 import { relLabel, trError } from '@/i18n/labels';
 import { useI18n } from '@/i18n/I18nProvider';
-import { setFlash } from '@/lib/flash';
 import { supabase } from '@/lib/supabase';
 import { font, useColors } from '@/theme/tokens';
 
@@ -78,7 +77,7 @@ export default function MyPeople() {
     await setDeviceCopy(uid, on, list ?? []);
   }
   function done() {
-    if (wizard) { setFlash(t('profile.saved')); router.replace('/'); }
+    if (wizard) router.replace('/feature/calendar-app?first=1'); // next optional wizard step; it shows the saved message
     else router.canGoBack() ? router.back() : router.replace('/');
   }
 

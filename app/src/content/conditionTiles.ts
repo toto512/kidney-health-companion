@@ -269,6 +269,20 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       ],
     },
     CA: {
+      // 2026-11-21: the "avoid" lines below are on the HealthLink BC diet page already used for the moderation lines (same page, same check). Hidden by UNVERIFIED until the verify script says OK.
+      avoid: [
+        it('ca-ckd-avoid-snacks', 'Salted snacks', 'ca-hlbc-ckd-diet', ['Avoid salted snacks such as pretzels, chips, and popcorn.']),
+        it('ca-ckd-avoid-cured', 'Smoked, cured, salted, and canned meat', 'ca-hlbc-ckd-diet', ['Avoid smoked, cured, salted, and canned meat, fish, and poultry.'], undefined, [
+          { src: 'ca-hlbc-ckd-diet', quote: 'This includes ham, bacon, hot dogs, and luncheon meats.', foods: ['ham', 'bacon', 'hot dogs', 'luncheon meats'] },
+        ]),
+        it('ca-ckd-avoid-label', 'Salt, sodium or MSG on the label', 'ca-hlbc-ckd-diet', ['Avoid foods that list salt, sodium, or monosodium glutamate (MSG) on the label.']),
+        it('ca-ckd-avoid-add-salt', 'Salt and your food', 'ca-hlbc-ckd-diet', ["Don't add salt to your food."]),
+        it('ca-ckd-avoid-salt-sub', 'Salt substitute or lite salt', 'ca-hlbc-ckd-diet', ["Don't use a salt substitute or lite salt unless your doctor or dietitian says it is okay."], undefined, [
+          { src: 'ca-hlbc-ckd-diet', quote: 'Most salt substitutes and lite salts are high in potassium.', foods: ['salt substitutes', 'lite salts'] },
+        ]),
+        it('ca-ckd-avoid-colas', 'Colas and soft drinks', 'ca-hlbc-ckd-diet', ['Avoid colas and soft drinks with phosphate or phosphoric acid.']),
+        it('ca-ckd-avoid-bran', 'Bran breads and bran cereals', 'ca-hlbc-ckd-diet', ['Avoid bran breads and bran cereals.']),
+      ],
       moderate: [
         it('ca-ckd-salt-protein', 'Salt (sodium) and protein', 'ca-hlbc-ckd', ['You may need to limit salt (sodium) and protein and watch your fluid intake.'], undefined, [
           { src: 'ca-hlbc-ckd-diet', quote: 'High-protein foods include meat, poultry, seafood, and eggs.', foods: ['meat', 'poultry', 'seafood', 'eggs'] },
@@ -2312,7 +2326,7 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
 // Items whose quote the live-page check could not find (verify-condition-tiles.mjs, James 2026-11-18). They stay hidden until the quote is re-verified.
 // An entry is an item id, or "itemId@sourceId" to hide only that item's food group from one source.
 // The two NIDDK PDFs cannot be read by the script: the lines were read by hand-run page fetch on 2026-11-18 and stay hidden until James confirms them in the PDF.
-export const UNVERIFIED: string[] = ['us-ckd-phosphorus', 'us-ckd-meat-dairy@us-niddk-potassium-tips'];
+export const UNVERIFIED: string[] = ['ca-ckd-avoid-snacks', 'ca-ckd-avoid-cured', 'ca-ckd-avoid-label', 'ca-ckd-avoid-add-salt', 'ca-ckd-avoid-salt-sub', 'ca-ckd-avoid-colas', 'ca-ckd-avoid-bran', 'us-ckd-phosphorus', 'us-ckd-meat-dairy@us-niddk-potassium-tips'];
 // Old-page rule (James, 2026-11-18, option 3): an item that names a medicine or dose (every item in the Medicines tile, and any item with medIds) is hidden
 // when its page's last review date is more than 5 years before today. Pages with no date, and old pages that name no medicines, stay visible.
 const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];

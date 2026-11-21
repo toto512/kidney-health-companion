@@ -100,8 +100,8 @@ describe('phone and emergency numbers in right-to-left text', () => {
 describe('Today heading with the real day and time', () => {
   const thu = new Date(2026, 10, 19, 21, 51); // Thursday 19 November 2026, 21:51 local
   const strip = (s: string) => s.replace(/[\u2066\u2069]/g, '');
-  it('English shows the weekday, date and 24-hour time', () => {
-    expect(strip(nowHeading(thu, 'en'))).toBe('Thursday, November 19, 21:51');
+  it('English shows the weekday, day-first date and 24-hour time', () => {
+    expect(strip(nowHeading(thu, 'en'))).toBe('Thursday, 19 November, 21:51');
   });
   it('midnight is 00:05 and noon 12:00, never 24:05 or AM/PM', () => {
     expect(strip(nowHeading(new Date(2026, 10, 20, 0, 5), 'en'))).toMatch(/, 00:05$/);

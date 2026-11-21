@@ -48,10 +48,16 @@ export const formatDate = (iso: string | number | Date, l: Lang) => new Date(iso
 // "20 October 2026" in the person's language, so a day-first and a month-first reading look clearly different.
 export const longDate = (iso: string, l: Lang) => new Date(iso + 'T12:00:00').toLocaleDateString(localeTag(l), { day: 'numeric', month: 'long', year: 'numeric' });
 
-// "Thursday, November 20, 21:51": weekday, date and the 24-hour time on the device clock, in the chosen language.
+// "Thursday, 20 November, 21:51": weekday, date and the 24-hour time on the device clock, in the chosen language.
 // The time is built by hand (00:00 to 23:59) so no engine prints 24:05 or AM/PM, and it is wrapped left-to-right so Hebrew keeps its digits in order.
 export function nowHeading(d: Date, l: Lang): string {
-  const day = new Intl.DateTimeFormat(localeTag(l), { weekday: 'long', day: 'numeric', month: 'long' }).format(d);
+  const opts: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
+  // English is day first ("Thursday, 19 November"); the other languages keep their own natural order.
+  let day: string;
+  if (l === 'en') {
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', opts).formatToParts(d).map((x) => [x.type, x.value]));
+    day = `${p.weekday}, ${p.day} ${p.month}`;
+  } else day = new Intl.DateTimeFormat(localeTag(l), opts).format(d);
   const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   return `${day}, ${ltrIsolate(time)}`;
 }

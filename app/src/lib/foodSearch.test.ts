@@ -1,0 +1,96 @@
+import { describe, expect, it } from 'vitest';
+import { FOODS, FOOD_GROUPS } from '../content/foods';
+import { norm, searchFoodNames, searchFoods } from './foodSearch';
+
+const names = (q: string, g: Parameters<typeof searchFoods>[2] = 'all') => searchFoods(FOODS, q, g).map((f) => f.name);
+
+describe('food search', () => {
+  it('empty query lists the whole group A to Z', () => {
+    const r = searchFoods(FOODS, '', 'fruit');
+    expect(r.length).toBeGreaterThan(50);
+    expect(r.map((f) => f.name)).toEqual([...r.map((f) => f.name)].sort((a, b) => a.localeCompare(b)));
+  });
+  it('finds by name and plural', () => {
+    expect(names('pears', 'fruit')[0]).toBe('Pears');
+    expect(names('banana', 'fruit')[0]).toBe('Bananas');
+  });
+  it('finds by synonym', () => {
+    expect(names('whey powder', 'drinks')).toContain('Protein powder');
+  });
+  it('tolerates a typo', () => {
+    expect(names('bannana', 'fruit')[0]).toBe('Bananas');
+    expect(names('mozarella')[0]).toBe('Mozzarella');
+  });
+  it('ignores case, accents and punctuation', () => {
+    expect(norm('  Crème, Brûlée! ')).toBe('creme brulee');
+    expect(names('PEARS', 'fruit')[0]).toBe('Pears');
+  });
+  it('needs every typed word to match', () => {
+    expect(names('banana mozzarella')).toEqual([]);
+  });
+  it('unknown food returns nothing, never a guess', () => {
+    expect(names('dragonbreath')).toEqual([]);
+  });
+  it('matches the sub-group name too', () => {
+    expect(names('pome', 'fruit')).toContain('Pears');
+  });
+});
+
+describe('all-foods name search', () => {
+  const n = (q: string) => searchFoodNames(FOODS, q).map((f) => f.name);
+  it('returns only names that contain the typed text', () => {
+    for (const q of ['bowl', 'pea', 'chicken']) {
+      const r = n(q);
+      expect(r.every((x) => norm(x).includes(q))).toBe(true);
+    }
+    expect(n('bowl')).not.toContain('Guinea fowl');
+    expect(n('bowl')).not.toContain('Boiled peanuts');
+  });
+  it('is case and accent insensitive, and does not match typos, synonyms or group names', () => {
+    expect(n('PEARS')).toContain('Pears');
+    expect(n('bannana')).toEqual([]);
+    expect(n('whey powder')).toEqual([]);
+    expect(n('fatty oily')).toEqual([]);
+  });
+  it('empty text returns nothing and names starting with the text come first', () => {
+    expect(n('  ')).toEqual([]);
+    const r = n('pear');
+    expect(norm(r[0]).startsWith('pear')).toBe(true);
+  });
+});
+
+describe('food data', () => {
+  it('has unique ids and known groups', () => {
+    expect(new Set(FOODS.map((f) => f.id)).size).toBe(FOODS.length);
+    for (const f of FOODS) expect(FOOD_GROUPS).toContain(f.group);
+  });
+  it('has clean names: no sub-group header fragments from the taxonomy parse', () => {
+    for (const f of FOODS) {
+      expect(f.name, f.id).not.toMatch(/[|:]/);
+      expect(f.name, f.id).not.toMatch(/\.\s*$|\.\s/);
+      expect(f.name, f.id).toBe(f.name.trim());
+    }
+  });
+  it('finds the foods that had merged names', () => {
+    for (const n of ['Cheddar', 'Brie', 'Blue cheese', 'Halloumi', 'Cottage cheese', 'Tuna', 'Cod', 'Salmon', 'Oysters', 'Squid', 'Eel', 'Monkfish', 'Sablefish', 'Shark', 'Cockles']) expect(FOODS.map((f) => f.name), n).toContain(n);
+  });
+  it('fills all 12 groups', () => {
+    expect(FOOD_GROUPS).toHaveLength(12);
+    for (const g of FOOD_GROUPS) expect(FOODS.some((f) => f.group === g)).toBe(true);
+  });
+  it('keeps the legacy items and leaves out baby and indigenous foods', () => {
+    const all = FOODS.map((f) => f.name.toLowerCase());
+    expect(all).toContain('avocado');
+    expect(all).toContain('protein powder');
+    expect(all.some((n) => n.includes('infant formula') || n.includes('manoomin'))).toBe(false);
+  });
+});
+
+describe('search across all groups', () => {
+  it('finds a food in any group from the front screen', () => {
+    const r = searchFoods(FOODS, 'cheddar', 'all');
+    expect(r.map((f) => f.name)).toContain('Cheddar');
+    expect(r[0].group).toBe('milk-cheese');
+    expect(searchFoods(FOODS, 'salmon', 'all').some((f) => f.group === 'fish-seafood')).toBe(true);
+  });
+});

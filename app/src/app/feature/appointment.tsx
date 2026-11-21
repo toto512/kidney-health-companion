@@ -1,15 +1,17 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
+import { WheelPicker } from '@/components/WheelPicker';
 import { BigButton, Body, DisclaimerFooter, Field, H1, H2, Panel, Screen, Segmented } from '@/components/ui';
 import { calendarDate, ltrIsolate } from '@/i18n/core';
 import { remindLabel, repeatLabel, trError } from '@/i18n/labels';
 import { useI18n } from '@/i18n/I18nProvider';
 import { addAppointment, deleteAppointment, loadAppointments, updateAppointment } from '@/lib/appointments';
-import { Appointment, buildIcs, canAddAppointment, cleanTime, icsFileName, MAX_APPOINTMENTS, MAX_APPT_NOTE, MAX_APPT_TITLE, parseKey, REMIND_OPTIONS, REPEATS, stepDate, stepTime, validateAppointment } from '@/lib/calendarLogic';
+import { Appointment, buildIcs, canAddAppointment, cleanTime, icsFileName, MAX_APPOINTMENTS, MAX_APPT_NOTE, MAX_APPT_TITLE, parseKey, REMIND_OPTIONS, REPEATS, setDatePart, validateAppointment } from '@/lib/calendarLogic';
 import { saveTextFile } from '@/lib/download';
 import { localDateKey } from '@/lib/myDayLogic';
-import { font, MIN_TOUCH, useColors } from '@/theme/tokens';
+import { dayItems, hourItems, minuteItems, monthItems, yearItems } from '@/lib/wheelLogic';
+import { font, useColors } from '@/theme/tokens';
 
 // The "file leaves the app" notice is shown once per app session, then the file is saved straight away.
 let exportNoticeSeen = false;
@@ -81,17 +83,6 @@ export default function AppointmentScreen() {
     catch { setErr(t('appt.errExport')); }
   }
 
-  const stepper = (label: string, value: string, onLess: () => void, onMore: () => void) => (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }} accessibilityRole="adjustable" accessibilityLabel={`${label}: ${value}`}>
-      <Pressable accessibilityRole="button" accessibilityLabel={t('appt.less', { unit: label })} onPress={onLess} style={btn(color)}><Text style={btnText(color)}>−</Text></Pressable>
-      <View style={{ flex: 1, alignItems: 'center' }}>
-        <Text style={{ fontSize: font.body, color: color.muted }}>{label}</Text>
-        <Text style={{ fontSize: font.h2, fontWeight: '800', color: color.text }}>{value}</Text>
-      </View>
-      <Pressable accessibilityRole="button" accessibilityLabel={t('appt.more', { unit: label })} onPress={onMore} style={btn(color)}><Text style={btnText(color)}>+</Text></Pressable>
-    </View>
-  );
-
   const d = parseKey(day) ?? new Date();
   const [hh, mm] = time.split(':');
   return (
@@ -107,14 +98,19 @@ export default function AppointmentScreen() {
             <Panel>
               <H2>{t('appt.dateLabel')}</H2>
               <Body>{calendarDate(d, lang, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</Body>
-              {stepper(t('appt.day'), String(d.getDate()), () => setDay(stepDate(day, 'day', -1)), () => setDay(stepDate(day, 'day', 1)))}
-              {stepper(t('appt.month'), calendarDate(d, lang, { month: 'long' }), () => setDay(stepDate(day, 'month', -1)), () => setDay(stepDate(day, 'month', 1)))}
-              {stepper(t('appt.year'), String(d.getFullYear()), () => setDay(stepDate(day, 'year', -1)), () => setDay(stepDate(day, 'year', 1)))}
+              <View style={{ flexDirection: 'row', gap: 8 }}>
+                <WheelPicker label={t('appt.day')} items={dayItems(d.getFullYear(), d.getMonth())} value={d.getDate()} onChange={(v) => setDay(setDatePart(day, 'day', v))} flex={1} />
+                <WheelPicker label={t('appt.month')} items={monthItems((m) => calendarDate(new Date(2024, m, 1), lang, { month: 'long' }))} value={d.getMonth()} onChange={(v) => setDay(setDatePart(day, 'month', v))} flex={2} />
+                <WheelPicker label={t('appt.year')} items={yearItems()} value={d.getFullYear()} onChange={(v) => setDay(setDatePart(day, 'year', v))} flex={1.4} />
+              </View>
             </Panel>
             <Panel>
               <H2>{t('appt.timeLabel')}</H2>
-              {stepper(t('appt.hour'), ltrIsolate(hh), () => setTime(stepTime(time, 'hour', -1)), () => setTime(stepTime(time, 'hour', 1)))}
-              {stepper(t('appt.minute'), ltrIsolate(mm), () => setTime(stepTime(time, 'minute', -1)), () => setTime(stepTime(time, 'minute', 1)))}
+              {/* Hours then minutes, left to right in every language, so 09:30 never reads backwards in Hebrew. */}
+              <View style={{ flexDirection: 'row', gap: 8, direction: 'ltr' }}>
+                <WheelPicker label={t('appt.hour')} items={hourItems()} value={+hh} onChange={(v) => setTime(`${String(v).padStart(2, '0')}:${mm}`)} />
+                <WheelPicker label={t('appt.minute')} items={minuteItems(+mm)} value={+mm} onChange={(v) => setTime(`${hh}:${String(v).padStart(2, '0')}`)} />
+              </View>
             </Panel>
             <Text style={{ fontSize: font.label, fontWeight: '600', color: color.text }}>{t('appt.repeatLabel')}</Text>
             <Segmented<string> label={t('appt.repeatLabel')} value={repeat} options={REPEATS.map((r) => ({ value: r, label: repeatLabel(t, r) }))} onChange={setRepeat} />
@@ -152,5 +148,3 @@ export default function AppointmentScreen() {
   );
 }
 
-const btn = (color: { primary: string }) => ({ minHeight: MIN_TOUCH, minWidth: MIN_TOUCH + 8, borderRadius: 14, borderWidth: 2, borderColor: color.primary, alignItems: 'center' as const, justifyContent: 'center' as const });
-const btnText = (color: { primary: string }) => ({ fontSize: font.h2, fontWeight: '800' as const, color: color.primary });

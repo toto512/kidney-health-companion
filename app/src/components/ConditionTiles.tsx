@@ -62,9 +62,19 @@ export function ConditionTiles({ country, condition, conditionLabel, accent, oth
   );
 }
 
+// A big arrow button for the card row. The arrow points the way the page turns: reversed in right-to-left languages (the row itself mirrors there).
+function ArrowBtn({ glyph, label, onPress, disabled, accent }: { glyph: string; label: string; onPress: () => void; disabled?: boolean; accent: string }) {
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled: !!disabled }} disabled={disabled} onPress={onPress}
+      style={{ minHeight: 64, minWidth: 88, paddingHorizontal: 14, borderRadius: 12, borderWidth: 2, borderColor: accent, alignItems: 'center', justifyContent: 'center', opacity: disabled ? 0.3 : 1 }}>
+      <Text importantForAccessibility="no" style={{ fontSize: font.label + 14, lineHeight: font.label + 20, fontWeight: '800', color: accent }}>{glyph}</Text>
+    </Pressable>
+  );
+}
+
 function Row({ items, index, onIndex, onOpen, accent, mine }: { items: TileItem[]; index: number; onIndex: (n: number) => void; onOpen: (i: number) => void; accent: string; mine: string[] }) {
   const color = useColors();
-  const { t } = useI18n();
+  const { t, rtl } = useI18n();
   const ref = useRef<{ scrollTo: (o: { x: number; y?: number; animated?: boolean }) => void } | null>(null);
   const [w, setW] = useState(0);
   const go = useCallback((n: number) => { const c = Math.max(0, Math.min(items.length - 1, n)); onIndex(c); ref.current?.scrollTo({ x: c * w, animated: true }); }, [items.length, w, onIndex]);
@@ -84,9 +94,9 @@ function Row({ items, index, onIndex, onOpen, accent, mine }: { items: TileItem[
         </ScrollView>
       ) : null}
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-        <SmallBtn label={t('tiles.prev')} accent={accent} disabled={index <= 0} onPress={() => go(index - 1)} />
-        <Text accessibilityLiveRegion="polite" style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{t('tiles.count', { n: index + 1, total: items.length })}</Text>
-        <SmallBtn label={t('tiles.next')} accent={accent} disabled={index >= items.length - 1} onPress={() => go(index + 1)} />
+        <ArrowBtn glyph={rtl ? '→' : '←'} label={t('tiles.prev')} accent={accent} disabled={index <= 0} onPress={() => go(index - 1)} />
+        <Text accessibilityLiveRegion="polite" style={{ flex: 1, textAlign: 'center', fontSize: font.label, fontWeight: '700', color: color.text }}>{t('tiles.count', { n: index + 1, total: items.length })}</Text>
+        <ArrowBtn glyph={rtl ? '←' : '→'} label={t('tiles.next')} accent={accent} disabled={index >= items.length - 1} onPress={() => go(index + 1)} />
       </View>
     </View>
   );

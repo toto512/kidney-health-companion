@@ -116,6 +116,9 @@ export const TILE_SOURCES: Record<string, TileSource> = {
   'us-niams-gout': { country: 'US', publisher: 'NIAMS (US National Institutes of Health)', type: 'government', url: 'https://www.niams.nih.gov/health-topics/gout/diagnosis-treatment-and-steps-to-take', dateText: 'Last Reviewed December 2023', checkedOn: C },
   'uk-gout-treat': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/gout/', dateText: 'Page last reviewed: 24 August 2023', nextReviewDue: '2026-08-24', checkedOn: C },
   'ca-hlbc-gout': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthwise/gout', dateText: 'Adaptation Date: 6/14/2023', checkedOn: C },
+  'uk-salt': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/live-well/eat-well/food-types/salt-in-your-diet/', dateText: 'Page last reviewed: 17 April 2023', nextReviewDue: '2026-04-17', checkedOn: '2026-11-21' },
+  'ca-hlbc-sodium': { country: 'CA', publisher: HLBC, type: 'provincial_government', url: 'https://www.healthlinkbc.ca/healthlinkbc-files/sodium-and-your-health', dateText: 'Last updated February 2, 2026', checkedOn: '2026-11-21' },
+  'uk-chd-prevention': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/coronary-heart-disease/prevention/', dateText: 'Page last reviewed: 17 January 2024', nextReviewDue: '2027-01-17', checkedOn: '2026-11-21' },
   'us-nhlbi-hbp': { country: 'US', publisher: 'NHLBI (US National Institutes of Health)', type: 'government', url: 'https://www.nhlbi.nih.gov/health/high-blood-pressure/treatment', dateText: 'Last updated on April 30, 2024', checkedOn: C },
   'uk-hbp': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/high-blood-pressure/', dateText: 'Page last reviewed: 19 July 2024', nextReviewDue: '2027-07-19', checkedOn: C },
   'uk-pneumonia': { country: 'GB', publisher: NHS, type: 'government', url: 'https://www.nhs.uk/conditions/pneumonia/', dateText: 'Page last reviewed: 17 July 2026', nextReviewDue: '2029-07-17', checkedOn: C },
@@ -362,8 +365,15 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
   },
   hbp: {
     // Canada: the Canada.ca page (modified 2026-02-12) and the HealthLink BC page (current as of September 7, 2022) were read on 2026-11-18.
-    // Neither has a usable line on food, activities, home remedies or named medicines, so every tile is empty.
-    CA: {},
+    // Neither has a usable line on food, activities, home remedies or named medicines, so those two pages add nothing.
+    // 2026-11-21 (food pilot): the HealthLink BC sodium page adds one food line; its source is in PENDING_SOURCES until the verify script says OK.
+    CA: {
+      moderate: [
+        it('ca-hbp-sodium-foods', 'Foods and sodium', 'ca-hlbc-sodium', ['If you eat these foods, eat them less often and in smaller amounts and look for lower sodium versions.'], undefined, [
+          { src: 'ca-hlbc-sodium', quote: 'What foods in Canada contain the most sodium?', list: true, foods: ['Breads, crackers, muffins, cookies, desserts and granola bars', 'Pizza, lasagna, prepared salads, frozen potatoes, frozen appetizers and entrees', 'Deli meats, sausages, canned meats, chicken wings, burgers and meatballs', 'Cheese', 'Packaged and canned soups', 'Sauces and condiments'] },
+        ]),
+      ],
+    },
     US: {
       avoid: [
         it('us-hbp-alcohol', 'Alcohol', 'us-nhlbi-hbp', ['Avoid or limit alcohol.']),
@@ -386,6 +396,9 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
         it('gb-hbp-alcohol', 'Alcohol', 'uk-hbp', ['do not drink too much alcohol – avoid drinking more than 14 alcohol units a week on a regular basis']),
       ],
       moderate: [
+        it('gb-hbp-salty-foods', 'Salty foods', 'uk-salt', ['eat salty foods less often or in small amounts - for example, cured meats and fish, cheese, olives and pickles'], undefined, [
+          { src: 'uk-salt', quote: 'eat salty foods less often or in small amounts - for example, cured meats and fish, cheese, olives and pickles', foods: ['cured meats and fish', 'cheese', 'olives', 'pickles'] },
+        ]),
         it('gb-hbp-caffeine', 'Caffeine', 'uk-hbp', ['do not drink too much caffeine – drinks high in caffeine include coffee, tea and cola']),
       ],
       activity: [
@@ -449,6 +462,15 @@ export const TILES: Record<string, Partial<Record<Country, Tiles>>> = {
       ],
     },
     GB: {
+      avoid: [
+        it('gb-hd-binge', 'Binge drinking', 'uk-chd-prevention', ['Always avoid binge drinking, as this increases the risk of a heart attack.']),
+      ],
+      moderate: [
+        it('gb-hd-satfat', 'Foods high in saturated fat', 'uk-chd-prevention', ['Foods high in saturated fat include'], undefined, [
+          { src: 'uk-chd-prevention', quote: 'Foods high in saturated fat include', list: true, foods: ['meat pies', 'sausages and fatty cuts of meat', 'butter', 'ghee - a type of butter often used in Indian cooking', 'lard', 'cream', 'hard cheese', 'cakes and biscuits', 'foods that contain coconut or palm oil'] },
+        ]),
+        it('gb-hd-alcohol', 'Recommended limits', 'uk-chd-prevention', ['If you drink, do not exceed the maximum recommended limits.']),
+      ],
       activity: [
         it('gb-hd-exercise', 'Regular exercise', 'uk-chd-treat', ['doing regular exercise, will also reduce your future risk of heart disease']),
         it('gb-hd-smoking', 'Stopping smoking', 'uk-chd-treat', ['stopping smoking after a heart attack quickly reduces your risk']),
@@ -2319,7 +2341,9 @@ export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !
 export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
 // Empty: every source passed the verify run on 8ff30b1 (189 checked, 0 not found, 0 redirects, 0 date mismatches).
-export const PENDING_SOURCES: string[] = [];
+// 2026-11-21 food pilot: read through a web-fetch route (the cloud machine cannot reach these sites), so every line below stays hidden until
+// scripts/verify-condition-tiles.mjs reports OK for it on a machine that can reach the sites. Then remove the id from this list.
+export const PENDING_SOURCES: string[] = ['uk-salt', 'ca-hlbc-sodium', 'uk-chd-prevention'];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);
 export const visibleGroups = (i: TileItem) => (i.foodGroups ?? []).filter((g) => groupShown(i.id, g));

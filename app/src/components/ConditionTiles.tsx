@@ -128,7 +128,7 @@ function FoodGroups({ groups, accent }: { groups: FoodGroup[]; accent: string })
         const gs = TILE_SOURCES[g.src];
         return (
           <View key={i} style={{ gap: 6, borderLeftWidth: 4, borderLeftColor: accent, paddingLeft: 10 }}>
-            <Text style={{ fontSize: font.body, lineHeight: 26, color: color.text }}>{'“'}{g.quote}{g.list ? ':' : ''}{'”'}</Text>
+            <Text style={{ fontSize: font.body, lineHeight: 26, color: color.text }}>{'“'}{g.quote}{g.list && !/[?:]$/.test(g.quote) ? ':' : ''}{'”'}</Text>
             {g.list ? <Text style={{ fontSize: font.body, color: color.muted }}>{t('tiles.listOnPage')}</Text> : null}
             {g.list ? g.foods.map((f) => <Text key={f} style={{ fontSize: font.body, color: color.text }}>{'• '}{f}</Text>) : null}
             <Text style={{ fontSize: font.body, color: color.muted }}>{t('tiles.foodFrom', { source: gs.publisher })}</Text>

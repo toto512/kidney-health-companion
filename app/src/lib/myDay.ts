@@ -13,7 +13,7 @@ export async function addTask(v: TaskValid): Promise<'ok' | 'limit' | 'duplicate
   const { error } = await supabase.from('my_day_tasks').insert({ user_id: u.user.id, ...v });
   if (!error) return 'ok';
   if (error.code === '23505') return 'duplicate';
-  return error.code === '23514' && /up to 20/i.test(error.message) ? 'limit' : 'error';
+  return error.code === '23514' && /up to \d+ tasks/i.test(error.message) ? 'limit' : 'error';
 }
 // A menu task keeps its words; only a typed task can change its title.
 export async function updateTask(id: string, v: TaskValid): Promise<boolean> {

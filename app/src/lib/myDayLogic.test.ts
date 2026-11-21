@@ -62,13 +62,14 @@ describe('template menu', () => {
   it('the database allows exactly these templates, times, days, limits and title length', () => {
     const base = readFileSync(new URL('../../../supabase/migrations/0013_my_day.sql', import.meta.url), 'utf8');
     const more = readFileSync(new URL('../../../supabase/migrations/0014_my_day_more_templates.sql', import.meta.url), 'utf8');
+    const limit = readFileSync(new URL('../../../supabase/migrations/0015_my_day_limit_30.sql', import.meta.url), 'utf8');
     const list = (sql: string, re: RegExp) => [...(sql.match(re)?.[1] ?? '').matchAll(/'([a-z-]+)'/g)].map((m) => m[1]);
     expect(list(more, /template_key in \(([^;]*?)\)\);/)).toEqual(TEMPLATES.map((t) => t.key));
     expect(list(more, /time_of_day in \(([^)]*)\)/)).toEqual([...TIMES]);
     expect(base).toContain(`days between 1 and ${EVERY_DAY}`);
     expect(base).toContain(`length(title) between 1 and ${MAX_TITLE}`);
-    expect(base).toContain(`>= ${MAX_TASKS} then`);
-    expect(base).toContain(`up to ${MAX_TASKS} tasks`);
+    expect(limit).toContain(`>= ${MAX_TASKS} then`);
+    expect(limit).toContain(`up to ${MAX_TASKS} tasks`);
   });
 });
 
@@ -99,10 +100,10 @@ describe('validateTask', () => {
       validateTask({ ...base, time: 'x' }), validateTask({ ...base, days: 0 }),
     ]) { expect(e.ok).toBe(false); if (!e.ok) expect(trError(t as never, e.error), e.error).toMatch(/^T:err\.myday/); }
   });
-  it('the list holds at most 20 tasks', () => {
+  it('the list holds at most 30 tasks', () => {
     expect(canAddMore(MAX_TASKS - 1)).toBe(true);
     expect(canAddMore(MAX_TASKS)).toBe(false);
-    expect([slotsLeft(0), slotsLeft(18), slotsLeft(MAX_TASKS), slotsLeft(25)]).toEqual([20, 2, 0, 0]);
+    expect([slotsLeft(0), slotsLeft(28), slotsLeft(MAX_TASKS), slotsLeft(35)]).toEqual([30, 2, 0, 0]);
   });
 });
 
@@ -177,7 +178,8 @@ describe('habits, chores and the menu under each heading', () => {
     expect(menuAt('bedtime').map((t) => t.key)).toEqual(['night-medicines', 'walkways', 'clothes']);
     expect(TIMES.flatMap((x) => menuAt(x)).length).toBe(MENU.length);
   });
-  it('a full day of the menu is exactly the 20-task limit', () => {
-    expect(MENU.length).toBe(MAX_TASKS);
+  it('the whole menu fits under the limit with room for the person\'s own tasks', () => {
+    expect(MENU.length).toBeLessThan(MAX_TASKS);
+    expect(MAX_TASKS - MENU.length).toBeGreaterThanOrEqual(10);
   });
 });

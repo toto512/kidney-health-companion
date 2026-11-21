@@ -2,7 +2,7 @@
 // The list is a reminder the person ticks. Nothing here tracks doses, sets amounts or alerts anyone.
 import { Lang, localeTag } from '../i18n/core';
 
-export const MAX_TASKS = 20;
+export const MAX_TASKS = 30;
 export const MAX_TITLE = 60;
 export const TIMES = ['morning', 'midday', 'afternoon', 'evening', 'bedtime'] as const;
 export type TimeOfDay = (typeof TIMES)[number];

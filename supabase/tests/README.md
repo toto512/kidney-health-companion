@@ -15,3 +15,5 @@ Migration 0010 (emergency_contacts, "My people"): after the stub, run `psql -f .
 Migration 0013 (my_day_tasks and my_day_done, "My day"): after the stub, run `psql -f ../migrations/0013_my_day.sql && psql -f 0013_my_day.test.sql`. It checks owner-only rows, one name per task (menu or typed), each menu task once, the 20-task limit, the tick day window (today plus or minus 2 days), that only title, time and days can be updated, the two-step rule and that anon is blocked.
 
 Migration 0014 (My day: more menu tasks and an Afternoon time of day): after the stub, 0013 and its test, run `psql -f 0014_my_day_more_templates.test.sql`. It runs 0014 twice and checks that the new template keys, a kept older key and the Afternoon time are accepted, and that an unknown template, a second copy of a template and an unknown time are refused.
+
+Migration 0015 (My day: 30-task limit): after the stub, 0013 and 0014, run `psql -f 0015_my_day_limit_30.test.sql`. It runs 0015 twice, adds 30 tasks, checks the 31st is refused with the 30-task message and that another person is unaffected.

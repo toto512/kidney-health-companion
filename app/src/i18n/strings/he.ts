@@ -343,6 +343,8 @@ export const he: Record<Key, string> = {
   "cond.disagree": "המצבים שלכם עשויים לתת עצות שונות לגבי אותו מזון. אם כך, פעלו לפי העצה המחמירה יותר ושאלו את צוות הטיפול שלכם.",
   "tiles.stricter": "מצב אחר שלכם מחמיר יותר לגבי {food}: {conditions}.",
   "tiles.askCare": "שאלו את צוות הטיפול שלכם.",
+  "tiles.showAll": "הצגת כולם ({n})",
+  "tiles.showFewer": "הצגת פחות",
   "tiles.noHome": "אף דף רשמי לא מציין תרופת סבתא.",
   "tiles.askDoctor": "שאלו את הרופא או הרוקח שלכם. זה לא ייעוץ רפואי.",
   "tiles.why": "למה זה כאן: זה מה שאומר דף רשמי על {cond}.",

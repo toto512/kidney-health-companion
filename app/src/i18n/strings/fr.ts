@@ -343,6 +343,8 @@ export const fr: Record<Key, string> = {
   "cond.disagree": "Vos maladies peuvent donner des conseils différents pour un même aliment. Dans ce cas, suivez le conseil le plus strict et demandez à votre équipe de soins.",
   "tiles.stricter": "Une autre de vos maladies est plus stricte pour {food} : {conditions}.",
   "tiles.askCare": "Demandez à votre équipe de soins.",
+  "tiles.showAll": "Tout afficher ({n})",
+  "tiles.showFewer": "Afficher moins",
   "tiles.noHome": "Aucune page officielle ne nomme de remède à la maison.",
   "tiles.askDoctor": "Demandez à votre médecin ou à votre pharmacien. Ce n'est pas un avis médical.",
   "tiles.why": "Pourquoi c'est ici : voici ce que dit une page officielle sur {cond}.",

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
-import { Body } from '@/components/ui';
+import { BigButton, Body } from '@/components/ui';
 import { TILE_KEYS, TILE_SOURCES, tileItems, visibleGroups, type FoodGroup, type TileItem, type TileKey } from '@/content/conditionTiles';
 import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
@@ -132,7 +132,7 @@ function FoodGroups({ groups, accent, tile, condition, country, others }: { grou
           <View key={i} style={{ gap: 6, borderLeftWidth: 4, borderLeftColor: accent, paddingLeft: 10 }}>
             <Text style={{ fontSize: font.body, lineHeight: 26, color: color.text }}>{'“'}{g.quote}{g.list && !/[?:]$/.test(g.quote) ? ':' : ''}{'”'}</Text>
             {g.list ? <Text style={{ fontSize: font.body, color: color.muted }}>{t('tiles.listOnPage')}</Text> : null}
-            {g.list ? g.foods.map((f) => <Text key={f} style={{ fontSize: font.body, color: color.text }}>{'• '}{f}</Text>) : null}
+            {g.list ? <FoodList foods={g.foods} /> : null}
             {stricter.length ? (
               <View style={{ gap: 4, borderWidth: 2, borderColor: color.danger, borderRadius: 10, padding: 10 }}>
                 {stricter.map((x) => <Text key={x.food} style={{ fontSize: font.body, lineHeight: 26, color: color.text }}>{t('tiles.stricter', { food: x.food, conditions: x.conditions.join(', ') })}</Text>)}
@@ -147,6 +147,24 @@ function FoodGroups({ groups, accent, tile, condition, country, others }: { grou
           </View>
         );
       })}
+    </View>
+  );
+}
+
+export const TOP_FOODS = 5;
+
+// A long list on an official page shows its first five foods, then a big plain button for people who want all of them.
+function FoodList({ foods }: { foods: string[] }) {
+  const color = useColors();
+  const { t } = useI18n();
+  const [all, setAll] = useState(false);
+  const shown = all || foods.length <= TOP_FOODS ? foods : foods.slice(0, TOP_FOODS);
+  return (
+    <View style={{ gap: 6 }}>
+      {shown.map((f) => <Text key={f} style={{ fontSize: font.body, lineHeight: 26, color: color.text }}>{'• '}{f}</Text>)}
+      {foods.length > TOP_FOODS ? (
+        <BigButton variant="secondary" label={all ? t('tiles.showFewer') : t('tiles.showAll', { n: foods.length })} onPress={() => setAll(!all)} />
+      ) : null}
     </View>
   );
 }

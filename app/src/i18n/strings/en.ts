@@ -342,6 +342,8 @@ export const en = {
   "cond.disagree": "Your conditions can give different advice about the same food. If they do, follow the stricter advice and ask your care team.",
   "tiles.stricter": "Another condition of yours is stricter about {food}: {conditions}.",
   "tiles.askCare": "Ask your care team.",
+  "tiles.showAll": "Show all {n}",
+  "tiles.showFewer": "Show fewer",
   "tiles.noHome": "No official page names a home remedy.",
   "tiles.askDoctor": "Ask your doctor or pharmacist. This is not medical advice.",
   "tiles.why": "Why this is here: this is what an official page for {cond} says.",

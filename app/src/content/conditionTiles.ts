@@ -2341,9 +2341,8 @@ export const namesMedicine = (i: TileItem, key?: TileKey) => key === 'meds' || !
 export const hiddenAsOld = (i: TileItem, key?: TileKey, now: Date = new Date()) => namesMedicine(i, key) && pageIsOld(i.src, now);
 // Sources whose lines are new and not yet confirmed by James's verify script (OK against the live page). Everything from them stays hidden; remove an id here once the script says OK.
 // Empty: every source passed the verify run on 8ff30b1 (189 checked, 0 not found, 0 redirects, 0 date mismatches).
-// 2026-11-21 food pilot: read through a web-fetch route (the cloud machine cannot reach these sites), so every line below stays hidden until
-// scripts/verify-condition-tiles.mjs reports OK for it on a machine that can reach the sites. Then remove the id from this list.
-export const PENDING_SOURCES: string[] = ['uk-salt', 'ca-hlbc-sodium', 'uk-chd-prevention'];
+// 2026-11-21 food pilot sources (uk-salt, ca-hlbc-sodium, uk-chd-prevention) passed scripts/verify-condition-tiles.mjs (OK 1018, NOT FOUND 0), so they are shown.
+export const PENDING_SOURCES: string[] = [];
 const shown = (i: TileItem, key?: TileKey) => !UNVERIFIED.includes(i.id) && !PENDING_SOURCES.includes(i.src) && !hiddenAsOld(i, key);
 export const groupShown = (itemId: string, g: FoodGroup) => !UNVERIFIED.includes(`${itemId}@${g.src}`) && !PENDING_SOURCES.includes(g.src);
 export const visibleGroups = (i: TileItem) => (i.foodGroups ?? []).filter((g) => groupShown(i.id, g));

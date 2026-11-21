@@ -11,7 +11,7 @@ import { canAddMore, groupByTime, localDateKey, progress, Task, TemplateLink, te
 import { font, MIN_TOUCH, useColors } from '@/theme/tokens';
 
 // The tool a row can open. The words are the same ones the Today cards use.
-const TOOL_NAME: Record<TemplateLink, Key> = { '/feature/medications': 'cat.medications', '/feature/blood-pressure': 'today.bpTitle', '/feature/my-people': 'today.peopleTitle' };
+const TOOL_NAME: Record<TemplateLink, Key> = { '/feature/medications': 'cat.medications', '/feature/blood-pressure': 'today.bpTitle', '/feature/my-people': 'today.peopleTitle', '/feature/conditions': 'today.conditionsTitle' };
 
 // Today's list. The person ticks each task themselves; a tick can be undone. Nothing here tracks doses or alerts anyone.
 export default function MyDay() {

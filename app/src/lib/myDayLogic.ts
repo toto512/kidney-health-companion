@@ -22,12 +22,12 @@ export const localDateKey = (d: Date): string =>
 
 // Menu templates. The words come from the language files (myday.tpl.<key>). No amounts: the person adds any number themselves.
 // `link` is an existing screen the row can open; the tick is always manual.
-export type TemplateLink = '/feature/medications' | '/feature/blood-pressure' | '/feature/my-people';
+export type TemplateLink = '/feature/medications' | '/feature/blood-pressure' | '/feature/my-people' | '/feature/conditions';
 export const TEMPLATES = [
   { key: 'medicines', time: 'morning', days: EVERY_DAY, link: '/feature/medications' },
   { key: 'blood-pressure', time: 'morning', days: EVERY_DAY, link: '/feature/blood-pressure' },
   { key: 'meal', time: 'midday', days: EVERY_DAY },
-  { key: 'water', time: 'midday', days: EVERY_DAY },
+  { key: 'water', time: 'midday', days: EVERY_DAY, link: '/feature/conditions' }, // Fluid advice from the official condition pages. No target.
   { key: 'walk', time: 'midday', days: EVERY_DAY },
   { key: 'call', time: 'evening', days: EVERY_DAY, link: '/feature/my-people' },
   { key: 'bed', time: 'bedtime', days: EVERY_DAY },
@@ -38,6 +38,11 @@ export const TEMPLATES = [
   { key: 'appointments', time: 'midday', days: 1 }, // Monday
 ] as const satisfies readonly { key: string; time: TimeOfDay; days: number; link?: TemplateLink }[];
 export type TemplateKey = (typeof TEMPLATES)[number]['key'];
+// Daily habits repeat every day with no day choice. Every other menu task is a chore with its own days.
+export const HABIT_KEYS = ['medicines', 'blood-pressure', 'meal', 'water', 'bed'] as const satisfies readonly TemplateKey[];
+export const isHabit = (key: string): boolean => (HABIT_KEYS as readonly string[]).includes(key);
+// The menu under a time-of-day heading: only the tasks whose usual time is that heading, so nothing is filed under the wrong time.
+export const menuAt = (time: TimeOfDay): Template[] => (TEMPLATES as readonly Template[]).filter((t) => t.time === time);
 export type Template = { key: TemplateKey; time: TimeOfDay; days: number; link?: TemplateLink };
 export const templateFor = (key: string | null): Template | undefined => (TEMPLATES as readonly Template[]).find((t) => t.key === key);
 

@@ -6,7 +6,7 @@ import { BigButton, Body, DisclaimerFooter, Field, H1, H2, Panel, Screen, Segmen
 import { templateName, timeLabel, trError } from '@/i18n/labels';
 import { useI18n } from '@/i18n/I18nProvider';
 import { addTask, deleteTask, loadTasks, updateTask } from '@/lib/myDay';
-import { canAddMore, daysSummary, EVERY_DAY, MAX_TASKS, MAX_TITLE, slotsLeft, Task, TEMPLATES, TemplateKey, TimeOfDay, TIMES, validateTask } from '@/lib/myDayLogic';
+import { canAddMore, daysSummary, EVERY_DAY, isHabit, MAX_TASKS, MAX_TITLE, menuAt, slotsLeft, Task, Template, TEMPLATES, TemplateKey, TimeOfDay, TIMES, validateTask } from '@/lib/myDayLogic';
 import { font, MIN_TOUCH, useColors } from '@/theme/tokens';
 
 type Form = { id: string | null; template: string | null; title: string; time: TimeOfDay; days: number };
@@ -64,7 +64,7 @@ export default function MyDayTasks() {
     let failure = '';
     const added: TemplateKey[] = [];
     for (const key of pick.keys) {
-      const r = validateTask({ template: key, title: '', time: pick.time, days: pick.days });
+      const r = validateTask({ template: key, title: '', time: pick.time, days: isHabit(key) ? EVERY_DAY : pick.days });
       if (!r.ok) { failure = trError(t, r.error); break; }
       const res = await addTask(r.value);
       if (res === 'ok' || res === 'duplicate') { added.push(key); continue; }
@@ -116,32 +116,42 @@ export default function MyDayTasks() {
           </Panel>
         ))}
 
-        {pick && list ? (
-          <Panel>
-            <H2>{t('myday.pickTitle', { time: timeLabel(t, pick.time) })}</H2>
-            <Body>{t('myday.pickIntro')}</Body>
-            <Body>{t('myday.pickSlots', { n: room })}</Body>
-            {room > 0 ? <BigButton variant="secondary" label={t('myday.addOwn')} onPress={() => { setErr(''); setForm({ id: null, template: null, title: '', time: pick.time, days: pick.days }); setPick(null); }} /> : <Body tone="danger">{t('myday.pickFull')}</Body>}
-            {menu.length === 0 ? <Body>{t('myday.pickAllAdded')}</Body> : null}
-            {menu.map((tp) => {
-              const on = pick.keys.includes(tp.key);
-              const blocked = !on && pick.keys.length >= room;
-              return (
-                <Pressable key={tp.key} accessibilityRole="checkbox" accessibilityState={{ checked: on, disabled: blocked }} accessibilityLabel={templateName(t, tp.key)} disabled={blocked}
-                  onPress={() => { setErr(''); setPick({ ...pick, keys: on ? pick.keys.filter((k) => k !== tp.key) : [...pick.keys, tp.key] }); }}
-                  style={{ minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 16, opacity: blocked ? 0.4 : 1 }}>
-                  <View accessible={false} style={{ width: 40, height: 40, borderRadius: 10, borderWidth: 3, borderColor: color.primary, backgroundColor: on ? color.primary : color.bg, alignItems: 'center', justifyContent: 'center' }}>
-                    {on ? <Text style={{ color: color.primaryText, fontSize: 26, fontWeight: '800' }}>✓</Text> : null}
-                  </View>
-                  <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: color.text }}>{templateName(t, tp.key)}</Text>
-                </Pressable>
-              );
-            })}
-            <DayPicker label={t('myday.daysLabel')} value={pick.days} onChange={(v) => { setPick({ ...pick, days: v }); setErr(''); }} />
-            <BigButton label={busy ? t('myday.saving') : t('myday.pickSave')} disabled={busy} onPress={() => void savePick()} />
-            <BigButton variant="secondary" label={t('myday.cancel')} onPress={() => { setPick(null); setErr(''); }} />
-          </Panel>
-        ) : null}
+        {pick && list ? (() => {
+          const available = menuAt(pick.time).filter((tp) => !list.some((x) => x.template_key === tp.key));
+          const habits = available.filter((tp) => isHabit(tp.key));
+          const chores = available.filter((tp) => !isHabit(tp.key));
+          const row = (tp: Template) => {
+            const on = pick.keys.includes(tp.key);
+            const blocked = !on && pick.keys.length >= room;
+            return (
+              <Pressable key={tp.key} accessibilityRole="checkbox" accessibilityState={{ checked: on, disabled: blocked }} accessibilityLabel={templateName(t, tp.key)} disabled={blocked}
+                onPress={() => { setErr(''); setPick({ ...pick, keys: on ? pick.keys.filter((k) => k !== tp.key) : [...pick.keys, tp.key] }); }}
+                style={{ minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 16, opacity: blocked ? 0.4 : 1 }}>
+                <View accessible={false} style={{ width: 40, height: 40, borderRadius: 10, borderWidth: 3, borderColor: color.primary, backgroundColor: on ? color.primary : color.bg, alignItems: 'center', justifyContent: 'center' }}>
+                  {on ? <Text style={{ color: color.primaryText, fontSize: 26, fontWeight: '800' }}>✓</Text> : null}
+                </View>
+                <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: color.text }}>{templateName(t, tp.key)}</Text>
+              </Pressable>
+            );
+          };
+          return (
+            <Panel>
+              <H2>{t('myday.pickTitle', { time: timeLabel(t, pick.time) })}</H2>
+              <Body>{t('myday.pickIntro')}</Body>
+              <Body>{t('myday.pickSlots', { n: room })}</Body>
+              {room > 0 ? <BigButton variant="secondary" label={t('myday.addOwn')} onPress={() => { setErr(''); setForm({ id: null, template: null, title: '', time: pick.time, days: pick.days }); setPick(null); }} /> : <Body tone="danger">{t('myday.pickFull')}</Body>}
+              {available.length === 0 ? <Body>{t('myday.pickAllAdded')}</Body> : null}
+              {habits.length > 0 ? <H2>{t('myday.pickHabits')}</H2> : null}
+              {habits.length > 0 ? <Body>{t('myday.pickHabitsNote')}</Body> : null}
+              {habits.map(row)}
+              {chores.length > 0 ? <H2>{t('myday.pickChores')}</H2> : null}
+              {chores.map(row)}
+              {chores.length > 0 ? <DayPicker label={t('myday.daysLabel')} value={pick.days} onChange={(v) => { setPick({ ...pick, days: v }); setErr(''); }} /> : null}
+              <BigButton label={busy ? t('myday.saving') : t('myday.pickSave')} disabled={busy} onPress={() => void savePick()} />
+              <BigButton variant="secondary" label={t('myday.cancel')} onPress={() => { setPick(null); setErr(''); }} />
+            </Panel>
+          );
+        })() : null}
 
         {form ? (
           <Panel>

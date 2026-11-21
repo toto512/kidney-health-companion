@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { DICTS } from '../i18n/strings';
 import { LANGUAGES, translate } from '../i18n/core';
 import { trError } from '../i18n/labels';
-import { canAddMore, dayBit, DAY_BITS, daysSummary, dueTasks, EVERY_DAY, groupByTime, isDueOn, isValidDays, localDateKey, MAX_TASKS, MAX_TITLE, progress, slotsLeft, Task, TEMPLATES, TIMES, toggleDay, validateTask, weekdayName } from './myDayLogic';
+import { canAddMore, dayBit, DAY_BITS, daysSummary, dueTasks, EVERY_DAY, groupByTime, isDueOn, isValidDays, localDateKey, MAX_TASKS, MAX_TITLE, progress, slotsLeft, HABIT_KEYS, isHabit, menuAt, templateFor, Task, TEMPLATES, TIMES, toggleDay, validateTask, weekdayName } from './myDayLogic';
 
 const mon = new Date(2024, 0, 1); // Monday 1 January 2024
 const sun = new Date(2024, 0, 7);
@@ -150,5 +150,22 @@ describe('every My day word resolves, on every screen, in every language', () =>
       expect(v, `${l.code} ${k}`).toBeTruthy();
       expect(translate(DICTS, l.code, k), `${l.code} ${k}`).not.toBe(k);
     }
+  });
+});
+
+describe('habits, chores and the menu under each heading', () => {
+  it('bedtime safety and the fluid item are daily habits; the rest are chores with days', () => {
+    expect(isHabit('bed')).toBe(true);
+    expect(isHabit('water')).toBe(true);
+    expect(isHabit('laundry')).toBe(false);
+    expect(TEMPLATES.filter((t) => isHabit(t.key)).map((t) => t.key).sort()).toEqual([...HABIT_KEYS].sort());
+  });
+  it('drink water now opens the conditions screen, with no fluid target', () => {
+    expect(templateFor('water')?.link).toBe('/feature/conditions');
+  });
+  it('each heading shows only the menu tasks whose usual time it is', () => {
+    expect(menuAt('bedtime').map((t) => t.key)).toEqual(['bed']);
+    expect(menuAt('morning').map((t) => t.key)).toEqual(['medicines', 'blood-pressure', 'pillbox']);
+    expect(TIMES.flatMap((x) => menuAt(x)).length).toBe(TEMPLATES.length);
   });
 });

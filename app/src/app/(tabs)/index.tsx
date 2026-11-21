@@ -1,6 +1,6 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
+import { AppState, Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { BigButton, Card, CardNote, CardValue, DisclaimerFooter, H1, H2, Screen, Suggestion } from '@/components/ui';
 import { ContactRow } from '@/components/ContactRow';
 import { TrackingSuggestions } from '@/components/TrackingSuggestions';
@@ -9,6 +9,7 @@ import { loadDone, loadTasks } from '@/lib/myDay';
 import { localDateKey, progress } from '@/lib/myDayLogic';
 import { dismiss, wasDismissed } from '@/lib/suggestions';
 import { takeFlash } from '@/lib/flash';
+import { nowHeading } from '@/i18n/core';
 import { useI18n } from '@/i18n/I18nProvider';
 import { supabase } from '@/lib/supabase';
 import { displayPhone, relationshipLabel } from '@/lib/contactLogic';
@@ -22,7 +23,18 @@ type MyDayState = { done: number; total: number; any: boolean } | null | 'error'
 type Latest = { systolic: number; diastolic: number; taken_at: string } | null | 'error';
 
 export default function Today() {
-  const { t, date } = useI18n();
+  const { t, date, lang } = useI18n();
+  // The heading shows the real weekday, date and 24-hour time. It ticks on each minute and refreshes when the app returns to the foreground or this screen comes into view.
+  const [clock, setClock] = useState(() => new Date());
+  useEffect(() => {
+    let id: ReturnType<typeof setTimeout>;
+    const tick = () => setClock(new Date());
+    const schedule = () => { id = setTimeout(() => { tick(); schedule(); }, 60000 - (Date.now() % 60000) + 50); };
+    schedule();
+    const sub = AppState.addEventListener('change', (s) => { if (s === 'active') tick(); });
+    return () => { clearTimeout(id); sub.remove(); };
+  }, []);
+  useFocusEffect(useCallback(() => { setClock(new Date()); }, []));
   const [bp, setBp] = useState<Latest>(null);
   const [loaded, setLoaded] = useState(false);
   const color = useColors();
@@ -81,7 +93,7 @@ export default function Today() {
   return (
     <ScrollView>
       <Screen>
-        <H1>{t('today.title')}</H1>
+        <H1>{nowHeading(clock, lang)}</H1>
         {flash ? (
           <Pressable accessibilityRole="alert" accessibilityLiveRegion="polite" accessibilityLabel={t('today.dismissHint', { message: flash })} onPress={() => setFlashMsg(null)}
             style={{ backgroundColor: color.primaryTint, borderColor: color.primary, borderWidth: 2, borderRadius: 16, padding: space.m, minHeight: 56, justifyContent: 'center' }}>

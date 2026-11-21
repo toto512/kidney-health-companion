@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_LANG, format, formatDate, isRtl, languageFromTags, LANGUAGES, resolveLanguage, translate } from './core';
+import { DEFAULT_LANG, format, formatDate, isRtl, languageFromTags, LANGUAGES, resolveLanguage, translate, nowHeading } from './core';
 import { DICTS } from './strings';
 import { en } from './strings/en';
 
@@ -94,5 +94,23 @@ describe('phone and emergency numbers in right-to-left text', () => {
   it('Hebrew emergency call text contains the number unchanged inside an isolate', () => {
     const out = translate(DICTS, 'he', 'emergency.callNow', { number: '9-1-1' });
     expect(out).toBe('להתקשר עכשיו אל ⁦9-1-1⁩');
+  });
+});
+
+describe('Today heading with the real day and time', () => {
+  const thu = new Date(2026, 10, 19, 21, 51); // Thursday 19 November 2026, 21:51 local
+  const strip = (s: string) => s.replace(/[\u2066\u2069]/g, '');
+  it('English shows the weekday, date and 24-hour time', () => {
+    expect(strip(nowHeading(thu, 'en'))).toBe('Thursday, November 19, 21:51');
+  });
+  it('midnight is 00:05 and noon 12:00, never 24:05 or AM/PM', () => {
+    expect(strip(nowHeading(new Date(2026, 10, 20, 0, 5), 'en'))).toMatch(/, 00:05$/);
+    expect(strip(nowHeading(new Date(2026, 10, 20, 12, 0), 'en'))).toMatch(/, 12:00$/);
+    for (const l of LANGUAGES) expect(strip(nowHeading(new Date(2026, 10, 20, 15, 7), l.code)), l.code).not.toMatch(/AM|PM|\bam\b|\bpm\b/i);
+  });
+  it('every language gives a different weekday name and Latin digits, with the time kept left-to-right', () => {
+    const heads = LANGUAGES.map((l) => nowHeading(thu, l.code));
+    expect(new Set(heads.map(strip)).size).toBe(LANGUAGES.length);
+    for (const h of heads) { expect(h).toContain('\u206621:51\u2069'); expect(h).toMatch(/19/); }
   });
 });

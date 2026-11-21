@@ -4,6 +4,7 @@ import { Body } from '@/components/ui';
 import { TILE_KEYS, TILE_SOURCES, tileItems, visibleGroups, type FoodGroup, type TileItem, type TileKey } from '@/content/conditionTiles';
 import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
+import { stricterElsewhere } from '@/lib/foodConflicts';
 import { loadMyMeds } from '@/lib/userMedications';
 import type { Country } from '@/lib/profile';
 import { AccentName, font, mix, useColors } from '@/theme/tokens';
@@ -21,7 +22,7 @@ function SmallBtn({ label, a11y, onPress, disabled, accent }: { label: string; a
 
 // Five tiles for one condition in the person's country. Each opens a swipe row (one card per item, Previous and Next buttons, "2 of 6", no automatic movement).
 // Tapping a card shows the exact official quote with its source, link and check date. Back returns to the same card.
-export function ConditionTiles({ country, condition, conditionLabel, accent }: { country: Country; condition: string; conditionLabel: string; accent: AccentName }) {
+export function ConditionTiles({ country, condition, conditionLabel, accent, others = [] }: { country: Country; condition: string; conditionLabel: string; accent: AccentName; others?: { id: string; label: string }[] }) {
   const color = useColors();
   const { t } = useI18n();
   const ac = color.accent[accent];
@@ -33,7 +34,7 @@ export function ConditionTiles({ country, condition, conditionLabel, accent }: {
 
   if (detail) {
     const item = tileItems(condition, country, detail.tile)[detail.i];
-    if (item) return <Detail item={item} tile={detail.tile} conditionLabel={conditionLabel} accent={ac} mine={mine} onBack={() => setDetail(null)} />;
+    if (item) return <Detail item={item} tile={detail.tile} condition={condition} country={country} others={others} conditionLabel={conditionLabel} accent={ac} mine={mine} onBack={() => setDetail(null)} />;
   }
 
   return (
@@ -91,7 +92,7 @@ function Row({ items, index, onIndex, onOpen, accent, mine }: { items: TileItem[
   );
 }
 
-function Detail({ item, tile, conditionLabel, accent, mine, onBack }: { item: TileItem; tile: TileKey; conditionLabel: string; accent: string; mine: string[]; onBack: () => void }) {
+function Detail({ item, tile, condition, country, others, conditionLabel, accent, mine, onBack }: { item: TileItem; tile: TileKey; condition: string; country: Country; others: { id: string; label: string }[]; conditionLabel: string; accent: string; mine: string[]; onBack: () => void }) {
   const color = useColors();
   const { t } = useI18n();
   const s = TILE_SOURCES[item.src];
@@ -111,14 +112,14 @@ function Detail({ item, tile, conditionLabel, accent, mine, onBack }: { item: Ti
       <Pressable accessibilityRole="link" onPress={() => Linking.openURL(s.url)} style={{ minHeight: 56, justifyContent: 'center' }}>
         <Text style={{ fontSize: font.label, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>{t('cond.openPage')}</Text>
       </Pressable>
-      {visibleGroups(item).length ? <FoodGroups groups={visibleGroups(item)} accent={accent} /> : null}
+      {visibleGroups(item).length ? <FoodGroups groups={visibleGroups(item)} accent={accent} tile={tile} condition={condition} country={country} others={others} /> : null}
       <Text style={{ fontSize: font.body, color: color.muted }}>{t('tiles.askDoctor')}</Text>
     </View>
   );
 }
 
 // Foods an official page names for this card. Each group keeps its own quote, source, link and check date.
-function FoodGroups({ groups, accent }: { groups: FoodGroup[]; accent: string }) {
+function FoodGroups({ groups, accent, tile, condition, country, others }: { groups: FoodGroup[]; accent: string; tile: TileKey; condition: string; country: Country; others: { id: string; label: string }[] }) {
   const color = useColors();
   const { t } = useI18n();
   return (
@@ -126,11 +127,18 @@ function FoodGroups({ groups, accent }: { groups: FoodGroup[]; accent: string })
       <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: accent }}>{t('tiles.foodsNamed')}</Text>
       {groups.map((g, i) => {
         const gs = TILE_SOURCES[g.src];
+        const stricter = stricterElsewhere(g.foods, tile, condition, others, country);
         return (
           <View key={i} style={{ gap: 6, borderLeftWidth: 4, borderLeftColor: accent, paddingLeft: 10 }}>
             <Text style={{ fontSize: font.body, lineHeight: 26, color: color.text }}>{'“'}{g.quote}{g.list && !/[?:]$/.test(g.quote) ? ':' : ''}{'”'}</Text>
             {g.list ? <Text style={{ fontSize: font.body, color: color.muted }}>{t('tiles.listOnPage')}</Text> : null}
             {g.list ? g.foods.map((f) => <Text key={f} style={{ fontSize: font.body, color: color.text }}>{'• '}{f}</Text>) : null}
+            {stricter.length ? (
+              <View style={{ gap: 4, borderWidth: 2, borderColor: color.danger, borderRadius: 10, padding: 10 }}>
+                {stricter.map((x) => <Text key={x.food} style={{ fontSize: font.body, lineHeight: 26, color: color.text }}>{t('tiles.stricter', { food: x.food, conditions: x.conditions.join(', ') })}</Text>)}
+                <Text style={{ fontSize: font.body, fontWeight: '700', color: color.text }}>{t('tiles.askCare')}</Text>
+              </View>
+            ) : null}
             <Text style={{ fontSize: font.body, color: color.muted }}>{t('tiles.foodFrom', { source: gs.publisher })}</Text>
             <Text style={{ fontSize: font.body, color: color.muted }}>{t('cond.reviewed', { page: gs.dateText ?? t('cond.noDate'), checked: gs.checkedOn })}</Text>
             <Pressable accessibilityRole="link" onPress={() => Linking.openURL(gs.url)} style={{ minHeight: 48, justifyContent: 'center' }}>

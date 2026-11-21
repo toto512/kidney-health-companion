@@ -339,6 +339,7 @@ export const es: Record<Key, string> = {
   "tiles.next": "Siguiente",
   "tiles.back": "Volver",
   "tiles.empty": "Ninguna página oficial para esta afección y este país nombra todavía nada aquí.",
+  "tiles.emptyAvoid": "Las páginas oficiales de este país indican alimentos que limitar, no alimentos que evitar. Vea Alimentos con moderación.",
   "tiles.noHome": "Ninguna página oficial nombra un remedio casero.",
   "tiles.askDoctor": "Pregunte a su médico o farmacéutico. Esto no es un consejo médico.",
   "tiles.why": "Por qué está aquí: esto es lo que dice una página oficial sobre {cond}.",

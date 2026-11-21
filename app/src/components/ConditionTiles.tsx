@@ -50,7 +50,7 @@ export function ConditionTiles({ country, condition, conditionLabel, accent }: {
             </Pressable>
             {isOpen ? (
               items.length === 0
-                ? <Body>{k === 'home' ? t('tiles.noHome') : t('tiles.empty')}</Body>
+                ? <Body>{k === 'home' ? t('tiles.noHome') : k === 'avoid' && tileItems(condition, country, 'moderate').length > 0 ? t('tiles.emptyAvoid') : t('tiles.empty')}</Body>
                 : <Row items={items} index={idx[k] ?? 0} onIndex={(n) => setIdx({ ...idx, [k]: n })} onOpen={(i) => setDetail({ tile: k, i })} accent={ac} mine={mine} />
             ) : null}
             {isOpen ? <Text style={{ fontSize: font.body, color: color.muted }}>{t('tiles.askDoctor')}</Text> : null}

@@ -338,6 +338,7 @@ export const en = {
   "tiles.next": "Next",
   "tiles.back": "Back",
   "tiles.empty": "No official page for this condition and country names anything here yet.",
+  "tiles.emptyAvoid": "This country's official pages list foods to limit, not foods to avoid. See Food in moderation.",
   "tiles.noHome": "No official page names a home remedy.",
   "tiles.askDoctor": "Ask your doctor or pharmacist. This is not medical advice.",
   "tiles.why": "Why this is here: this is what an official page for {cond} says.",

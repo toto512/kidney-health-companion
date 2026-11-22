@@ -583,6 +583,7 @@ export const he: Record<Key, string> = {
   "food.searchGroup": "חיפוש בקבוצה הזו",
   "food.searchAll": "חיפוש בכל המזונות",
   "food.moreHint": "מוצגים 40 הראשונים. הקלידו עוד כדי לצמצם את הרשימה.",
+  "food.iconCredit": "תמונות המזון: Twemoji, © Twitter, Inc. ותורמים נוספים, ברישיון CC BY 4.0.",
   "food.clearSearch": "ניקוי החיפוש",
   "food.searchHint": "הקלידו כדי לצמצם את הרשימה",
   "food.choose": "בחרו מזון ({n})",

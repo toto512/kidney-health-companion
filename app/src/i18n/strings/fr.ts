@@ -583,6 +583,7 @@ export const fr: Record<Key, string> = {
   "food.searchGroup": "Chercher dans ce groupe",
   "food.searchAll": "Chercher dans tous les aliments",
   "food.moreHint": "Les 40 premiers sont affichés. Tapez plus de lettres pour réduire la liste.",
+  "food.iconCredit": "Images des aliments : Twemoji, © Twitter, Inc. et autres contributeurs, licence CC BY 4.0.",
   "food.clearSearch": "Effacer la recherche",
   "food.searchHint": "Tapez pour réduire la liste",
   "food.choose": "Choisir un aliment ({n})",

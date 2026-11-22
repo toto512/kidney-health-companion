@@ -582,6 +582,7 @@ export const en = {
   "food.searchGroup": "Search this group",
   "food.searchAll": "Search all foods",
   "food.moreHint": "Showing the first 40. Type more to narrow the list.",
+  "food.iconCredit": "Food pictures: Twemoji, © Twitter, Inc. and other contributors, licensed CC BY 4.0.",
   "food.clearSearch": "Clear search",
   "food.searchHint": "Type to narrow the list",
   "food.choose": "Choose a food ({n})",

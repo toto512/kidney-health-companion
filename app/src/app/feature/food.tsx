@@ -44,7 +44,7 @@ function Groups({ onPick, onOpen }: { onPick: (g: FoodGroup) => void; onOpen: (f
             {found.length === 0 ? <Panel><Body>{t('food.noneInGroup')}</Body></Panel> : found.slice(0, 40).map((f) => (
               <Pressable key={f.id} accessibilityRole="button" accessibilityLabel={`${f.name}, ${t(`foodgrp.${f.group}` as Key)}, ${f.sub}`} onPress={() => onOpen(f)}
                 style={{ minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 8, paddingHorizontal: 14, borderRadius: 14, borderWidth: 2, borderColor: color.border, backgroundColor: color.surface }}>
-                <FoodIcon group={f.group} sub={f.sub} />
+                <FoodIcon food={f} />
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{f.name}</Text>
                   <Text style={{ fontSize: font.body * 0.85, color: color.muted }}>{`${t(`foodgrp.${f.group}` as Key)} › ${f.sub}`}</Text>
@@ -61,7 +61,7 @@ function Groups({ onPick, onOpen }: { onPick: (g: FoodGroup) => void; onOpen: (f
           {FOOD_GROUPS.map((g) => (
             <Pressable key={g} accessibilityRole="button" onPress={() => onPick(g)}
               style={{ flexGrow: 1, flexBasis: '45%', minHeight: 84, justifyContent: 'center', alignItems: 'flex-start', gap: 8, padding: 12, borderRadius: 18, borderWidth: 2, borderColor: color.border, backgroundColor: color.surface }}>
-              <FoodIcon group={g} size={52} />
+              <FoodIcon tile={g} size={60} />
               <Text style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t(`foodgrp.${g}` as Key)}</Text>
             </Pressable>
           ))}
@@ -69,6 +69,7 @@ function Groups({ onPick, onOpen }: { onPick: (g: FoodGroup) => void; onOpen: (f
         </>
         )}
         <BigButton variant="secondary" label={t('profile.backHealth')} onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} />
+        <Text style={{ fontSize: font.body * 0.8, color: color.muted }}>{t('food.iconCredit')}</Text>
         <DisclaimerFooter />
       </Screen>
     </ScrollView>
@@ -119,7 +120,7 @@ function Wheel({ group, selId, setSelId, onBack, onOpen }: { group: FoodGroup; s
                     onLayout={(e) => { ys.current[f.id] = e.nativeEvent.layout.y; }}
                     onPress={() => { if (on) onOpen(f); else setSelId(f.id); }}
                     style={{ minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 6, paddingLeft: 14, paddingRight: 8, margin: 4, borderRadius: 12, borderWidth: on ? 2 : 0, borderColor: color.primary, backgroundColor: on ? color.primaryTint : 'transparent' }}>
-                    <FoodIcon group={f.group} sub={f.sub} />
+                    <FoodIcon food={f} />
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <Text style={{ fontSize: font.label, fontWeight: on ? '800' : '600', color: color.text }}>{f.name}</Text>
                       <Text style={{ fontSize: font.body * 0.85, color: color.muted }}>{f.sub}</Text>
@@ -137,6 +138,7 @@ function Wheel({ group, selId, setSelId, onBack, onOpen }: { group: FoodGroup; s
         )}
         {list.length > 0 ? <Body>{t('food.hint')}</Body> : null}
         <BigButton variant="secondary" label={t('food.backGroups')} onPress={onBack} />
+        <Text style={{ fontSize: font.body * 0.8, color: color.muted }}>{t('food.iconCredit')}</Text>
         <DisclaimerFooter />
       </Screen>
     </ScrollView>

@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Linking, Platform, Pressable, ScrollView, type ScrollViewInstance, Text, View } from 'react-native';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Panel, Screen } from '@/components/ui';
+import { FoodIcon } from '@/components/FoodIcon';
 import { UsdaLookup } from '@/components/UsdaLookup';
 import { Food, FOODS, FOOD_GROUPS, FoodGroup } from '@/content/foods';
 import { useI18n } from '@/i18n/I18nProvider';
@@ -42,9 +43,12 @@ function Groups({ onPick, onOpen }: { onPick: (g: FoodGroup) => void; onOpen: (f
             <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{t('food.choose', { n: String(found.length) })}</Text>
             {found.length === 0 ? <Panel><Body>{t('food.noneInGroup')}</Body></Panel> : found.slice(0, 40).map((f) => (
               <Pressable key={f.id} accessibilityRole="button" accessibilityLabel={`${f.name}, ${t(`foodgrp.${f.group}` as Key)}, ${f.sub}`} onPress={() => onOpen(f)}
-                style={{ minHeight: 64, justifyContent: 'center', paddingVertical: 8, paddingHorizontal: 14, borderRadius: 14, borderWidth: 2, borderColor: color.border, backgroundColor: color.surface }}>
-                <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{f.name}</Text>
-                <Text style={{ fontSize: font.body * 0.85, color: color.muted }}>{`${t(`foodgrp.${f.group}` as Key)} › ${f.sub}`}</Text>
+                style={{ minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 8, paddingHorizontal: 14, borderRadius: 14, borderWidth: 2, borderColor: color.border, backgroundColor: color.surface }}>
+                <FoodIcon group={f.group} sub={f.sub} />
+                <View style={{ flex: 1, minWidth: 0 }}>
+                  <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{f.name}</Text>
+                  <Text style={{ fontSize: font.body * 0.85, color: color.muted }}>{`${t(`foodgrp.${f.group}` as Key)} › ${f.sub}`}</Text>
+                </View>
               </Pressable>
             ))}
             {found.length > 40 ? <Body>{t('food.moreHint')}</Body> : null}
@@ -56,7 +60,8 @@ function Groups({ onPick, onOpen }: { onPick: (g: FoodGroup) => void; onOpen: (f
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
           {FOOD_GROUPS.map((g) => (
             <Pressable key={g} accessibilityRole="button" onPress={() => onPick(g)}
-              style={{ flexGrow: 1, flexBasis: '45%', minHeight: 84, justifyContent: 'center', padding: 12, borderRadius: 18, borderWidth: 2, borderColor: color.border, backgroundColor: color.surface }}>
+              style={{ flexGrow: 1, flexBasis: '45%', minHeight: 84, justifyContent: 'center', alignItems: 'flex-start', gap: 8, padding: 12, borderRadius: 18, borderWidth: 2, borderColor: color.border, backgroundColor: color.surface }}>
+              <FoodIcon group={g} size={52} />
               <Text style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t(`foodgrp.${g}` as Key)}</Text>
             </Pressable>
           ))}
@@ -114,6 +119,7 @@ function Wheel({ group, selId, setSelId, onBack, onOpen }: { group: FoodGroup; s
                     onLayout={(e) => { ys.current[f.id] = e.nativeEvent.layout.y; }}
                     onPress={() => { if (on) onOpen(f); else setSelId(f.id); }}
                     style={{ minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 6, paddingLeft: 14, paddingRight: 8, margin: 4, borderRadius: 12, borderWidth: on ? 2 : 0, borderColor: color.primary, backgroundColor: on ? color.primaryTint : 'transparent' }}>
+                    <FoodIcon group={f.group} sub={f.sub} />
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <Text style={{ fontSize: font.label, fontWeight: on ? '800' : '600', color: color.text }}>{f.name}</Text>
                       <Text style={{ fontSize: font.body * 0.85, color: color.muted }}>{f.sub}</Text>

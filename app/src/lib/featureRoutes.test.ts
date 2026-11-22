@@ -46,3 +46,15 @@ describe('first-login wizard', () => {
     expect(line).toContain("'/feature/my-people'");
   });
 });
+
+describe('My conditions shows only what the person chose', () => {
+  const screen = src('../app/feature/conditions.tsx');
+  it('has no default list of conditions as a fallback', () => {
+    expect(screen).not.toMatch(/CONDITIONS\.map\(/);
+    expect(screen).toContain('picked && picked.length ? cardsFor(picked) : []');
+  });
+  it('says plainly when nothing is chosen or the list cannot be read', () => {
+    expect(screen).toContain("t('cond.nonePicked')");
+    expect(screen).toContain("t('cond.errLoad')");
+  });
+});

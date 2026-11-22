@@ -782,5 +782,7 @@ export const en = {
   "cal.hint.apple": "To use an appointment in Apple Calendar, tap “Add to my calendar” on it, then open the saved file. Calendar will offer to add it.",
   "cal.hint.other": "To use an appointment in another calendar, tap “Add to my calendar” on it, then open the saved file with your calendar app.",
   "cal.hint.generic": "The app does not connect to a calendar yet. “Add to my calendar” on an appointment saves a file that works with most calendars.",
+  "cond.nonePicked": "You have not chosen any conditions yet. Tap “Choose my conditions” to pick the ones that matter to you.",
+  "cond.errLoad": "Could not load your conditions. Try again.",
 } as const;
 export type Key = keyof typeof en;

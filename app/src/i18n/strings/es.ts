@@ -783,4 +783,6 @@ export const es: Record<Key, string> = {
   "cal.hint.apple": "Para usar una cita en el Calendario de Apple, toque «Añadir a mi calendario» en la cita y abra el archivo guardado. Calendario le ofrecerá añadirla.",
   "cal.hint.other": "Para usar una cita en otro calendario, toque «Añadir a mi calendario» en la cita y abra el archivo guardado con su aplicación de calendario.",
   "cal.hint.generic": "La aplicación todavía no se conecta a un calendario. «Añadir a mi calendario» en una cita guarda un archivo que funciona con la mayoría de los calendarios.",
+  "cond.nonePicked": "Todavía no ha elegido ninguna afección. Toque «Elegir mis afecciones» para escoger las que le importan.",
+  "cond.errLoad": "No se pudieron cargar sus afecciones. Inténtelo de nuevo.",
 };

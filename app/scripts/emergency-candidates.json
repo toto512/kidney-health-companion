@@ -27,21 +27,21 @@
     ]
   },
   {
-    "code": "CR",
-    "name": "Costa Rica",
-    "url": "https://www.bomberos.go.cr/transparencia/respuestas-a-solicitudes-comunes/",
-    "quote": "puedes marcar el número de teléfono de emergencia 9-1-1 en cualquier teléfono móvil o fijo en Costa Rica.",
-    "tokens": [
-      "9-1-1"
-    ]
-  },
-  {
     "code": "CI",
     "name": "Côte d'Ivoire",
     "url": "https://www.diplomatie.gouv.ci/numeros-utiles",
     "quote": "185 - SAMU CI",
     "tokens": [
       "185"
+    ]
+  },
+  {
+    "code": "EC",
+    "name": "Ecuador",
+    "url": "https://www.ecu911.gob.ec/servicio-integrado-de-seguridad-ecu-911/",
+    "quote": "han unido esfuerzos para brindar la mejor atención a través de un número único: 9-1-1",
+    "tokens": [
+      "9-1-1"
     ]
   }
 ]

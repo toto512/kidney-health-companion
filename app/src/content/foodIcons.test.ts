@@ -19,6 +19,12 @@ describe('food icons', () => {
     expect(key('Tomatillos')).not.toBe(key('Tomatoes'));
     expect(key('Lemons')).not.toBe(key('Oranges'));
   });
+  it('shows a cookie only for actual cookies', () => {
+    const cookie = '1f36a';
+    for (const f of FOODS) if (foodIcon(f).key === cookie) expect(f.name).toBe('Cookies');
+    expect(Object.values(SUB_ICON)).not.toContain(cookie);
+    expect(Object.values(GROUP_ICON)).not.toContain(cookie);
+  });
   it('SVGs are self-contained (no external references)', () => {
     for (const s of Object.values(ICON_SVG)) expect(s).not.toMatch(/https?:\/\/(?!www\.w3\.org)/);
   });

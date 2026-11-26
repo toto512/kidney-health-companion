@@ -46,7 +46,7 @@ export default function Browse() {
 
 const makeStyles = (color: Palette) => StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 16 },
-  cell: { flexGrow: 1, flexBasis: '45%', minHeight: 148, borderRadius: 24, borderWidth: 1, borderColor: color.outline, backgroundColor: color.surface, padding: 16, justifyContent: 'space-between', gap: 12 },
+  cell: { flexGrow: 1, flexBasis: '45%', minHeight: 148, borderRadius: 24, borderWidth: StyleSheet.hairlineWidth, borderColor: color.border, backgroundColor: color.surface, shadowColor: color.shadow, shadowOpacity: 0.07, shadowRadius: 14, shadowOffset: { width: 0, height: 4 }, elevation: 2, padding: 16, justifyContent: 'space-between', gap: 12 },
   icon: { fontSize: 36 },
   label: { color: color.text, fontSize: font.label, lineHeight: 26, fontWeight: '800' },
 });

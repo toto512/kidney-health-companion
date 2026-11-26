@@ -85,6 +85,7 @@ export const fr: Record<Key, string> = {
   "emergency.sourceLine": "{source}. Page {reviewed}. Vérifié le {checked}.",
   "emergency.reviewed": "révisée {date}",
   "emergency.noReviewDate": "date de révision non indiquée",
+  "nav.back": "Retour",
   "emergency.back": "Retour",
 
   "profile.title": "Mon profil",

@@ -85,6 +85,7 @@ export const he: Record<Key, string> = {
   "emergency.sourceLine": "{source}. עמוד {reviewed}. נבדק ב-{checked}.",
   "emergency.reviewed": "נבדק {date}",
   "emergency.noReviewDate": "תאריך בדיקה לא מוצג",
+  "nav.back": "חזרה",
   "emergency.back": "חזרה",
 
   "profile.title": "הפרופיל שלי",

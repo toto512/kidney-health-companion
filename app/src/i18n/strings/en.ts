@@ -84,6 +84,7 @@ export const en = {
   "emergency.sourceLine": "{source}. Page {reviewed}. Checked {checked}.",
   "emergency.reviewed": "reviewed {date}",
   "emergency.noReviewDate": "review date not shown",
+  "nav.back": "Back",
   "emergency.back": "Back",
 
   "profile.title": "My profile",

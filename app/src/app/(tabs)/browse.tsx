@@ -14,7 +14,7 @@ const CATEGORIES: { id: string; label: Key; icon: string; accent: AccentName }[]
   { id: 'blood-pressure', label: 'today.bpTitle', icon: '❤️', accent: 'red' },
   { id: 'blood-results', label: 'cat.bloodResults', icon: '🩸', accent: 'purple' },
   { id: 'food', label: 'cat.food', icon: '🍎', accent: 'orange' },
-  { id: 'tasks', label: 'cat.tasks', icon: '✅', accent: 'green' },
+  { id: 'tasks', label: 'cat.tasks', icon: '✅', accent: 'blue' },
   { id: 'appointments', label: 'cat.appointments', icon: '📅', accent: 'indigo' },
   { id: 'my-people', label: 'today.peopleTitle', icon: '📞', accent: 'blue' },
 ];

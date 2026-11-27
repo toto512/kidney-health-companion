@@ -85,6 +85,7 @@ export const fr: Record<Key, string> = {
   "emergency.sourceLine": "{source}. Page {reviewed}. Vérifié le {checked}.",
   "emergency.reviewed": "révisée {date}",
   "emergency.noReviewDate": "date de révision non indiquée",
+  "nav.back": "Retour",
   "emergency.back": "Retour",
 
   "profile.title": "Mon profil",
@@ -583,6 +584,7 @@ export const fr: Record<Key, string> = {
   "food.searchGroup": "Chercher dans ce groupe",
   "food.searchAll": "Chercher dans tous les aliments",
   "food.moreHint": "Les 40 premiers sont affichés. Tapez plus de lettres pour réduire la liste.",
+  "food.iconCredit": "Images des aliments : Twemoji, © Twitter, Inc. et autres contributeurs, licence CC BY 4.0.",
   "food.clearSearch": "Effacer la recherche",
   "food.searchHint": "Tapez pour réduire la liste",
   "food.choose": "Choisir un aliment ({n})",
@@ -789,4 +791,6 @@ export const fr: Record<Key, string> = {
   "cal.hint.apple": "Pour utiliser un rendez-vous dans Calendrier d’Apple, touchez « Ajouter à mon calendrier » sur ce rendez-vous, puis ouvrez le fichier enregistré. Calendrier proposera de l’ajouter.",
   "cal.hint.other": "Pour utiliser un rendez-vous dans un autre calendrier, touchez « Ajouter à mon calendrier » sur ce rendez-vous, puis ouvrez le fichier enregistré avec votre application de calendrier.",
   "cal.hint.generic": "L’application ne se connecte pas encore à un calendrier. « Ajouter à mon calendrier » sur un rendez-vous enregistre un fichier qui fonctionne avec la plupart des calendriers.",
+  "cond.nonePicked": "Vous n’avez pas encore choisi de maladie. Touchez « Choisir mes maladies » pour sélectionner celles qui vous concernent.",
+  "cond.errLoad": "Impossible de charger vos maladies. Réessayez.",
 };

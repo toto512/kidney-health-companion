@@ -84,6 +84,7 @@ export const en = {
   "emergency.sourceLine": "{source}. Page {reviewed}. Checked {checked}.",
   "emergency.reviewed": "reviewed {date}",
   "emergency.noReviewDate": "review date not shown",
+  "nav.back": "Back",
   "emergency.back": "Back",
 
   "profile.title": "My profile",
@@ -582,6 +583,7 @@ export const en = {
   "food.searchGroup": "Search this group",
   "food.searchAll": "Search all foods",
   "food.moreHint": "Showing the first 40. Type more to narrow the list.",
+  "food.iconCredit": "Food pictures: Twemoji, © Twitter, Inc. and other contributors, licensed CC BY 4.0.",
   "food.clearSearch": "Clear search",
   "food.searchHint": "Type to narrow the list",
   "food.choose": "Choose a food ({n})",
@@ -788,5 +790,7 @@ export const en = {
   "cal.hint.apple": "To use an appointment in Apple Calendar, tap “Add to my calendar” on it, then open the saved file. Calendar will offer to add it.",
   "cal.hint.other": "To use an appointment in another calendar, tap “Add to my calendar” on it, then open the saved file with your calendar app.",
   "cal.hint.generic": "The app does not connect to a calendar yet. “Add to my calendar” on an appointment saves a file that works with most calendars.",
+  "cond.nonePicked": "You have not chosen any conditions yet. Tap “Choose my conditions” to pick the ones that matter to you.",
+  "cond.errLoad": "Could not load your conditions. Try again.",
 } as const;
 export type Key = keyof typeof en;

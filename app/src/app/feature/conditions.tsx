@@ -28,8 +28,8 @@ export default function Conditions() {
   const [picked, setPicked] = useState<string[] | null | undefined>(undefined);
   useEffect(() => { void loadMyConditionIds().then(setPicked); }, []);
   const today = new Date();
-  // Every condition the person picked gets a card. With none picked (or the list unreadable), the five with official definitions show as before.
-  const cards = (picked && picked.length ? cardsFor(picked) : CONDITIONS.map((c) => ({ key: c.id, officialId: c.id, label: c.label })));
+  // Only the conditions this person picked get a card. Nobody sees a default list: with none picked (or the list unreadable) there are no cards.
+  const cards = picked && picked.length ? cardsFor(picked) : [];
 
   return (
     <ScrollView>
@@ -49,6 +49,8 @@ export default function Conditions() {
             {picked === undefined ? <Body>{t('common.loading')}</Body> : null}
             {picked && picked.length > 1 ? <Body>{t('cond.disagree')}</Body> : null}
             {picked !== undefined ? <BigButton variant="secondary" label={t('cond.choose')} onPress={() => router.push('/feature/choose-conditions')} /> : null}
+            {picked === null ? <Body tone="danger">{t('cond.errLoad')}</Body> : null}
+            {picked && picked.length === 0 ? <Body>{t('cond.nonePicked')}</Body> : null}
             {picked === undefined ? null : cards.map((card) => {
               const c = CONDITIONS.find((x) => x.id === card.officialId);
               if (!c) {

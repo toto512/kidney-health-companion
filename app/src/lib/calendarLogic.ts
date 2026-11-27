@@ -178,3 +178,13 @@ export function stepTime(time: string, unit: TimeUnit, delta: number): string {
   const nm = unit === 'minute' ? (m + delta * 5 + 60) % 60 : m;
   return `${String(nh).padStart(2, '0')}:${String(nm).padStart(2, '0')}`;
 }
+
+// Sets one part of a year-month-day from a wheel. A day past the end of the new month is pulled back (31 January to February gives 28 or 29).
+export function setDatePart(key: string, part: DateUnit, value: number): string {
+  const d = parseKey(key) ?? new Date();
+  let y = d.getFullYear(), m = d.getMonth(), day = d.getDate();
+  if (part === 'year') y = Math.min(2100, Math.max(2000, value));
+  if (part === 'month') m = Math.min(11, Math.max(0, value));
+  if (part === 'day') day = value;
+  return localDateKey(new Date(y, m, Math.min(Math.max(1, day), new Date(y, m + 1, 0).getDate())));
+}

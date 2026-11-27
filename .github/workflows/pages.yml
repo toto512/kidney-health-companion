@@ -21,17 +21,22 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
-      FILES: index.html manifest.webmanifest icon.svg apple-touch-icon.png .nojekyll CNAME
+      FILES: privacy.html terms.html index.html manifest.webmanifest icon.svg apple-touch-icon.png .nojekyll CNAME
     steps:
       - name: Publish allow-listed files to gh-pages
         run: |
           set -euo pipefail
           REMOTE="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git init -q src
-          git -C src fetch -q --depth 1 "$REMOTE" "$GITHUB_SHA"
+          git -C src fetch -q "$REMOTE" "$GITHUB_SHA"
           git -C src checkout -q FETCH_HEAD
           mkdir site
           for f in $FILES; do cp "src/$f" site/; done
+          # Effective date = date of the last commit that changed each policy page (not the build date).
+          for f in privacy.html terms.html; do
+            d=$(git -C src log -1 --format=%cd --date=format:'%B %-d, %Y' -- "$f")
+            sed -i "s/@@EFFECTIVE_DATE@@/$d/" "site/$f"
+          done
           cd site
           git init -q -b gh-pages
           git config user.name "github-actions[bot]"

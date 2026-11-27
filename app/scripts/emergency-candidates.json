@@ -43,5 +43,14 @@
     "tokens": [
       "9-1-1"
     ]
+  },
+  {
+    "code": "JO",
+    "name": "Jordan",
+    "url": "https://jordan.gov.jo/EN/List/Contact_Us_2",
+    "quote": "Ambulance 193",
+    "tokens": [
+      "193"
+    ]
   }
 ]

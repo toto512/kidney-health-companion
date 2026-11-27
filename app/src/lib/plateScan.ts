@@ -1,6 +1,6 @@
 import { FOOD_GROUPS, FOODS, type Food, type FoodGroup } from '../content/foods';
 import type { Nutrient } from '../content/foodNutrition';
-import { amountsFor, NUTRIENTS, perServing, type ResolvedAmounts } from './foodAmounts';
+import { amountsFor, PLATE_NUTRIENTS, perServing, type ResolvedAmounts } from './foodAmounts';
 
 // Plate scan with portions. The photo only helps the person remember the plate. Nothing is read from the picture: the person picks each food
 // and a portion. A portion is a multiple of the serving the official table publishes for that food (Canadian Nutrient File or USDA FoodData Central),
@@ -31,31 +31,38 @@ export function groupEntries(items: ScanEntry[]): { group: FoodGroup; entries: S
   return FOOD_GROUPS.map((group) => ({ group, entries: items.filter((i) => byId.get(i.id)?.group === group) })).filter((g) => g.entries.length > 0);
 }
 
-export type PortionRow = { nutrient: Nutrient; value: number | null; raw: number | null };
+export type PortionRow = { nutrient: Nutrient; value: number | null; raw: number | null; from: 'main' | 'other' | null };
 export type PortionAmounts = { amounts: ResolvedAmounts; grams: number; rows: PortionRow[] };
 
-/** Amounts for one portion of a food, or null when no official table record exists. Needs-review values come back null. */
+/**
+ * Amounts for one portion of a food, or null when no official table record exists. Each nutrient comes from the main record (Canadian Nutrient File first
+ * for Canada, USDA otherwise). Only when the main record does not publish a nutrient at all does the other official record fill in, marked from: 'other'.
+ * A value the main record marks "needs review" is hidden and not replaced.
+ */
 export function portionAmounts(entry: ScanEntry, country: string | null | undefined, lang = 'en'): PortionAmounts | null {
   const amounts = amountsFor(entry.id, country, null, lang);
   if (!amounts) return null;
   const grams = amounts.servingG * multOf(entry.portion);
-  const rows = NUTRIENTS.map((nutrient) => {
-    const per100 = amounts.per100[nutrient];
-    const cls = amounts.rows.find((r) => r.nutrient === nutrient)?.cls ?? null;
-    if (per100 === undefined || cls === 'review') return { nutrient, value: null, raw: null };
-    return { nutrient, value: perServing(nutrient, per100, grams), raw: (per100 * grams) / 100 };
+  const rows = PLATE_NUTRIENTS.map((nutrient): PortionRow => {
+    const main = amounts.per100[nutrient];
+    if (main !== undefined) {
+      if (amounts.cls[nutrient] === 'review') return { nutrient, value: null, raw: null, from: null };
+      return { nutrient, value: perServing(nutrient, main, grams), raw: (main * grams) / 100, from: 'main' };
+    }
+    const other = amounts.other?.per100[nutrient];
+    if (other !== undefined) return { nutrient, value: perServing(nutrient, other, grams), raw: (other * grams) / 100, from: 'other' };
+    return { nutrient, value: null, raw: null, from: null };
   });
   return { amounts, grams, rows };
 }
 
-export type PlateTotal = { nutrient: Nutrient; value: number; counted: number; of: number };
-/** Plate total per nutrient, summing only foods with a published, not-under-review value. A nutrient nobody has a value for is left out. */
+export type PlateTotal = { nutrient: Nutrient; value: number | null; counted: number; of: number };
+/** Plate total for each nutrient, summing only foods with a published, not-under-review value. value is null when no food on the plate has one. */
 export function plateTotals(items: ScanEntry[], country: string | null | undefined, lang = 'en'): PlateTotal[] {
   const all = items.map((i) => portionAmounts(i, country, lang));
-  return NUTRIENTS.flatMap((nutrient) => {
+  return PLATE_NUTRIENTS.map((nutrient) => {
     const raws = all.map((a) => a?.rows.find((r) => r.nutrient === nutrient)?.raw ?? null).filter((r): r is number => r !== null);
-    if (raws.length === 0) return [];
     const sum = raws.reduce((a, b) => a + b, 0);
-    return [{ nutrient, value: nutrient === 'proteinG' || sum < 10 ? Math.round(sum * 10) / 10 : Math.round(sum), counted: raws.length, of: items.length }];
+    return { nutrient, value: raws.length === 0 ? null : perServing(nutrient, sum, 100), counted: raws.length, of: items.length };
   });
 }

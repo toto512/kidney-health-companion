@@ -835,7 +835,7 @@ export const en = {
   "plate.scan.serving": "{portion}: about {grams} g. The official serving is {serving}.",
   "plate.scan.resultsTitle": "Your plate: amounts and official notes",
   "plate.scan.totalTitle": "Plate total",
-  "plate.scan.totalNote": "Added up from the foods that have an official number ({counted} of {of}).",
+  "plate.scan.totalNote": "{counted} of {of} foods counted. {missing} without an official number.",
   "plate.scan.approx": "Portions are approximate. Small is half, Medium is one and Large is two official servings. The app does not weigh or measure your food, and the amounts are not a recommendation.",
   "plate.scan.noNumbers": "No official numbers for this food yet. It is left out of the total.",
   "plate.scan.noTotals": "No official numbers for the foods on your plate yet.",
@@ -845,5 +845,14 @@ export const en = {
   "plate.scan.official": "What official pages say",
   "plate.scan.noDataGroup": "No foods in this section.",
   "plate.scan.pickA11y": "Add {name} to my plate",
+  "food.n.energyKcal": "Calories",
+  "food.n.carbG": "Carbohydrate",
+  "food.n.sugarG": "Sugars",
+  "food.n.satFatG": "Saturated fat",
+  "food.n.fibreG": "Fibre",
+  "food.unit.kcal": "kcal",
+  "plate.scan.fromUsda": "From USDA",
+  "plate.scan.fromCnf": "From Canadian Nutrient File",
+  "plate.scan.noNum": "No official number",
 } as const;
 export type Key = keyof typeof en;

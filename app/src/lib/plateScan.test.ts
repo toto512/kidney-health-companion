@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { FOOD_NUTRITION } from '../content/foodNutrition';
 import { FOODS } from '../content/foods';
-import { amountsFor } from './foodAmounts';
+import { amountsFor, PLATE_NUTRIENTS } from './foodAmounts';
 import { addEntry, groupEntries, MAX_SCAN_ITEMS, plateTotals, portionAmounts, removeEntry, setPortion } from './plateScan';
 
 const withNums = Object.keys(FOOD_NUTRITION);
@@ -41,7 +41,7 @@ describe('plate scan amounts', () => {
     expect(large.grams).toBeCloseTo(med.grams * 2);
     // Medium equals what the food page shows for the official serving.
     const page = amountsFor(a, 'US')!;
-    med.rows.forEach((r) => expect(r.value).toBe(page.rows.find((x) => x.nutrient === r.nutrient)!.value));
+    page.rows.forEach((p) => expect(med.rows.find((r) => r.nutrient === p.nutrient)!.value).toBe(p.value));
     expect(med.amounts.url).toMatch(/^https:\/\/(food-nutrition\.canada\.ca|fdc\.nal\.usda\.gov)\//);
     expect(med.amounts.checkedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
@@ -58,12 +58,26 @@ describe('plate scan amounts', () => {
     }
     expect(seen).toBeGreaterThan(0);
   });
-  it('totals only the nutrients that have a value and says how many foods counted', () => {
+  it('totals only foods with a value and says how many counted, per nutrient', () => {
     const items = addEntry(addEntry(addEntry([], a), b), noNums);
     const totals = plateTotals(items, 'US');
-    expect(totals.length).toBeGreaterThan(0);
-    for (const t of totals) { expect(t.of).toBe(3); expect(t.counted).toBeLessThanOrEqual(2); expect(t.value).toBeGreaterThanOrEqual(0); }
-    expect(plateTotals(addEntry([], noNums), 'US')).toEqual([]);
-    expect(plateTotals([], 'US')).toEqual([]);
+    expect(totals.map((t) => t.nutrient)).toEqual(PLATE_NUTRIENTS);
+    for (const t of totals) { expect(t.of).toBe(3); expect(t.counted).toBeLessThanOrEqual(2); expect(t.value === null).toBe(t.counted === 0); }
+    expect(totals.find((t) => t.nutrient === 'sodiumMg')!.counted).toBeGreaterThan(0);
+    expect(plateTotals(addEntry([], noNums), 'US').every((t) => t.value === null && t.counted === 0)).toBe(true);
+    expect(plateTotals([], 'US').every((t) => t.value === null)).toBe(true);
+  });
+  it('adds the new nutrients from the USDA record when the Canadian record lacks them, and labels them', () => {
+    const pa = portionAmounts({ id: a, portion: 'medium' }, 'CA')!;
+    const e = pa.rows.find((r) => r.nutrient === 'energyKcal')!;
+    expect(pa.rows.length).toBe(PLATE_NUTRIENTS.length);
+    if (e.value !== null) { expect(e.from).toBe('other'); expect(pa.amounts.other?.source).toBe('usda'); }
+    expect(pa.rows.find((r) => r.nutrient === 'sodiumMg')!.from).toBe('main');
+  });
+  it('gaps: every nutrient has a value for most foods with a record, and none is invented', () => {
+    for (const k of PLATE_NUTRIENTS) {
+      const n = withNums.filter((id) => portionAmounts({ id, portion: 'medium' }, 'US')!.rows.find((r) => r.nutrient === k)!.value !== null).length;
+      expect(n).toBeGreaterThan(withNums.length * 0.5);
+    }
   });
 });

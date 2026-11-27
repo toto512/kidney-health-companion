@@ -20,8 +20,12 @@ export function reviewReason(src: number | null): 'zero' | 'prov' | 'lit' | 'int
   return 'other';
 }
 export const NUTRIENTS: Nutrient[] = ['sodiumMg', 'potassiumMg', 'phosphorusMg', 'proteinG'];
+// The plate scan also shows these, each only when an official record publishes it.
+export const PLATE_NUTRIENTS: Nutrient[] = [...NUTRIENTS, 'energyKcal', 'carbG', 'sugarG', 'satFatG', 'fibreG'];
+export const NUTRIENT_UNIT: Record<Nutrient, 'mg' | 'g' | 'kcal'> = { sodiumMg: 'mg', potassiumMg: 'mg', phosphorusMg: 'mg', proteinG: 'g', energyKcal: 'kcal', carbG: 'g', sugarG: 'g', satFatG: 'g', fibreG: 'g' };
 
 export type AmountRow = { nutrient: Nutrient; value: number | null; cls: NutrientClass | null; src: number | null }; // src: CNF nutrient source code
+export type ResolvedOther = { source: 'cnf' | 'usda'; per100: Per100; recordName: string; recordId: number; file?: string; url: string };
 export type ResolvedAmounts = {
   source: 'cnf' | 'usda';
   form: FormKind; // the form shown
@@ -31,6 +35,8 @@ export type ResolvedAmounts = {
   serving: string;
   servingG: number; // weight of the official serving, grams
   per100: Per100; // the record's values per 100 g, as published
+  cls: Partial<Record<Nutrient, NutrientClass>>; // CNF only: how each value was obtained
+  other: ResolvedOther | null; // the other official table's record for this food, used only for a nutrient the main record does not publish
   rows: AmountRow[];
   recordName: string;
   recordId: number;
@@ -48,6 +54,9 @@ export function amountsFor(foodId: string, country: string | null | undefined, w
   const source = order.find((s) => (s === 'cnf' ? !!n.cnf : !!n.usda));
   if (!source) return null;
   const rec = source === 'cnf' ? n.cnf! : n.usda!;
+  const second = source === 'cnf' ? 'usda' : 'cnf';
+  const otherRec: ResolvedOther | null = second === 'cnf' && n.cnf ? { source: 'cnf', per100: n.cnf.per100, recordName: n.cnf.name, recordId: n.cnf.code, url: cnfUrl(n.cnf.code, lang) }
+    : second === 'usda' && n.usda ? { source: 'usda', per100: n.usda.per100, recordName: n.usda.name, recordId: n.usda.fdcId, file: n.usda.file, url: usdaUrl(n.usda.fdcId) } : null;
   const rows: AmountRow[] = NUTRIENTS.map((k) => {
     const v = rec.per100[k];
     return { nutrient: k, value: v === undefined ? null : perServing(k, v, n.servingG), cls: source === 'cnf' ? n.cnf!.cls[k] ?? null : null, src: source === 'cnf' ? n.cnf!.src[k] ?? null : null };
@@ -65,6 +74,8 @@ export function amountsFor(foodId: string, country: string | null | undefined, w
     serving: /\bg$/.test(n.servingLabel) ? n.servingLabel : `${n.servingLabel} (${Math.round(n.servingG)} g)`,
     servingG: n.servingG,
     per100: rec.per100,
+    cls: source === 'cnf' ? n.cnf!.cls : {},
+    other: otherRec,
     rows,
     recordName: rec.name,
     recordId: source === 'cnf' ? n.cnf!.code : n.usda!.fdcId,
@@ -78,5 +89,5 @@ const round1 = (x: number) => Math.round(x * 10) / 10;
 // Scaling by serving weight only. Values under 10 keep one decimal, larger minerals show whole numbers.
 export function perServing(k: Nutrient, per100: number, servingG: number): number {
   const v = (per100 * servingG) / 100;
-  return k === 'proteinG' || v < 10 ? round1(v) : Math.round(v);
+  return k.endsWith('G') || v < 10 ? round1(v) : Math.round(v); // grams (protein, carbohydrate, sugars, fats, fibre) keep one decimal
 }

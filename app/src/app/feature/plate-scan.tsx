@@ -11,6 +11,7 @@ import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
 import { searchFoodNames } from '@/lib/foodSearch';
 import { MAX_BYTES } from '@/lib/labData';
+import { NUTRIENT_UNIT } from '@/lib/foodAmounts';
 import { plateCheck, worstFlag } from '@/lib/plateCheck';
 import { addEntry, foodById, groupEntries, MAX_SCAN_ITEMS, PORTIONS, plateTotals, portionAmounts, removeEntry, setPortion, type PortionKey, type ScanEntry } from '@/lib/plateScan';
 import type { Country } from '@/lib/profile';
@@ -62,7 +63,7 @@ export default function PlateScanScreen() {
     const res = await DocumentPicker.getDocumentAsync({ type: TYPES, copyToCacheDirectory: true, multiple: false });
     if (!res.canceled) take(res.assets[0]);
   }
-  const unit = (n: string) => t(n === 'proteinG' ? 'food.unit.g' : 'food.unit.mg');
+  const unit = (n: keyof typeof NUTRIENT_UNIT) => t(`food.unit.${NUTRIENT_UNIT[n]}` as Key);
   const portionName = (p: PortionKey) => t(`plate.scan.p.${p}` as Key);
 
   if (!photo) {
@@ -105,16 +106,21 @@ export default function PlateScanScreen() {
                         {pa.rows.map((r) => (
                           <Text key={r.nutrient} style={{ fontSize: font.body, color: color.text, minHeight: 36 }}>
                             <Text style={{ fontWeight: '700' }}>{`${t(`food.n.${r.nutrient}` as Key)} `}</Text>
-                            {r.value === null ? t('food.notAvail') : `${r.value} ${unit(r.nutrient)}`}
+                            {r.value === null ? t('plate.scan.noNum') : `${r.value} ${unit(r.nutrient)}`}
+                            {r.from === 'other' && pa.amounts.other ? <Text style={{ color: color.muted }}>{`  (${t(pa.amounts.other.source === 'usda' ? 'plate.scan.fromUsda' : 'plate.scan.fromCnf')})`}</Text> : null}
                           </Text>
                         ))}
-                        <Pressable accessibilityRole="link" onPress={() => Linking.openURL(pa.amounts.url)} style={{ minHeight: 56, paddingVertical: 8, justifyContent: 'center' }}>
-                          <Text style={{ fontSize: font.body, color: color.primary, textDecorationLine: 'underline' }}>
-                            {pa.amounts.source === 'cnf'
-                              ? t('food.srcCnf', { name: pa.amounts.recordName, id: String(pa.amounts.recordId), date: pa.amounts.checkedOn })
-                              : t('food.srcUsda', { file: pa.amounts.file ?? '', name: pa.amounts.recordName, id: String(pa.amounts.recordId), date: pa.amounts.checkedOn })}
-                          </Text>
-                        </Pressable>
+                        {[{ source: pa.amounts.source, url: pa.amounts.url, name: pa.amounts.recordName, id: pa.amounts.recordId, file: pa.amounts.file, used: true },
+                          { source: pa.amounts.other?.source, url: pa.amounts.other?.url, name: pa.amounts.other?.recordName, id: pa.amounts.other?.recordId, file: pa.amounts.other?.file, used: pa.rows.some((r) => r.from === 'other') }]
+                          .filter((x) => x.used && x.url).map((x) => (
+                            <Pressable key={x.source} accessibilityRole="link" onPress={() => Linking.openURL(x.url!)} style={{ minHeight: 56, paddingVertical: 8, justifyContent: 'center' }}>
+                              <Text style={{ fontSize: font.body, color: color.primary, textDecorationLine: 'underline' }}>
+                                {x.source === 'cnf'
+                                  ? t('food.srcCnf', { name: x.name ?? '', id: String(x.id), date: pa.amounts.checkedOn })
+                                  : t('food.srcUsda', { file: x.file ?? '', name: x.name ?? '', id: String(x.id), date: pa.amounts.checkedOn })}
+                              </Text>
+                            </Pressable>
+                        ))}
                       </>
                     ) : <Body>{t('plate.scan.noNumbers')}</Body>}
                   </Panel>
@@ -124,12 +130,12 @@ export default function PlateScanScreen() {
           ))}
           <Panel>
             <Text accessibilityRole="header" style={bold(color.text)}>{t('plate.scan.totalTitle')}</Text>
-            {totals.length === 0 ? <Body>{t('plate.scan.noTotals')}</Body> : (
+            {totals.every((x) => x.counted === 0) ? <Body>{t('plate.scan.noTotals')}</Body> : (
               <>
                 {totals.map((x) => (
                   <Text key={x.nutrient} style={{ fontSize: font.body, color: color.text, minHeight: 36 }}>
-                    <Text style={{ fontWeight: '700' }}>{`${t(`food.n.${x.nutrient}` as Key)} `}</Text>{`${x.value} ${unit(x.nutrient)}`}
-                    <Text style={{ color: color.muted }}>{`  ${t('plate.scan.totalNote', { counted: String(x.counted), of: String(x.of) })}`}</Text>
+                    <Text style={{ fontWeight: '700' }}>{`${t(`food.n.${x.nutrient}` as Key)} `}</Text>{x.value === null ? t('plate.scan.noNum') : `${x.value} ${unit(x.nutrient)}`}
+                    <Text style={{ color: color.muted }}>{`  ${t('plate.scan.totalNote', { counted: String(x.counted), of: String(x.of), missing: String(x.of - x.counted) })}`}</Text>
                   </Text>
                 ))}
                 <Body>{t('food.perServing')}</Body>

@@ -66,6 +66,11 @@ function Groups({ onPick, onOpen }: { onPick: (g: FoodGroup) => void; onOpen: (f
           <Text style={{ fontSize: font.label, fontWeight: '800', color: color.primary }}>{t('plate.open')}</Text>
           <Text style={{ fontSize: font.body * 0.85, color: color.muted }}>{t('plate.openHint')}</Text>
         </Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel={t('plate.scan.open')} onPress={() => router.push('/feature/plate-scan')}
+          style={{ minHeight: 84, justifyContent: 'center', padding: 12, borderRadius: 18, borderWidth: 2, borderColor: color.primary, backgroundColor: color.surface }}>
+          <Text style={{ fontSize: font.label, fontWeight: '800', color: color.primary }}>{t('plate.scan.open')}</Text>
+          <Text style={{ fontSize: font.body * 0.85, color: color.muted }}>{t('plate.scan.openHint')}</Text>
+        </Pressable>
         </>
         )}
         <BigButton variant="secondary" label={t('profile.backHealth')} onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} />

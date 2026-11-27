@@ -1,0 +1,69 @@
+import { describe, expect, it } from 'vitest';
+import { FOOD_NUTRITION } from '../content/foodNutrition';
+import { FOODS } from '../content/foods';
+import { amountsFor } from './foodAmounts';
+import { addEntry, groupEntries, MAX_SCAN_ITEMS, plateTotals, portionAmounts, removeEntry, setPortion } from './plateScan';
+
+const withNums = Object.keys(FOOD_NUTRITION);
+const [a, b] = withNums;
+const noNums = FOODS.find((f) => !FOOD_NUTRITION[f.id])!.id;
+
+describe('plate scan entries', () => {
+  it('adds a known food once at Medium, ignores unknown ids and respects the limit', () => {
+    const one = addEntry([], a);
+    expect(one).toEqual([{ id: a, portion: 'medium' }]);
+    expect(addEntry(one, a)).toBe(one);
+    expect(addEntry(one, 'nope/nope')).toBe(one);
+    let items = one;
+    for (const f of FOODS) items = addEntry(items, f.id);
+    expect(items.length).toBe(MAX_SCAN_ITEMS);
+  });
+  it('removes and changes portions', () => {
+    const items = addEntry(addEntry([], a), b);
+    expect(removeEntry(items, a).map((i) => i.id)).toEqual([b]);
+    expect(setPortion(items, a, 'large')[0].portion).toBe('large');
+    expect(setPortion(items, a, 'large')[1].portion).toBe('medium');
+  });
+  it('groups under the 12 sections in the app order and skips empty sections', () => {
+    const g = groupEntries(addEntry(addEntry([], noNums), a));
+    expect(g.length).toBe(new Set([FOODS.find((f) => f.id === noNums)!.group, FOODS.find((f) => f.id === a)!.group]).size);
+    expect(g.flatMap((x) => x.entries).length).toBe(2);
+  });
+});
+
+describe('plate scan amounts', () => {
+  it('scales the official serving by the portion and keeps the source record', () => {
+    const med = portionAmounts({ id: a, portion: 'medium' }, 'US')!;
+    const small = portionAmounts({ id: a, portion: 'small' }, 'US')!;
+    const large = portionAmounts({ id: a, portion: 'large' }, 'US')!;
+    expect(med.grams).toBeCloseTo(med.amounts.servingG);
+    expect(small.grams).toBeCloseTo(med.grams / 2);
+    expect(large.grams).toBeCloseTo(med.grams * 2);
+    // Medium equals what the food page shows for the official serving.
+    const page = amountsFor(a, 'US')!;
+    med.rows.forEach((r) => expect(r.value).toBe(page.rows.find((x) => x.nutrient === r.nutrient)!.value));
+    expect(med.amounts.url).toMatch(/^https:\/\/(food-nutrition\.canada\.ca|fdc\.nal\.usda\.gov)\//);
+    expect(med.amounts.checkedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+  it('returns null for a food with no official record', () => {
+    expect(portionAmounts({ id: noNums, portion: 'medium' }, 'CA')).toBeNull();
+  });
+  it('hides values the source marks needs review, never adds them to a total', () => {
+    let seen = 0;
+    for (const id of withNums) {
+      const am = amountsFor(id, 'CA');
+      if (!am) continue;
+      const pa = portionAmounts({ id, portion: 'medium' }, 'CA')!;
+      for (const r of am.rows) if (r.cls === 'review') { seen++; expect(pa.rows.find((x) => x.nutrient === r.nutrient)!.value).toBeNull(); }
+    }
+    expect(seen).toBeGreaterThan(0);
+  });
+  it('totals only the nutrients that have a value and says how many foods counted', () => {
+    const items = addEntry(addEntry(addEntry([], a), b), noNums);
+    const totals = plateTotals(items, 'US');
+    expect(totals.length).toBeGreaterThan(0);
+    for (const t of totals) { expect(t.of).toBe(3); expect(t.counted).toBeLessThanOrEqual(2); expect(t.value).toBeGreaterThanOrEqual(0); }
+    expect(plateTotals(addEntry([], noNums), 'US')).toEqual([]);
+    expect(plateTotals([], 'US')).toEqual([]);
+  });
+});

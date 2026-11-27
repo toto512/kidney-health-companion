@@ -1,14 +1,15 @@
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { Image, Linking, Pressable, ScrollView, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, Text, View } from 'react-native';
+import { PlateFlagCard } from '@/components/PlateFlagCard';
 import { UploadButtons, type Shot } from '@/components/UploadButtons';
 import { BigButton, Body, DisclaimerFooter, Field, H1, Panel, Screen } from '@/components/ui';
 import { FOODS } from '@/content/foods';
 import { useI18n } from '@/i18n/I18nProvider';
 import type { Key } from '@/i18n/strings/en';
 import { MAX_BYTES } from '@/lib/labData';
-import { addItem, MAX_PLATE_ITEMS, plateCheck, removeItem, worstFlag, type PlateFlag } from '@/lib/plateCheck';
+import { addItem, MAX_PLATE_ITEMS, plateCheck, removeItem, worstFlag } from '@/lib/plateCheck';
 import { searchFoodNames } from '@/lib/foodSearch';
 import type { Country } from '@/lib/profile';
 import { supabase } from '@/lib/supabase';
@@ -16,7 +17,6 @@ import { loadMyConditionIds } from '@/lib/userConditions';
 import { font, useColors } from '@/theme/tokens';
 
 const TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-const MARK: Record<PlateFlag, string> = { avoid: '✕', limit: '!', none: '?' };
 
 // Photo of my plate. The photo is only shown on this screen (kept in memory, never uploaded). The person names each food, then sees only
 // what the official pages we already store say about those foods for their own conditions and country. No weights, no "ok to eat" label.
@@ -82,22 +82,7 @@ export default function PlateScreen() {
             <>
               <Panel><Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t(`plate.worst.${worst}` as Key)}</Text></Panel>
               {rows.map((r) => (
-                <Panel key={r.name} tone={r.flag === 'avoid' ? 'danger' : undefined}>
-                  <Text style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{`${MARK[r.flag]}  ${r.name}`}</Text>
-                  <Text style={{ fontSize: font.body, fontWeight: '700', color: color.text }}>{t(`plate.flag.${r.flag}` as Key)}</Text>
-                  {r.lines.map((l) => (
-                    <View key={`${l.condition}|${l.src}|${l.quote}`} style={{ gap: 4 }}>
-                      <Text style={{ fontSize: font.body, fontWeight: '700', color: color.text }}>{t('food.check.for', { condition: l.conditionLabel })}</Text>
-                      <Text style={{ fontSize: font.body, lineHeight: 26, color: color.text }}>{'“'}{l.quote}{l.list ? ':' : ''}{'”'}</Text>
-                      {l.list ? <Text style={{ fontSize: font.body, color: color.muted }}>{t('food.check.listed', { food: l.foodEntry })}</Text> : null}
-                      <Text style={{ fontSize: font.body, color: color.muted }}>{t('cond.source', { source: l.source.publisher })}</Text>
-                      <Text style={{ fontSize: font.body, color: color.muted }}>{t('cond.reviewed', { page: l.source.dateText ?? t('cond.noDate'), checked: l.source.checkedOn })}</Text>
-                      <Pressable accessibilityRole="link" onPress={() => Linking.openURL(l.source.url)} style={{ minHeight: 48, justifyContent: 'center' }}>
-                        <Text style={{ fontSize: font.body, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>{t('cond.openPage')}</Text>
-                      </Pressable>
-                    </View>
-                  ))}
-                </Panel>
+                <PlateFlagCard key={r.name} row={r} />
               ))}
             </>
           )}

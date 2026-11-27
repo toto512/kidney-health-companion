@@ -1,4 +1,4 @@
-import { FOOD_NUTRITION, NUTRITION_CHECKED_ON, type FormKind, type Nutrient, type NutrientClass } from '../content/foodNutrition';
+import { FOOD_NUTRITION, NUTRITION_CHECKED_ON, type FormKind, type Nutrient, type NutrientClass, type Per100 } from '../content/foodNutrition';
 
 // Per-food pages: the CNF page for a Food_Code (Health Canada's Canadian Nutrient File site, English or French) and the FoodData Central nutrients page for an FDC ID.
 export const cnfUrl = (code: number, lang: string) => `https://${lang === 'fr' ? 'aliments-nutrition' : 'food-nutrition'}.canada.ca/cnf-fce/serving-portion?id=${code}`;
@@ -29,6 +29,8 @@ export type ResolvedAmounts = {
   variant: boolean; // one common variant was picked from several official records: other types can differ
   missing: 'raw' | 'cooked' | null; // the other form, when the shown one is raw or cooked and no official record exists for the other
   serving: string;
+  servingG: number; // weight of the official serving, grams
+  per100: Per100; // the record's values per 100 g, as published
   rows: AmountRow[];
   recordName: string;
   recordId: number;
@@ -61,6 +63,8 @@ export function amountsFor(foodId: string, country: string | null | undefined, w
     missing,
     variant: !!food.variant,
     serving: /\bg$/.test(n.servingLabel) ? n.servingLabel : `${n.servingLabel} (${Math.round(n.servingG)} g)`,
+    servingG: n.servingG,
+    per100: rec.per100,
     rows,
     recordName: rec.name,
     recordId: source === 'cnf' ? n.cnf!.code : n.usda!.fdcId,

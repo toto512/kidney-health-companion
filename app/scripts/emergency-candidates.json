@@ -61,5 +61,23 @@
     "tokens": [
       "999"
     ]
+  },
+  {
+    "code": "MN",
+    "name": "Mongolia",
+    "url": "https://www.gomongolia.gov.mn/know-before-you-go/",
+    "quote": "Ambulance: 103",
+    "tokens": [
+      "103"
+    ]
+  },
+  {
+    "code": "MN",
+    "name": "Mongolia (second page)",
+    "url": "https://admin.crc.gov.mn/list/harilcaa-holboony-jlchilgee/en?show=195",
+    "quote": "103 - Ambulance",
+    "tokens": [
+      "103"
+    ]
   }
 ]

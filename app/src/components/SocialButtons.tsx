@@ -19,9 +19,11 @@ export function SocialButtons({ verb }: { verb: 'Sign in' | 'Sign up' }) {
 
   async function go(provider: SocialProvider) {
     setErr(''); setBusy(true);
+    const redirectTo = siteUrl();
+    if (__DEV__) console.info('[social sign-in] redirectTo =', redirectTo ?? '(none)'); // address only, no tokens; shows in the browser console while developing
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: siteUrl(), scopes: provider === 'azure' ? 'email' : undefined },
+      options: { redirectTo, scopes: provider === 'azure' ? 'email' : undefined },
     });
     if (error) { setErr(t('auth.socialErr', { provider: SOCIAL_LABELS[provider] })); setBusy(false); }
   }

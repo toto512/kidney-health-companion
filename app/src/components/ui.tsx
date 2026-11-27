@@ -1,13 +1,45 @@
-import { Link, Href } from 'expo-router';
+import { Href, Link, router, usePathname } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { ReactNode, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, TextInputProps, useWindowDimensions, View } from 'react-native';
 import { badgeSize } from '@/lib/contactLayout';
 import { AccentName, font, mix, MIN_TOUCH, Palette, space, useColors } from '@/theme/tokens';
 import { useI18n } from '@/i18n/I18nProvider';
 
+// Soft pink-to-lilac wash at the top of every screen, fading into the page colour (the Apple Health Summary look).
+function Backdrop() {
+  const color = useColors();
+  return (
+    <View pointerEvents="none" accessible={false} style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 380 }}>
+      <LinearGradient colors={color.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0.5 }} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+      <LinearGradient colors={[`${color.bg}00`, color.bg]} start={{ x: 0, y: 0.2 }} end={{ x: 0, y: 1 }} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+    </View>
+  );
+}
+
 export function Screen({ children }: { children: ReactNode }) {
   const s = useStyles(); const color = useColors();
-  return <View style={s.screen}>{children}</View>;
+  const detail = usePathname().startsWith('/feature/'); // tool screens get a round back button; the three tabs do not
+  return (
+    <View style={{ flex: 1, backgroundColor: color.bg }}>
+      <Backdrop />
+      <View style={s.screen}>
+        {detail ? <View style={{ alignItems: 'flex-start' }}><BackButton /></View> : null}
+        {children}
+      </View>
+    </View>
+  );
+}
+
+// Round back button, same size as the other touch targets. The arrow flips in right-to-left languages.
+export function BackButton({ onPress }: { onPress?: () => void }) {
+  const s = useStyles(); const { t, rtl } = useI18n();
+  const go = onPress ?? (() => (router.canGoBack() ? router.back() : router.replace('/')));
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel={t('nav.back')} onPress={go} hitSlop={8} style={s.backBtn}>
+      <Text accessible={false} style={s.backArrow}>{rtl ? '›' : '‹'}</Text>
+    </Pressable>
+  );
 }
 
 export function H1({ children }: { children: ReactNode }) {
@@ -38,7 +70,7 @@ export function BigButton({ label, onPress, disabled, variant }: { label: string
 // A rounded block that groups related content (one condition, one reading, one section of a form).
 export function Panel({ children, tone }: { children: ReactNode; tone?: 'danger' }) {
   const s = useStyles(); const color = useColors();
-  return <View style={[s.panel, tone === 'danger' && { borderColor: color.danger, borderWidth: 2 }]}>{children}</View>;
+  return <View style={[s.panel, tone === 'danger' && { backgroundColor: mix(color.danger, color.surface, 0.1) }]}>{children}</View>;
 }
 
 export function H2({ children }: { children: ReactNode }) {
@@ -94,9 +126,9 @@ export function Card({ title, icon, onPress, tone, accent, children }: { title: 
   const s = useStyles(); const color = useColors();
   const titleColor = tone === 'danger' ? color.danger : accent ? color.accent[accent] : color.text;
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={title} onPress={onPress} style={[s.card, tone === 'danger' && { borderColor: color.danger, borderWidth: 2 }]}>
+    <Pressable accessibilityRole="button" accessibilityLabel={title} onPress={onPress} style={[s.card, tone === 'danger' && { backgroundColor: mix(color.danger, color.surface, 0.1) }]}>
       <View style={s.cardHead}>
-        {accent || tone === 'danger' ? <CategoryBadge icon={icon} accent={accent ?? 'red'} size={44} /> : <Text style={s.cardIcon} accessible={false}>{icon}</Text>}
+        {accent || tone === 'danger' ? <CategoryBadge icon={icon} accent={accent ?? 'red'} size={40} /> : <Text style={s.cardIcon} accessible={false}>{icon}</Text>}
         <Text style={[s.cardTitle, { color: titleColor }]}>{title}</Text>
         <Text style={s.chev} accessible={false}>›</Text>
       </View>
@@ -159,16 +191,19 @@ export function Brand() {
 export function AuthScreen({ title, children, disclaimer }: { title: string; children: ReactNode; disclaimer?: boolean }) {
   const s = useStyles(); const color = useColors();
   return (
-    <ScrollView style={{ backgroundColor: color.bg }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
-      <View style={s.authWrap}>
-        <Brand />
-        <View style={s.authCard}>
-          <H1>{title}</H1>
-          {children}
+    <View style={{ flex: 1, backgroundColor: color.bg }}>
+      <Backdrop />
+      <ScrollView style={{ backgroundColor: 'transparent' }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
+        <View style={s.authWrap}>
+          <Brand />
+          <View style={s.authCard}>
+            <H1>{title}</H1>
+            {children}
+          </View>
+          {disclaimer ? <DisclaimerFooter /> : null}
         </View>
-        {disclaimer ? <DisclaimerFooter /> : null}
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -194,20 +229,20 @@ function useStyles() {
 }
 
 const makeStyles = (color: Palette) => StyleSheet.create({
-  screen: { flex: 1, backgroundColor: color.bg, padding: space.l, gap: space.m, width: '100%', maxWidth: 640, alignSelf: 'center' },
-  h1: { fontSize: 36, lineHeight: 42, fontWeight: '800', color: color.text },
+  screen: { flex: 1, padding: space.l, gap: space.m, width: '100%', maxWidth: 640, alignSelf: 'center' },
+  h1: { fontSize: 36, lineHeight: 42, fontWeight: '800', letterSpacing: 0.3, color: color.text },
   body: { fontSize: font.body, color: color.text, lineHeight: font.body * 1.4 },
   label: { fontSize: font.label, fontWeight: '600', color: color.text },
   input: { fontSize: font.label, minHeight: MIN_TOUCH, borderWidth: 2, borderColor: color.inputBorder, backgroundColor: color.surface, borderRadius: 14, paddingHorizontal: space.m, color: color.text },
   inputFocus: { borderColor: color.primary, borderWidth: 3 },
   btn: { minHeight: MIN_TOUCH, backgroundColor: color.primary, borderRadius: 28, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.l },
-  btnSecondary: { backgroundColor: color.surface, borderWidth: 2, borderColor: color.primary },
+  btnSecondary: { backgroundColor: color.primaryTint, borderWidth: 0 },
   btnText: { color: color.primaryText, fontSize: font.label, fontWeight: '700' },
-  tile: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: space.m, paddingHorizontal: space.m, borderRadius: 20, borderWidth: 1, borderColor: color.outline, backgroundColor: color.surface },
+  tile: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: space.m, paddingHorizontal: space.m, borderRadius: 22, backgroundColor: color.surface, shadowColor: color.shadow, shadowOpacity: 0.09, shadowRadius: 14, shadowOffset: { width: 0, height: 4 }, elevation: 2 },
   tileIcon: { fontSize: 28 },
   tileLabel: { color: color.text, fontSize: font.label, fontWeight: '600' },
-  card: { borderRadius: 20, shadowColor: color.shadow, shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 2, borderWidth: 1, borderColor: color.outline, backgroundColor: color.surface, padding: space.m, gap: space.s, minHeight: 96 },
-  panel: { borderRadius: 20, borderWidth: 1, borderColor: color.border, backgroundColor: color.surface, padding: space.m, gap: space.m },
+  card: { borderRadius: 22, shadowColor: color.shadow, shadowOpacity: 0.1, shadowRadius: 16, shadowOffset: { width: 0, height: 5 }, elevation: 3, backgroundColor: color.surface, padding: space.m, gap: space.s, minHeight: 96 },
+  panel: { borderRadius: 22, backgroundColor: color.surface, padding: space.m, gap: space.m, shadowColor: color.shadow, shadowOpacity: 0.08, shadowRadius: 10, shadowOffset: { width: 0, height: 3 }, elevation: 1 },
   h2: { fontSize: font.h2, fontWeight: '700', color: color.text },
   cardHead: { flexDirection: 'row', alignItems: 'center', gap: space.s },
   cardIcon: { fontSize: 24 },
@@ -220,9 +255,11 @@ const makeStyles = (color: Palette) => StyleSheet.create({
   mark: { width: 48, height: 48, borderRadius: 14, backgroundColor: color.primary, alignItems: 'center', justifyContent: 'center' },
   brandName: { fontSize: font.h2, fontWeight: '700', color: color.primary },
   authWrap: { width: '100%', maxWidth: 520, alignSelf: 'center', padding: space.l, gap: space.l },
-  authCard: { backgroundColor: color.surface, borderRadius: 24, padding: space.l, gap: space.m, borderWidth: 1, borderColor: color.border, shadowColor: color.shadow, shadowOpacity: 0.1, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 3 },
+  authCard: { backgroundColor: color.surface, borderRadius: 28, padding: space.l, gap: space.m, shadowColor: color.shadow, shadowOpacity: 0.12, shadowRadius: 22, shadowOffset: { width: 0, height: 8 }, elevation: 4 },
   textLink: { minHeight: MIN_TOUCH, alignItems: 'center', justifyContent: 'center' },
   textLinkText: { color: color.primary, fontSize: font.label, fontWeight: '700', textDecorationLine: 'underline' },
+  backBtn: { width: MIN_TOUCH, height: MIN_TOUCH, borderRadius: MIN_TOUCH / 2, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center', shadowColor: color.shadow, shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  backArrow: { fontSize: 34, lineHeight: 38, color: color.primary, fontWeight: '600', marginTop: -3 },
   footer: { fontSize: font.body, color: color.text, textAlign: 'center', paddingTop: space.m },
 });
 

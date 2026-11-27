@@ -53,7 +53,7 @@ export default function MyDay() {
       <View key={task.id} style={{ borderRadius: 20, borderWidth: 1, borderColor: color.border, backgroundColor: color.surface, padding: 16, gap: 8 }}>
         <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: isDone }} accessibilityLabel={name} accessibilityHint={hint ?? undefined} onPress={() => void toggle(task)}
           style={{ minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-          <View accessible={false} style={{ width: 40, height: 40, borderRadius: 10, borderWidth: 3, borderColor: color.primary, backgroundColor: isDone ? color.primary : color.bg, alignItems: 'center', justifyContent: 'center' }}>
+          <View accessible={false} style={{ width: 40, height: 40, borderRadius: 10, borderWidth: 3, borderColor: color.accent.green, backgroundColor: isDone ? color.accent.green : color.bg, alignItems: 'center', justifyContent: 'center' }}>
             {isDone ? <Text style={{ color: color.primaryText, fontSize: 26, fontWeight: '800' }}>✓</Text> : null}
           </View>
           <View style={{ flex: 1 }}>

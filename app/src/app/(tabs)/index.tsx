@@ -116,7 +116,7 @@ export default function Today() {
             <CardNote>{people && people.length ? t('today.peopleNoteSome') : t('today.peopleNoteNone')}</CardNote>
           </Card>
           {people?.map((c) => <ContactRow key={c.id} c={c} />)}
-          <Card title={t('myday.title')} icon="✅" accent="green" onPress={() => router.push('/feature/my-day')}>
+          <Card title={t('myday.title')} icon="✅" accent="blue" onPress={() => router.push('/feature/my-day')}>
             <CardNote>{myDay === null ? t('myday.cardLoading') : myDay === 'error' ? t('myday.cardError') : !myDay.any ? t('myday.cardNone') : myDay.total === 0 ? t('myday.cardNoneToday') : t('myday.progress', { done: myDay.done, total: myDay.total })}</CardNote>
           </Card>
           <Card title={t('today.bpTitle')} icon="❤️" accent="red" onPress={() => router.push('/feature/blood-pressure')}>

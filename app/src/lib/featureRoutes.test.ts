@@ -37,3 +37,24 @@ describe('no link to a built section reaches the placeholder', () => {
     for (const k of ['calendar', 'appointments']) expect((TEMPLATES as readonly { key: string; link?: string }[]).find((t) => t.key === k)?.link).toBe('/feature/calendar');
   });
 });
+
+describe('first-login wizard', () => {
+  it('lets the calendar step through the two-step offer redirect (it comes right after My people)', () => {
+    const layout = src('../app/_layout.tsx');
+    const line = layout.split('\n').find((l) => l.includes('/offer-two-step" />')) ?? '';
+    expect(line).toContain("'/feature/calendar-app'");
+    expect(line).toContain("'/feature/my-people'");
+  });
+});
+
+describe('My conditions shows only what the person chose', () => {
+  const screen = src('../app/feature/conditions.tsx');
+  it('has no default list of conditions as a fallback', () => {
+    expect(screen).not.toMatch(/CONDITIONS\.map\(/);
+    expect(screen).toContain('picked && picked.length ? cardsFor(picked) : []');
+  });
+  it('says plainly when nothing is chosen or the list cannot be read', () => {
+    expect(screen).toContain("t('cond.nonePicked')");
+    expect(screen).toContain("t('cond.errLoad')");
+  });
+});

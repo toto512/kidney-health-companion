@@ -118,7 +118,7 @@ function Wheel({ group, selId, setSelId, onBack, onOpen }: { group: FoodGroup; s
             <H1>{t(`foodgrp.${group}` as Key)}</H1>
           </View>
           <Pressable accessibilityRole="button" accessibilityLabel={t('food.backGroups')} onPress={onBack}
-            style={{ minHeight: 56, minWidth: 96, paddingHorizontal: 18, borderRadius: 14, borderWidth: 2, borderColor: color.primary, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' }}>
+            style={{ minHeight: 56, paddingVertical: 8, minWidth: 96, paddingHorizontal: 18, borderRadius: 14, borderWidth: 2, borderColor: color.primary, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontSize: font.label, fontWeight: '800', color: color.primary }}>{t('food.backShort')}</Text>
           </Pressable>
         </View>
@@ -142,7 +142,7 @@ function Wheel({ group, selId, setSelId, onBack, onOpen }: { group: FoodGroup; s
                       <Text style={{ fontSize: font.body * 0.85, color: color.muted }}>{f.sub}</Text>
                     </View>
                     {on ? (
-                      <View accessible={false} importantForAccessibility="no-hide-descendants" style={{ minHeight: 56, minWidth: 120, paddingHorizontal: 12, borderRadius: 12, backgroundColor: color.primary, alignItems: 'center', justifyContent: 'center' }}>
+                      <View accessible={false} importantForAccessibility="no-hide-descendants" style={{ minHeight: 56, paddingVertical: 8, minWidth: 120, paddingHorizontal: 12, borderRadius: 12, backgroundColor: color.primary, alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={{ fontSize: font.body, fontWeight: '800', color: color.primaryText, textAlign: 'center' }}>{t('food.show')}</Text>
                       </View>
                     ) : null}
@@ -187,7 +187,7 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
             <H1>{food.name}</H1>
           </View>
           <Pressable accessibilityRole="button" accessibilityLabel={t('food.another')} onPress={onAnother}
-            style={{ minHeight: 56, minWidth: 96, paddingHorizontal: 18, borderRadius: 14, borderWidth: 2, borderColor: color.primary, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' }}>
+            style={{ minHeight: 56, paddingVertical: 8, minWidth: 96, paddingHorizontal: 18, borderRadius: 14, borderWidth: 2, borderColor: color.primary, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontSize: font.label, fontWeight: '800', color: color.primary }}>{t('food.backShort')}</Text>
           </Pressable>
         </View>
@@ -201,7 +201,7 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
                     const on = f === a.form;
                     return (
                       <Pressable key={f} accessibilityRole="radio" accessibilityState={{ selected: on, checked: on }} onPress={() => setForm(f)}
-                        style={{ flex: 1, minWidth: 120, minHeight: 64, borderRadius: 14, borderWidth: 2, borderColor: color.primary, backgroundColor: on ? color.primary : color.surface, alignItems: 'center', justifyContent: 'center' }}>
+                        style={{ flex: 1, minWidth: 120, minHeight: 64, paddingVertical: 8, borderRadius: 14, borderWidth: 2, borderColor: color.primary, backgroundColor: on ? color.primary : color.surface, alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={{ fontSize: font.label, fontWeight: '800', color: on ? color.primaryText : color.primary }}>{t(`food.form.${f}` as Key)}</Text>
                       </Pressable>
                     );
@@ -221,7 +221,7 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
                 </View>
               ))}
               <Body>{t('food.perServing')}</Body>
-              <Pressable accessibilityRole="link" onPress={() => Linking.openURL(a.url)} style={{ minHeight: 56, justifyContent: 'center' }}>
+              <Pressable accessibilityRole="link" onPress={() => Linking.openURL(a.url)} style={{ minHeight: 56, paddingVertical: 8, justifyContent: 'center' }}>
                 <Text style={{ fontSize: font.body, color: color.primary, textDecorationLine: 'underline' }}>
                   {a.source === 'cnf' ? t('food.srcCnf', { name: a.recordName, id: String(a.recordId), date: a.checkedOn }) : t('food.srcUsda', { file: a.file ?? '', name: a.recordName, id: String(a.recordId), date: a.checkedOn })}
                 </Text>
@@ -236,7 +236,7 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
               <UsdaLookup initial={food.name} />
               <Text accessibilityRole="header" style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{t('food.lookup.title')}</Text>
               {lookupLinks(food.name, country, lang).map((l) => (
-                <Pressable key={l.kind} accessibilityRole="link" onPress={() => Linking.openURL(l.url)} style={{ minHeight: 56, justifyContent: 'center' }}>
+                <Pressable key={l.kind} accessibilityRole="link" onPress={() => Linking.openURL(l.url)} style={{ minHeight: 56, paddingVertical: 8, justifyContent: 'center' }}>
                   <Text style={{ fontSize: font.body, color: color.primary, textDecorationLine: 'underline' }}>{t(`food.lookup.${l.kind}` as Key, { name: food.name })}</Text>
                 </Pressable>
               ))}
@@ -261,7 +261,7 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
           <Body>{t('tiles.askDoctor')}</Body>
         </Panel>
         <Pressable accessibilityRole="button" accessibilityState={{ expanded: open }} onPress={() => setOpen(!open)}
-          style={{ minHeight: 56, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 14, borderRadius: 14, borderWidth: 2, borderColor: color.border, backgroundColor: color.surface }}>
+          style={{ minHeight: 56, paddingVertical: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 14, borderRadius: 14, borderWidth: 2, borderColor: color.border, backgroundColor: color.surface }}>
           <Text style={{ fontSize: font.label, fontWeight: '700', color: color.text }}>{t('food.switch')}</Text>
           <Text style={{ fontSize: font.label, color: color.text }}>{open ? '▴' : '▾'}</Text>
         </Pressable>
@@ -270,7 +270,7 @@ function Detail({ group, food, onSwitch, onAnother, onGroups }: { group: FoodGro
             <ScrollView nestedScrollEnabled>
               {same.map((f) => (
                 <Pressable key={f.id} accessibilityRole="button" accessibilityState={{ selected: f.id === food.id }} onPress={() => onSwitch(f)}
-                  style={{ minHeight: 56, justifyContent: 'center', paddingHorizontal: 14, borderBottomWidth: 1, borderBottomColor: color.border }}>
+                  style={{ minHeight: 56, paddingVertical: 8, justifyContent: 'center', paddingHorizontal: 14, borderBottomWidth: 1, borderBottomColor: color.border }}>
                   <Text style={{ fontSize: font.body, fontWeight: f.id === food.id ? '800' : '500', color: color.text }}>{f.name}</Text>
                   <Text style={{ fontSize: font.body * 0.85, color: color.muted }}>{f.sub}</Text>
                 </Pressable>

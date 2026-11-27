@@ -44,7 +44,7 @@ function Entry({ calls, note, place, number, quote, lang, source, url, reviewed,
       {calls ? <CallButtons country={calls} /> : null}
       {note ? <Body>{note}</Body> : null}
       <Body>{'\u201C'}{quote}{'\u201D'}{lang ? ` ${t('emergency.quotedIn', { lang })}` : ''}</Body>
-      <Pressable accessibilityRole="link" onPress={() => Linking.openURL(url)} style={{ minHeight: 56, justifyContent: 'center' }}>
+      <Pressable accessibilityRole="link" onPress={() => Linking.openURL(url)} style={{ minHeight: 56, paddingVertical: 8, justifyContent: 'center' }}>
         <Text style={{ fontSize: font.body, color: color.primary, textDecorationLine: 'underline', lineHeight: font.body * 1.4 }}>
           {t('emergency.sourceLine', { source, reviewed, checked })}
         </Text>

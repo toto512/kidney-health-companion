@@ -57,7 +57,7 @@ export function UsdaLookup({ initial }: { initial: string }) {
               {sel.per100[k] === undefined ? t('food.notAvail') : `${sel.per100[k]} ${t(k === 'proteinG' ? 'food.unit.g' : 'food.unit.mg')}`}
             </Text>
           ))}
-          <Pressable accessibilityRole="link" onPress={() => Linking.openURL(usdaUrl(sel.fdcId))} style={{ minHeight: 56, justifyContent: 'center' }}>
+          <Pressable accessibilityRole="link" onPress={() => Linking.openURL(usdaUrl(sel.fdcId))} style={{ minHeight: 56, paddingVertical: 8, justifyContent: 'center' }}>
             <Text style={{ fontSize: font.body, color: color.primary, textDecorationLine: 'underline' }}>{t('food.find.source', { type: sel.dataType, name: sel.name, id: String(sel.fdcId), date })}</Text>
           </Pressable>
           <Body>{t('food.find.check')}</Body>

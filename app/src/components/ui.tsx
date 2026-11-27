@@ -161,7 +161,7 @@ export function Suggestion({ label, title, body, action, onAction, onDismiss }: 
       </View>
       <Text style={[s.cardTitle, { flex: 0 }]}>{title}</Text>
       <Text style={s.cardNote}>{body}</Text>
-      <Pressable accessibilityRole="button" accessibilityLabel={action} onPress={onAction} style={{ minHeight: MIN_TOUCH, justifyContent: 'center' }}>
+      <Pressable accessibilityRole="button" accessibilityLabel={action} onPress={onAction} style={{ minHeight: MIN_TOUCH, paddingVertical: 8, justifyContent: 'center' }}>
         <Text style={{ fontSize: font.label, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>{action}</Text>
       </Pressable>
     </View>
@@ -235,9 +235,9 @@ const makeStyles = (color: Palette) => StyleSheet.create({
   label: { fontSize: font.label, fontWeight: '600', color: color.text },
   input: { fontSize: font.label, minHeight: MIN_TOUCH, borderWidth: 2, borderColor: color.inputBorder, backgroundColor: color.surface, borderRadius: 14, paddingHorizontal: space.m, color: color.text },
   inputFocus: { borderColor: color.primary, borderWidth: 3 },
-  btn: { minHeight: MIN_TOUCH, backgroundColor: color.primary, borderRadius: 28, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.l },
+  btn: { minHeight: MIN_TOUCH, backgroundColor: color.primary, borderRadius: 28, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.l, paddingVertical: 12 },
   btnSecondary: { backgroundColor: color.primaryTint, borderWidth: 0 },
-  btnText: { color: color.primaryText, fontSize: font.label, fontWeight: '700' },
+  btnText: { color: color.primaryText, fontSize: font.label, lineHeight: font.label * 1.3, fontWeight: '700', textAlign: 'center' },
   tile: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: space.m, paddingHorizontal: space.m, borderRadius: 22, backgroundColor: color.surface, shadowColor: color.shadow, shadowOpacity: 0.09, shadowRadius: 14, shadowOffset: { width: 0, height: 4 }, elevation: 2 },
   tileIcon: { fontSize: 28 },
   tileLabel: { color: color.text, fontSize: font.label, fontWeight: '600' },
@@ -269,8 +269,8 @@ export function Segmented<T extends string | number>({ label, value, options, on
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }} accessibilityRole="radiogroup" accessibilityLabel={label}>
       {options.map((o) => (
         <Pressable key={String(o.value)} accessibilityRole="radio" accessibilityState={{ selected: value === o.value }} accessibilityLabel={o.label} onPress={() => onChange(o.value)}
-          style={{ flexGrow: 1, flexBasis: options.length > 3 ? '45%' : '28%', minHeight: MIN_TOUCH, borderRadius: 12, borderWidth: 2, borderColor: color.primary, alignItems: 'center', justifyContent: 'center', backgroundColor: value === o.value ? color.primary : color.bg }}>
-          <Text style={{ fontSize: font.label, fontWeight: '700', color: value === o.value ? color.primaryText : color.primary }}>{o.label}</Text>
+          style={{ flexGrow: 1, flexBasis: options.length > 3 ? '45%' : '28%', minWidth: font.label * 4.2, minHeight: MIN_TOUCH, paddingVertical: 10, paddingHorizontal: 14, borderRadius: 14, borderWidth: 2, borderColor: color.primary, alignItems: 'center', justifyContent: 'center', backgroundColor: value === o.value ? color.primary : color.bg }}>
+          <Text style={{ fontSize: font.label, lineHeight: font.label * 1.3, textAlign: 'center', fontWeight: '700', color: value === o.value ? color.primaryText : color.primary }}>{o.label}</Text>
         </Pressable>
       ))}
     </View>

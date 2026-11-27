@@ -127,7 +127,7 @@ export default function MyDayTasks() {
             return (
               <Pressable key={tp.key} accessibilityRole="checkbox" accessibilityState={{ checked: on, disabled: blocked }} accessibilityLabel={templateName(t, tp.key)} disabled={blocked}
                 onPress={() => { setErr(''); setPick({ ...pick, keys: on ? pick.keys.filter((k) => k !== tp.key) : [...pick.keys, tp.key] }); }}
-                style={{ minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 16, opacity: blocked ? 0.4 : 1 }}>
+                style={{ minHeight: 64, paddingVertical: 8, flexDirection: 'row', alignItems: 'center', gap: 16, opacity: blocked ? 0.4 : 1 }}>
                 <View accessible={false} style={{ width: 40, height: 40, borderRadius: 10, borderWidth: 3, borderColor: color.primary, backgroundColor: on ? color.primary : color.bg, alignItems: 'center', justifyContent: 'center' }}>
                   {on ? <Text style={{ color: color.primaryText, fontSize: 26, fontWeight: '800' }}>✓</Text> : null}
                 </View>

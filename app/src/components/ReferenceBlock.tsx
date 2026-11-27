@@ -22,7 +22,7 @@ function Group({ title, note, entries, accent }: { title: string; note: string; 
   return (
     <View style={{ gap: 8 }}>
       <Pressable accessibilityRole="button" accessibilityState={{ expanded: open }} onPress={() => setOpen(!open)}
-        style={{ minHeight: 56, borderRadius: 12, borderWidth: 2, borderColor: color.accent[accent], paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: mix(color.accent[accent], color.surface, 0.06) }}>
+        style={{ minHeight: 56, paddingVertical: 8, borderRadius: 12, borderWidth: 2, borderColor: color.accent[accent], paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: mix(color.accent[accent], color.surface, 0.06) }}>
         <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: color.accent[accent] }}>{title}</Text>
         <Text style={{ fontSize: font.label, fontWeight: '800', color: color.accent[accent] }}>{open ? t('common.hide') : t('common.show')}</Text>
       </Pressable>

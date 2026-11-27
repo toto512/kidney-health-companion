@@ -32,19 +32,19 @@ export function Select<T extends string>({ label, value, options, onChange, plac
     <View style={{ gap: 8, width }}>
       <Text style={{ fontSize: font.label, fontWeight: '600', color: color.text }}>{label}</Text>
       <Pressable accessibilityRole="combobox" accessibilityLabel={`${label}: ${current ?? placeholder}`} accessibilityState={{ expanded: open }} onPress={() => (open ? close() : setOpen(true))}
-        style={{ minHeight: MIN_TOUCH, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, borderWidth: 2, borderColor: color.text, borderRadius: 12 }}>
+        style={{ minHeight: MIN_TOUCH, paddingVertical: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, borderWidth: 2, borderColor: color.text, borderRadius: 12 }}>
         <Text style={{ fontSize: valueSize, color: current ? color.text : color.muted }}>{current ?? placeholder}</Text>
         <Text accessible={false} style={{ fontSize: font.label, color: color.text }}>{open ? '▴' : '▾'}</Text>
       </Pressable>
       {open ? (
         <View style={{ borderWidth: 2, borderColor: color.text, borderRadius: 12, backgroundColor: color.surface, overflow: 'hidden' }}>
           {searchable ? <TextInput accessibilityLabel={searchLabel} placeholder={searchLabel} placeholderTextColor={color.muted} value={q} onChangeText={setQ} autoFocus autoCorrect={false} autoCapitalize="none"
-            style={{ fontSize: font.label, minHeight: MIN_TOUCH, paddingHorizontal: 16, color: color.text, borderBottomWidth: 1, borderColor: color.border }} /> : null}
+            style={{ fontSize: font.label, minHeight: MIN_TOUCH, paddingVertical: 8, paddingHorizontal: 16, color: color.text, borderBottomWidth: 1, borderColor: color.border }} /> : null}
           <ScrollView nestedScrollEnabled keyboardShouldPersistTaps="handled" style={{ maxHeight: 320 }}>
             {shown.length === 0 ? <Text style={{ fontSize: font.body, padding: 16, color: color.text }}>No match. Check the spelling.</Text> : null}
             {shown.map((o, i) => (
               <Pressable key={o.value} accessibilityRole="menuitem" accessibilityState={{ selected: o.value === value }} onPress={() => { onChange(o.value); close(); }}
-                style={{ minHeight: MIN_TOUCH, justifyContent: 'center', paddingHorizontal: 16, borderTopWidth: i === 0 ? 0 : 1, borderColor: color.border, backgroundColor: o.value === value ? color.primaryTint : color.surface }}>
+                style={{ minHeight: MIN_TOUCH, paddingVertical: 8, justifyContent: 'center', paddingHorizontal: 16, borderTopWidth: i === 0 ? 0 : 1, borderColor: color.border, backgroundColor: o.value === value ? color.primaryTint : color.surface }}>
                 <Text style={{ fontSize: font.label, fontWeight: o.value === value ? '700' : '400', color: color.text }}>{o.label}{o.value === value ? '  ✓' : ''}</Text>
               </Pressable>
             ))}

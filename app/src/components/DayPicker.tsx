@@ -16,7 +16,7 @@ export function DayPicker({ label, value, onChange }: { label: string; value: nu
           const on = (value & bit) !== 0;
           return (
             <Pressable key={bit} accessibilityRole="checkbox" accessibilityState={{ checked: on }} accessibilityLabel={weekdayName(i, lang, 'long')} onPress={() => onChange(toggleDay(value, bit))}
-              style={{ minWidth: 64, minHeight: MIN_TOUCH, paddingHorizontal: 8, borderRadius: 12, borderWidth: 2, borderColor: color.primary, alignItems: 'center', justifyContent: 'center', backgroundColor: on ? color.primary : color.bg }}>
+              style={{ minWidth: 64, minHeight: MIN_TOUCH, paddingVertical: 8, paddingHorizontal: 8, borderRadius: 12, borderWidth: 2, borderColor: color.primary, alignItems: 'center', justifyContent: 'center', backgroundColor: on ? color.primary : color.bg }}>
               <Text style={{ fontSize: font.label, fontWeight: '700', color: on ? color.primaryText : color.primary }}>{weekdayName(i, lang, 'short')}</Text>
             </Pressable>
           );

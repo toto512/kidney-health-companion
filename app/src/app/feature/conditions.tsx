@@ -71,7 +71,7 @@ export default function Conditions() {
                   <Body>{t('cond.source', { source: f.source })}{f.sourceType === 'charity' ? t('cond.charity') : ''}</Body>
                   <Body>{t('cond.reviewed', { page: f.pageReviewed ?? t('cond.noDate'), checked: f.checkedOn })}</Body>
                   {sourceReviewOverdue(f, today) ? <Body tone="danger">{t('cond.overdue')}</Body> : null}
-                  <Pressable accessibilityRole="link" onPress={() => Linking.openURL(f.url)} style={{ minHeight: 56, justifyContent: 'center' }}>
+                  <Pressable accessibilityRole="link" onPress={() => Linking.openURL(f.url)} style={{ minHeight: 56, paddingVertical: 8, justifyContent: 'center' }}>
                     <Text style={{ fontSize: font.label, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>{t('cond.openPage')}</Text>
                   </Pressable>
                   <ReferenceBlock country={country} condition={c.id} accent={ACCENT[c.id] ?? 'blue'} />

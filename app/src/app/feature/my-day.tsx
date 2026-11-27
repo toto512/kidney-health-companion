@@ -52,7 +52,7 @@ export default function MyDay() {
     return (
       <View key={task.id} style={{ borderRadius: 20, borderWidth: 1, borderColor: color.border, backgroundColor: color.surface, padding: 16, gap: 8 }}>
         <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: isDone }} accessibilityLabel={name} accessibilityHint={hint ?? undefined} onPress={() => void toggle(task)}
-          style={{ minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+          style={{ minHeight: 64, paddingVertical: 8, flexDirection: 'row', alignItems: 'center', gap: 16 }}>
           <View accessible={false} style={{ width: 40, height: 40, borderRadius: 10, borderWidth: 3, borderColor: color.accent.green, backgroundColor: isDone ? color.accent.green : color.bg, alignItems: 'center', justifyContent: 'center' }}>
             {isDone ? <Text style={{ color: color.primaryText, fontSize: 26, fontWeight: '800' }}>✓</Text> : null}
           </View>
@@ -62,7 +62,7 @@ export default function MyDay() {
           </View>
         </Pressable>
         {link ? (
-          <Pressable accessibilityRole="link" accessibilityLabel={t('myday.openTool', { tool: t(TOOL_NAME[link]) })} onPress={() => router.push(link)} style={{ minHeight: MIN_TOUCH, justifyContent: 'center' }}>
+          <Pressable accessibilityRole="link" accessibilityLabel={t('myday.openTool', { tool: t(TOOL_NAME[link]) })} onPress={() => router.push(link)} style={{ minHeight: MIN_TOUCH, paddingVertical: 8, justifyContent: 'center' }}>
             <Text style={{ fontSize: font.label, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>{t('myday.openTool', { tool: t(TOOL_NAME[link]) })}</Text>
           </Pressable>
         ) : null}
@@ -89,7 +89,7 @@ export default function MyDay() {
               <View style={{ flexShrink: 1 }}><H2>{timeLabel(t, time)}</H2></View>
               {canAddMore(tasks.length) ? (
                 <Pressable accessibilityRole="button" accessibilityLabel={`${t('myday.addOwn')}: ${timeLabel(t, time)}`} onPress={() => router.push({ pathname: '/feature/my-day-tasks', params: { add: time } })}
-                  style={{ minHeight: MIN_TOUCH, minWidth: 96, paddingHorizontal: 16, borderRadius: 999, borderWidth: 2, borderColor: color.primary, alignItems: 'center', justifyContent: 'center' }}>
+                  style={{ minHeight: MIN_TOUCH, paddingVertical: 8, minWidth: 96, paddingHorizontal: 16, borderRadius: 999, borderWidth: 2, borderColor: color.primary, alignItems: 'center', justifyContent: 'center' }}>
                   <Text style={{ fontSize: font.label, fontWeight: '700', color: color.primary }}>{t('myday.addShort')}</Text>
                 </Pressable>
               ) : null}

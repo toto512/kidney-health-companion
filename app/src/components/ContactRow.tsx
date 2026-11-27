@@ -59,7 +59,7 @@ export function ContactRow({ c }: { c: Contact }) {
     <View>
       <View onLayout={(e) => setRowW(e.nativeEvent.layout.width - 24)} style={{ flexDirection: stacked ? 'column' : 'row', alignItems: stacked ? 'stretch' : 'flex-start', gap: 12, borderRadius: 18, borderWidth: 2, borderColor: color.primary, backgroundColor: color.surface, padding: 10 }}>
         <Pressable accessibilityRole="button" accessibilityLabel={t('today.callPerson', { name: c.name, relationship: relLabel(t, c.relationship, relationshipLabel(c.relationship)), phone: displayPhone(c.phone) })}
-          onPress={() => router.push(confirmHref)} style={{ flex: stacked ? undefined : 1, minWidth: 0, minHeight: 72, justifyContent: 'center', paddingHorizontal: 8 }}>
+          onPress={() => router.push(confirmHref)} style={{ flex: stacked ? undefined : 1, minWidth: 0, minHeight: 72, paddingVertical: 8, justifyContent: 'center', paddingHorizontal: 8 }}>
           <Text style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{c.name}</Text>
           <Text style={{ fontSize: font.body, color: color.muted }}>{relLabel(t, c.relationship, relationshipLabel(c.relationship))}</Text>
           <Text numberOfLines={1} style={{ fontSize: font.body, fontWeight: '700', color: color.text }}>{ltrIsolate(phone.replace(/ /g, '\u00a0').replace(/-/g, '\u2011'))}</Text>

@@ -139,7 +139,7 @@ export default function ChooseMedicines() {
           return (
             <View key={g.group} style={{ gap: 8 }}>
               <Pressable accessibilityRole="button" accessibilityState={{ expanded: isOpen }} onPress={() => setOpen(toggleId(open, g.group))}
-                style={{ minHeight: 56, borderRadius: 12, borderWidth: 2, borderColor: color.accent.teal, backgroundColor: mix(color.accent.teal, color.surface, 0.06), paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                style={{ minHeight: 56, paddingVertical: 8, borderRadius: 12, borderWidth: 2, borderColor: color.accent.teal, backgroundColor: mix(color.accent.teal, color.surface, 0.06), paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
                 <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: color.accent.teal }}>{n ? t('common.chosenIn', { name: g.group, n }) : g.group}</Text>
                 <Text style={{ fontSize: font.label, fontWeight: '800', color: color.accent.teal }}>{isOpen ? t('common.hide') : t('common.show')}</Text>
               </Pressable>

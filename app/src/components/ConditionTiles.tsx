@@ -45,7 +45,7 @@ export function ConditionTiles({ country, condition, conditionLabel, accent, oth
         return (
           <View key={k} style={{ gap: 8 }}>
             <Pressable accessibilityRole="button" accessibilityState={{ expanded: isOpen }} onPress={() => setOpen(isOpen ? null : k)}
-              style={{ minHeight: 56, borderRadius: 12, borderWidth: 2, borderColor: ac, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8, backgroundColor: mix(ac, color.surface, 0.06) }}>
+              style={{ minHeight: 56, paddingVertical: 8, borderRadius: 12, borderWidth: 2, borderColor: ac, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8, backgroundColor: mix(ac, color.surface, 0.06) }}>
               <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: ac }}>{t(TITLE[k])}{items.length ? ` (${items.length})` : ''}</Text>
               <Text style={{ fontSize: font.label, fontWeight: '800', color: ac }}>{isOpen ? t('common.hide') : t('common.show')}</Text>
             </Pressable>
@@ -93,7 +93,7 @@ function Row({ items, index, onIndex, onOpen, accent, mine, title }: { items: Ti
                 {inMeds ? <Text style={{ fontSize: font.body * 0.85, fontWeight: '700', color: accent }}>{t('tiles.inMeds')}</Text> : null}
               </View>
               {on ? (
-                <View accessible={false} importantForAccessibility="no-hide-descendants" style={{ minHeight: 56, minWidth: 120, paddingHorizontal: 12, borderRadius: 12, backgroundColor: color.primary, alignItems: 'center', justifyContent: 'center' }}>
+                <View accessible={false} importantForAccessibility="no-hide-descendants" style={{ minHeight: 56, paddingVertical: 8, minWidth: 120, paddingHorizontal: 12, borderRadius: 12, backgroundColor: color.primary, alignItems: 'center', justifyContent: 'center' }}>
                   <Text style={{ fontSize: font.body, fontWeight: '800', color: color.primaryText, textAlign: 'center' }}>{t('food.show')}</Text>
                 </View>
               ) : null}
@@ -122,7 +122,7 @@ function Detail({ item, tile, condition, country, others, conditionLabel, accent
       <Text style={{ fontSize: font.body, color: color.muted }}>{t('cond.source', { source: s.publisher })}</Text>
       <Text style={{ fontSize: font.body, color: color.muted }}>{t('cond.reviewed', { page: s.dateText ?? t('cond.noDate'), checked: s.checkedOn })}</Text>
       {s.nextReviewDue && new Date(s.nextReviewDue).getTime() < Date.now() ? <Text style={{ fontSize: font.body, fontWeight: '700', color: color.danger }}>{t('cond.overdue')}</Text> : null}
-      <Pressable accessibilityRole="link" onPress={() => Linking.openURL(s.url)} style={{ minHeight: 56, justifyContent: 'center' }}>
+      <Pressable accessibilityRole="link" onPress={() => Linking.openURL(s.url)} style={{ minHeight: 56, paddingVertical: 8, justifyContent: 'center' }}>
         <Text style={{ fontSize: font.label, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>{t('cond.openPage')}</Text>
       </Pressable>
       {visibleGroups(item).length ? <FoodGroups groups={visibleGroups(item)} accent={accent} tile={tile} condition={condition} country={country} others={others} /> : null}

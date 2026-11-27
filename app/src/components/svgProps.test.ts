@@ -31,3 +31,30 @@ describe('upload buttons', () => {
     expect(src.match(/<Big /g)?.length).toBe(2);
   });
 });
+
+describe('tab icons', () => {
+  it('Svg carries no accessibility props (web forwards accessible={false} to the DOM and React warns); a View around it hides the icon', () => {
+    const src = readFileSync(new URL('./TabIcon.tsx', import.meta.url), 'utf8');
+    for (const t of src.match(/<Svg\b[^>]*>/g) ?? []) expect(t).not.toMatch(/accessible|importantForAccessibility|accessibilityElementsHidden/);
+    expect(src).toContain('<View accessible={false} importantForAccessibility="no-hide-descendants">');
+  });
+});
+
+describe('segmented toggle', () => {
+  it('has padding so a two-line label (for example "feet and inches") never touches the border, and centres its text', () => {
+    const src = readFileSync(new URL('./ui.tsx', import.meta.url), 'utf8');
+    const seg = src.slice(src.indexOf('export function Segmented'));
+    expect(seg).toMatch(/paddingVertical: \d+/);
+    expect(seg).toMatch(/paddingHorizontal: \d+/);
+    expect(seg).toContain("textAlign: 'center'");
+    expect(seg).toMatch(/minWidth: font\.label/); // wraps to a second row before a word is squeezed against the border at Extra large
+  });
+});
+
+describe('big button', () => {
+  it('has vertical padding and centred text so a wrapped label keeps space from the edges', () => {
+    const src = readFileSync(new URL('./ui.tsx', import.meta.url), 'utf8');
+    expect(src).toMatch(/btn: \{[^}]*paddingVertical: \d+/);
+    expect(src).toMatch(/btnText: \{[^}]*textAlign: 'center'/);
+  });
+});

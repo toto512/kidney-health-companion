@@ -23,7 +23,7 @@ export function entriesOf(food: string): string[] {
   return out;
 }
 
-export type FoodLine = { condition: string; conditionLabel: string; quote: string; foodEntry: string; list: boolean; src: string; source: TileSource };
+export type FoodLine = { tile: string; condition: string; conditionLabel: string; quote: string; foodEntry: string; list: boolean; src: string; source: TileSource };
 
 export function foodCheck(foodName: string, conditionIds: string[], country: Country): FoodLine[] {
   const target = words(foodName);
@@ -33,13 +33,13 @@ export function foodCheck(foodName: string, conditionIds: string[], country: Cou
     const tileId = officialId(picked);
     const tiles = TILES[tileId]?.[country];
     if (!tiles) continue;
-    for (const items of Object.values(tiles)) for (const item of (items ?? []).filter((i) => !UNVERIFIED.includes(i.id))) for (const g of visibleGroups(item)) {
+    for (const [tile, items] of Object.entries(tiles)) for (const item of (items ?? []).filter((i) => !UNVERIFIED.includes(i.id))) for (const g of visibleGroups(item)) {
       const hit = g.foods.flatMap(entriesOf).find((e) => same(words(e), target));
       if (!hit) continue;
       const key = `${tileId}|${g.src}|${g.quote}`;
       if (seen.has(key)) continue;
       seen.add(key);
-      out.push({ condition: tileId, conditionLabel: LABEL(tileId), quote: g.quote, foodEntry: hit, list: !!g.list, src: g.src, source: TILE_SOURCES[g.src] });
+      out.push({ tile, condition: tileId, conditionLabel: LABEL(tileId), quote: g.quote, foodEntry: hit, list: !!g.list, src: g.src, source: TILE_SOURCES[g.src] });
     }
   }
   return out;

@@ -52,5 +52,23 @@
     "tokens": [
       "193"
     ]
+  },
+  {
+    "code": "MY",
+    "name": "Malaysia",
+    "url": "https://www.civildefence.gov.my/999-emergency-services/?lang=en",
+    "quote": "the 999 emergency line was introduced to the Malaysian community by combining all emergency numbers namely 991, 994 and 999 into one emergency number",
+    "tokens": [
+      "999"
+    ]
+  },
+  {
+    "code": "ML",
+    "name": "Mali",
+    "url": "https://sante.gov.ml/index.php?Itemid=111&id=187&option=com_content&view=article",
+    "quote": "Protection civile 🚒 122",
+    "tokens": [
+      "122"
+    ]
   }
 ]

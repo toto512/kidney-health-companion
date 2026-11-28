@@ -15,6 +15,8 @@ import { NUTRIENT_UNIT } from '@/lib/foodAmounts';
 import { plateCheck, worstFlag } from '@/lib/plateCheck';
 import { addEntry, foodById, groupEntries, MAX_SCAN_ITEMS, PORTIONS, plateTotals, portionAmounts, removeEntry, setPortion, type PortionKey, type ScanEntry } from '@/lib/plateScan';
 import type { Country } from '@/lib/profile';
+import { canSave, draftFromTotals, localIso } from '@/lib/saltLog';
+import { addSalt } from '@/lib/saltLogData';
 import { supabase } from '@/lib/supabase';
 import { loadMyConditionIds } from '@/lib/userConditions';
 import { font, useColors } from '@/theme/tokens';
@@ -36,6 +38,7 @@ export default function PlateScanScreen() {
   const [results, setResults] = useState(false);
   const [country, setCountry] = useState<string | null | undefined>(undefined);
   const [conds, setConds] = useState<string[] | null | undefined>(undefined);
+  const [saltState, setSaltState] = useState<'idle' | 'saving' | 'saved' | 'limit' | 'error'>('idle');
 
   useEffect(() => {
     let alive = true;
@@ -51,6 +54,15 @@ export default function PlateScanScreen() {
     return plateCheck(items.map((i) => foodById(i.id)?.name ?? i.id), conds, country as Country);
   }, [results, items, conds, country]);
   const totals = useMemo(() => (results && country !== undefined ? plateTotals(items, country, lang) : []), [results, items, country, lang]);
+  const saltDraft = useMemo(() => (results ? draftFromTotals(totals, localIso(new Date())) : null), [results, totals]);
+  // A changed plate is a new plate: allow saving again.
+  useEffect(() => { setSaltState('idle'); }, [items, results]);
+  async function saveSalt() {
+    if (!saltDraft || saltState === 'saving' || saltState === 'saved') return;
+    setSaltState('saving');
+    const r = await addSalt(saltDraft);
+    setSaltState(r === 'ok' ? 'saved' : r);
+  }
   const back = () => (router.canGoBack() ? router.back() : router.replace('/feature/food'));
 
   function take(a: Shot | undefined) {
@@ -139,6 +151,22 @@ export default function PlateScanScreen() {
                   </Text>
                 ))}
                 <Body>{t('food.perServing')}</Body>
+              </>
+            )}
+          </Panel>
+          <Panel>
+            <Text accessibilityRole="header" style={bold(color.text)}>{t('plate.scan.saltTitle')}</Text>
+            {!saltDraft ? <Body>{t('plate.scan.saltNone')}</Body> : saltState === 'saved' ? (
+              <>
+                <Body>{t('plate.scan.saltSaved')}</Body>
+                <BigButton variant="secondary" label={t('plate.scan.saltOpen')} onPress={() => router.push('/feature/salt-log')} />
+              </>
+            ) : (
+              <>
+                <Body>{t('plate.scan.saltNote', { mg: String(saltDraft.sodium_mg), counted: String(saltDraft.foods_counted), of: String(saltDraft.foods_total), missing: String(saltDraft.foods_total - saltDraft.foods_counted) })}</Body>
+                {saltState === 'error' ? <Body tone="danger">{t('salt.errSave')}</Body> : null}
+                {saltState === 'limit' ? <Body tone="danger">{t('salt.limit')}</Body> : null}
+                <BigButton label={saltState === 'saving' ? t('profile.saving') : t('plate.scan.saltSave')} disabled={saltState === 'saving' || canSave(saltDraft, 0) !== 'ok'} onPress={() => void saveSalt()} />
               </>
             )}
           </Panel>

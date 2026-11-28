@@ -67,12 +67,14 @@ describe('plate scan amounts', () => {
     expect(plateTotals(addEntry([], noNums), 'US').every((t) => t.value === null && t.counted === 0)).toBe(true);
     expect(plateTotals([], 'US').every((t) => t.value === null)).toBe(true);
   });
-  it('adds the new nutrients from the USDA record when the Canadian record lacks them, and labels them', () => {
-    const pa = portionAmounts({ id: a, portion: 'medium' }, 'CA')!;
-    const e = pa.rows.find((r) => r.nutrient === 'energyKcal')!;
-    expect(pa.rows.length).toBe(PLATE_NUTRIENTS.length);
-    if (e.value !== null) { expect(e.from).toBe('other'); expect(pa.amounts.other?.source).toBe('usda'); }
-    expect(pa.rows.find((r) => r.nutrient === 'sodiumMg')!.from).toBe('main');
+  it('uses the Canadian Nutrient File for the new nutrients in Canada and labels any USDA fill-in', () => {
+    let main = 0; let other = 0;
+    for (const id of withNums) {
+      const pa = portionAmounts({ id, portion: 'medium' }, 'CA')!;
+      expect(pa.rows.length).toBe(PLATE_NUTRIENTS.length);
+      for (const r of pa.rows) { if (r.from === 'main') main++; if (r.from === 'other') { other++; expect(pa.amounts.other).not.toBeNull(); } if (r.value === null) expect(r.from).toBeNull(); }
+    }
+    expect(main).toBeGreaterThan(other);
   });
   it('gaps: every nutrient has a value for most foods with a record, and none is invented', () => {
     for (const k of PLATE_NUTRIENTS) {

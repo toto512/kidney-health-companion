@@ -2,13 +2,13 @@ import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Text, View } from 'react-native';
 import { BigButton, Body, H2, Panel, SectionHeader } from '@/components/ui';
-import { conditionById } from '@/content/conditionList';
+import { conditionById, isWeightPrompt } from '@/content/conditionList';
 import { useI18n } from '@/i18n/I18nProvider';
 import { loadMyConditionIds } from '@/lib/userConditions';
 import { font, useColors } from '@/theme/tokens';
 
-// Only a blood pressure log exists so far. Every other prompt is shown as "coming soon", with no sample data.
-const isBpPrompt = (t: string) => /blood pressure/i.test(t);
+// Only a blood pressure log and a weight log exist so far. Every other prompt is shown as "coming soon", with no sample data.
+const isBuiltPrompt = (t: string) => /blood pressure/i.test(t) || isWeightPrompt(t);
 
 export function TrackingSuggestions() {
   const color = useColors();
@@ -35,10 +35,11 @@ export function TrackingSuggestions() {
               {c.track.map((item) => (
                 <View key={item} style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-start' }}>
                   <Text accessible={false} style={{ fontSize: font.body, color: color.muted }}>•</Text>
-                  <Text style={{ flex: 1, fontSize: font.body, lineHeight: 26, color: color.text }}>{item}{isBpPrompt(item) ? '' : t('sugg.soon')}</Text>
+                  <Text style={{ flex: 1, fontSize: font.body, lineHeight: 26, color: color.text }}>{item}{isBuiltPrompt(item) ? '' : t('sugg.soon')}</Text>
                 </View>
               ))}
               {c.bp ? <BigButton variant="secondary" label={t('sugg.openBp')} onPress={() => router.push('/feature/blood-pressure')} /> : null}
+              {c.weight ? <BigButton variant="secondary" label={t('sugg.openWeight')} onPress={() => router.push('/feature/weight')} /> : null}
             </Panel>
           ))}
           <Text style={{ fontSize: font.body, color: color.muted }}>{t('sugg.note')}</Text>

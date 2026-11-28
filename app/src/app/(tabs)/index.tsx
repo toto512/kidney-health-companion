@@ -9,7 +9,8 @@ import { loadDone, loadTasks } from '@/lib/myDay';
 import { localDateKey, progress } from '@/lib/myDayLogic';
 import { dismiss, wasDismissed } from '@/lib/suggestions';
 import { takeFlash } from '@/lib/flash';
-import { nowHeading } from '@/i18n/core';
+import { localeTag, nowHeading } from '@/i18n/core';
+import { formatWeight, isUnit } from '@/lib/weight';
 import { useI18n } from '@/i18n/I18nProvider';
 import { supabase } from '@/lib/supabase';
 import { displayPhone, relationshipLabel } from '@/lib/contactLogic';
@@ -20,6 +21,7 @@ import { dialText } from '@/i18n/dialText';
 import { font, space, useColors } from '@/theme/tokens';
 
 type MyDayState = { done: number; total: number; any: boolean } | null | 'error';
+type LatestWeight = { weight_kg: number; entered_unit: string; taken_at: string } | null | 'error';
 type Latest = { systolic: number; diastolic: number; taken_at: string } | null | 'error';
 
 export default function Today() {
@@ -36,6 +38,8 @@ export default function Today() {
   }, []);
   useFocusEffect(useCallback(() => { setClock(new Date()); }, []));
   const [bp, setBp] = useState<Latest>(null);
+  const [wt, setWt] = useState<LatestWeight>(null);
+  const [wtLoaded, setWtLoaded] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const color = useColors();
   const { session, aal, needsMfa } = useAuth();
@@ -88,6 +92,17 @@ export default function Today() {
     return () => { alive = false; };
   }, []));
 
+  useFocusEffect(useCallback(() => {
+    let alive = true;
+    supabase.from('weight_readings').select('weight_kg,entered_unit,taken_at').order('taken_at', { ascending: false }).limit(1)
+      .then(({ data, error }) => {
+        if (!alive) return;
+        setWt(error ? 'error' : (data?.[0] ? { ...data[0], weight_kg: Number(data[0].weight_kg) } : null));
+        setWtLoaded(true);
+      });
+    return () => { alive = false; };
+  }, []));
+
   const ev = emergencyView(country);
   const emergencyNote = ev.kind === 'supported' ? t('today.emergencyNoteNumber', { number: EMERGENCY[ev.country].number }) : ev.kind === 'listed' ? t('today.emergencyNoteNumber', { number: LISTED_EMERGENCY[ev.code].number }) : t('today.emergencyNoteGeneric');
   return (
@@ -127,6 +142,16 @@ export default function Today() {
               </>
             ) : (
               <CardNote>{!loaded ? t('today.bpLoading') : bp === 'error' ? t('today.bpError') : t('today.bpNone')}</CardNote>
+            )}
+          </Card>
+          <Card title={t('weight.title')} icon="⚖️" accent="blue" onPress={() => router.push('/feature/weight')}>
+            {wt && wt !== 'error' ? (
+              <>
+                <CardValue accent="blue" unit={isUnit(wt.entered_unit) ? wt.entered_unit : 'kg'}>{formatWeight(wt.weight_kg, isUnit(wt.entered_unit) ? wt.entered_unit : 'kg', localeTag(lang))}</CardValue>
+                <CardNote>{t('today.weightLast', { date: date(wt.taken_at) })}</CardNote>
+              </>
+            ) : (
+              <CardNote>{!wtLoaded ? t('today.bpLoading') : wt === 'error' ? t('today.weightError') : t('today.weightNone')}</CardNote>
             )}
           </Card>
           <Card title={t('today.conditionsTitle')} icon="🩺" accent="blue" onPress={() => router.push('/feature/conditions')}>

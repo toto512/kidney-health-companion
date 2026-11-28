@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CONDITION_LIST, conditionById, DOMAINS, groupByDomain, searchConditions } from './conditionList';
+import { CONDITION_LIST, conditionById, DOMAINS, groupByDomain, isWeightPrompt, searchConditions } from './conditionList';
 
 describe('condition list', () => {
   it('has 80 conditions in 7 domains with unique, stable ids', () => {
@@ -27,6 +27,13 @@ describe('condition list', () => {
   });
   it('marks blood pressure only where a prompt mentions it', () => {
     for (const c of CONDITION_LIST) expect(!!c.bp, c.id).toBe(c.track.some((t) => /blood pressure/i.test(t)));
+  });
+  it('marks weight only where a prompt mentions weight', () => {
+    for (const c of CONDITION_LIST) expect(!!c.weight, c.id).toBe(c.track.some((t) => /\bweight\b/i.test(t)));
+    expect(conditionById('hypertension')?.weight).toBe(true);
+    expect(conditionById('type-2-diabetes')?.weight).toBeUndefined();
+    expect(isWeightPrompt('Body weight')).toBe(true);
+    expect(isWeightPrompt('Waist measurement')).toBe(false);
   });
   it('covers the five conditions already on My conditions', () => {
     for (const id of ['hypertension', 'ckd', 'gout', 'type-2-diabetes', 'ischemic-heart-disease']) expect(conditionById(id), id).toBeTruthy();

@@ -55,7 +55,7 @@ export default function ChooseConditions() {
           return (
             <View key={g.domain} style={{ gap: 8 }}>
               <Pressable accessibilityRole="button" accessibilityState={{ expanded: isOpen }} onPress={() => setOpen(toggleId(open, g.domain))}
-                style={{ minHeight: 56, borderRadius: 12, borderWidth: 2, borderColor: color.accent.blue, backgroundColor: mix(color.accent.blue, color.surface, 0.06), paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                style={{ minHeight: 56, paddingVertical: 8, borderRadius: 12, borderWidth: 2, borderColor: color.accent.blue, backgroundColor: mix(color.accent.blue, color.surface, 0.06), paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
                 <Text style={{ flex: 1, fontSize: font.label, fontWeight: '700', color: color.accent.blue }}>{n ? t('common.chosenIn', { name: g.domain, n }) : g.domain}</Text>
                 <Text style={{ fontSize: font.label, fontWeight: '800', color: color.accent.blue }}>{isOpen ? t('common.hide') : t('common.show')}</Text>
               </Pressable>

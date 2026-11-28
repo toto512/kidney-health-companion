@@ -14,7 +14,7 @@ const ratio = (a: string, b: string) => {
 };
 
 // [foreground, background, minimum]. 4.5 for text, 3 for large text, icons and control boundaries (WCAG 2.2 1.4.3, 1.4.11).
-type K = Exclude<keyof Palette, 'accent'>;
+type K = Exclude<keyof Palette, 'accent' | 'gradient'>;
 const PAIRS: [K, K, number][] = [
   ['text', 'bg', 4.5], ['text', 'surface', 4.5], ['text', 'primaryTint', 4.5],
   ['muted', 'bg', 4.5], ['muted', 'surface', 4.5], ['muted', 'primaryTint', 4.5],
@@ -55,5 +55,13 @@ describe.each([['light', light], ['dark', dark]] as const)('%s chart ramp', (_n,
 describe.each([['light', light], ['dark', dark]] as const)('%s reference toggle', (_n, p) => {
   it.each(ACCENTS)('%s text is at least 4.5:1 on its own 6% tint', (a) => {
     expect(ratio(p.accent[a], mix(p.accent[a], p.surface, 0.06))).toBeGreaterThanOrEqual(4.5);
+  });
+});
+
+// Text sits directly on the header wash (screen titles), so both text colours must read on every stop.
+describe.each([['light', light], ['dark', dark]] as const)('%s header gradient', (_n, p) => {
+  it.each([0, 1, 2])('stop %s carries text and muted text at 4.5:1', (i) => {
+    expect(ratio(p.text, p.gradient[i])).toBeGreaterThanOrEqual(4.5);
+    expect(ratio(p.muted, p.gradient[i])).toBeGreaterThanOrEqual(4.5);
   });
 });

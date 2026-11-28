@@ -14,7 +14,7 @@ const CATEGORIES: { id: string; label: Key; icon: string; accent: AccentName }[]
   { id: 'blood-pressure', label: 'today.bpTitle', icon: '❤️', accent: 'red' },
   { id: 'blood-results', label: 'cat.bloodResults', icon: '🩸', accent: 'purple' },
   { id: 'food', label: 'cat.food', icon: '🍎', accent: 'orange' },
-  { id: 'tasks', label: 'cat.tasks', icon: '✅', accent: 'green' },
+  { id: 'tasks', label: 'cat.tasks', icon: '✅', accent: 'blue' },
   { id: 'appointments', label: 'cat.appointments', icon: '📅', accent: 'indigo' },
   { id: 'my-people', label: 'today.peopleTitle', icon: '📞', accent: 'blue' },
 ];
@@ -46,7 +46,7 @@ export default function Browse() {
 
 const makeStyles = (color: Palette) => StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 16 },
-  cell: { flexGrow: 1, flexBasis: '45%', minHeight: 148, borderRadius: 24, borderWidth: 1, borderColor: color.outline, backgroundColor: color.surface, padding: 16, justifyContent: 'space-between', gap: 12 },
+  cell: { flexGrow: 1, flexBasis: '45%', minHeight: 148, borderRadius: 24, backgroundColor: color.surface, shadowColor: color.shadow, shadowOpacity: 0.1, shadowRadius: 16, shadowOffset: { width: 0, height: 5 }, elevation: 2, padding: 16, justifyContent: 'space-between', gap: 12 },
   icon: { fontSize: 36 },
   label: { color: color.text, fontSize: font.label, lineHeight: 26, fontWeight: '800' },
 });

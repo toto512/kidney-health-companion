@@ -50,7 +50,7 @@ export default function Calendar() {
   const go = (delta: number) => setShown((s) => shiftMonth(s.year, s.month, delta));
   const goToday = () => { const n = new Date(); setNow(n); setShown({ year: n.getFullYear(), month: n.getMonth() }); setSelected(localDateKey(n)); };
   const navBtn = (label: string, glyph: string, onPress: () => void) => (
-    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={{ minHeight: MIN_TOUCH, minWidth: MIN_TOUCH, paddingHorizontal: 16, borderRadius: 999, borderWidth: 2, borderColor: color.primary, alignItems: 'center', justifyContent: 'center' }}>
+    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={{ minHeight: MIN_TOUCH, paddingVertical: 8, minWidth: MIN_TOUCH, paddingHorizontal: 16, borderRadius: 999, borderWidth: 2, borderColor: color.primary, alignItems: 'center', justifyContent: 'center' }}>
       <Text style={{ fontSize: font.h2, fontWeight: '800', color: color.primary }}>{glyph}</Text>
     </Pressable>
   );
@@ -107,7 +107,7 @@ export default function Calendar() {
                 return (
                   <Pressable key={c.key} accessibilityRole="button" accessibilityLabel={a11y} accessibilityState={{ selected: isSel }}
                     onPress={() => { setSelected(c.key); if (!c.inMonth) setShown({ year: d.getFullYear(), month: d.getMonth() }); }}
-                    style={{ flex: 1, minHeight: MIN_TOUCH + 8, borderRadius: 12, borderWidth: isSel ? 3 : 1, borderColor: isSel ? color.primary : color.border, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center', gap: 4, opacity: c.inMonth ? 1 : 0.45 }}>
+                    style={{ flex: 1, minHeight: MIN_TOUCH + 8, paddingVertical: 8, borderRadius: 12, borderWidth: isSel ? 3 : 1, borderColor: isSel ? color.primary : color.border, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center', gap: 4, opacity: c.inMonth ? 1 : 0.45 }}>
                     <View style={{ minWidth: 32, minHeight: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', backgroundColor: isToday ? color.primary : 'transparent' }}>
                       <Text style={{ fontSize: font.label, fontWeight: '700', color: isToday ? color.primaryText : color.text }}>{c.day}</Text>
                     </View>

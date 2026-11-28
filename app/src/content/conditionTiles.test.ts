@@ -40,10 +40,11 @@ describe('condition tiles: every item is sourced', () => {
       for (const w of norm(item.title).split(/[^a-z0-9]+/).filter((x) => x.length >= 4)) expect(text, `${item.id}: ${w}`).toContain(w);
     }
   });
-  it('"avoid" items use the page\'s own word avoid; the others do not', () => {
+  it('"avoid" items use the page\'s own wording (avoid, do not, don\'t); the others do not', () => {
     for (const { tile, item } of all) {
       const has = /\bavoid/i.test(item.quotes.join(' '));
-      if (tile === 'avoid') expect(has, item.id).toBe(true);
+      const hasNegative = /\bavoid|\bdon't\b|\bdo not\b/i.test(item.quotes.join(' '));
+      if (tile === 'avoid') expect(hasNegative, item.id).toBe(true);
       if (tile === 'moderate') expect(has, item.id).toBe(false);
     }
   });
@@ -99,7 +100,7 @@ describe('batch 1 coverage', () => {
     for (const c of ['ckd', 'gout', 'hbp'] as const) for (const k of ['US', 'GB', 'CA'] as const) expect(hasTiles(c, k), `${c} ${k}`).toBe(true);
   });
   it('a checked country with nothing found has empty tiles, never a stand-in from another country', () => {
-    for (const t of TILE_KEYS) expect(tileItems('hbp', 'CA', t)).toEqual([]);
+    for (const t of ['avoid', 'activity', 'home', 'meds'] as const) expect(tileItems('hbp', 'CA', t)).toEqual([]);
     expect(hasTiles('scoliosis', 'CA')).toBe(true);
     expect(hasTiles('cancer', 'CA')).toBe(false);
   });

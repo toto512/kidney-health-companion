@@ -12,7 +12,7 @@ import { font, useColors } from '@/theme/tokens';
 // Press and hold this long to dial. A quick tap only shows a hint, so a bump or a shaky hand never starts a call.
 export const HOLD_MS = 1500;
 
-// Name, role and number on the left (tap opens the confirm screen). A large green Call button on the right (press and hold).
+// Name, role and number on the left (tap opens the confirm screen). A large blue Call button on the right (press and hold).
 export function ContactRow({ c }: { c: Contact }) {
   const color = useColors();
   const { t } = useI18n();
@@ -52,22 +52,22 @@ export function ContactRow({ c }: { c: Contact }) {
   }, [state]);
 
   const confirmHref = { pathname: '/feature/call-contact', params: { id: c.id } } as const;
-  const green = color.accent.green;
+  const callBg = color.primary;
   const phone = displayPhone(c.phone);
   const stacked = contactLayout(rowW, phone.length, font.body) === 'stacked';
   return (
     <View>
-      <View onLayout={(e) => setRowW(e.nativeEvent.layout.width - 24)} style={{ flexDirection: stacked ? 'column' : 'row', alignItems: stacked ? 'stretch' : 'flex-start', gap: 12, borderRadius: 18, borderWidth: 2, borderColor: color.accent.teal, backgroundColor: color.surface, padding: 10 }}>
+      <View onLayout={(e) => setRowW(e.nativeEvent.layout.width - 24)} style={{ flexDirection: stacked ? 'column' : 'row', alignItems: stacked ? 'stretch' : 'flex-start', gap: 12, borderRadius: 18, borderWidth: 2, borderColor: color.primary, backgroundColor: color.surface, padding: 10 }}>
         <Pressable accessibilityRole="button" accessibilityLabel={t('today.callPerson', { name: c.name, relationship: relLabel(t, c.relationship, relationshipLabel(c.relationship)), phone: displayPhone(c.phone) })}
-          onPress={() => router.push(confirmHref)} style={{ flex: stacked ? undefined : 1, minWidth: 0, minHeight: 72, justifyContent: 'center', paddingHorizontal: 8 }}>
+          onPress={() => router.push(confirmHref)} style={{ flex: stacked ? undefined : 1, minWidth: 0, minHeight: 72, paddingVertical: 8, justifyContent: 'center', paddingHorizontal: 8 }}>
           <Text style={{ fontSize: font.label, fontWeight: '800', color: color.text }}>{c.name}</Text>
           <Text style={{ fontSize: font.body, color: color.muted }}>{relLabel(t, c.relationship, relationshipLabel(c.relationship))}</Text>
           <Text numberOfLines={1} style={{ fontSize: font.body, fontWeight: '700', color: color.text }}>{ltrIsolate(phone.replace(/ /g, '\u00a0').replace(/-/g, '\u2011'))}</Text>
         </Pressable>
         <Pressable accessibilityRole="button" accessibilityLabel={`${t('contact.call')} ${c.name}`} accessibilityHint={t('contact.holdA11y')}
           onPressIn={start} onPressOut={stop} onAccessibilityTap={() => router.push(confirmHref)}
-          style={{ width: stacked ? '100%' : CALL_BTN_W, minHeight: stacked ? 64 : 72, borderRadius: 16, overflow: 'hidden', backgroundColor: green, alignItems: 'center', justifyContent: 'center' }}>
-          <Animated.View pointerEvents="none" style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: fill.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] }), backgroundColor: color.primary, opacity: 0.55 }} />
+          style={{ width: stacked ? '100%' : CALL_BTN_W, minHeight: stacked ? 64 : 72, borderRadius: 16, overflow: 'hidden', backgroundColor: callBg, alignItems: 'center', justifyContent: 'center' }}>
+          <Animated.View pointerEvents="none" style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: fill.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] }), backgroundColor: color.text, opacity: 0.3 }} />
           <Text style={{ fontSize: font.label, fontWeight: '800', color: color.primaryText }}>{state === 'holding' ? t('contact.keepHolding') : t('contact.call')}</Text>
         </Pressable>
       </View>

@@ -47,6 +47,7 @@ export default function Conditions() {
           <>
             <Body>{t('cond.officialFor', { country: countryLabel(country, lang, countryName(country)) })}</Body>
             {picked === undefined ? <Body>{t('common.loading')}</Body> : null}
+            {picked && picked.length > 1 ? <Body>{t('cond.disagree')}</Body> : null}
             {picked !== undefined ? <BigButton variant="secondary" label={t('cond.choose')} onPress={() => router.push('/feature/choose-conditions')} /> : null}
             {picked === null ? <Body tone="danger">{t('cond.errLoad')}</Body> : null}
             {picked && picked.length === 0 ? <Body>{t('cond.nonePicked')}</Body> : null}
@@ -56,7 +57,7 @@ export default function Conditions() {
                 return (
                   <Panel key={card.key}>
                     <SectionHeader icon="🩺" accent="blue">{card.label}</SectionHeader>
-                    {hasTiles(card.officialId, country) ? <ConditionTiles country={country} condition={card.officialId} conditionLabel={card.label} accent="blue" /> : <Body>{t('cond.noneYet')}</Body>}
+                    {hasTiles(card.officialId, country) ? <ConditionTiles country={country} condition={card.officialId} conditionLabel={card.label} accent="blue" others={cards.map((x) => ({ id: x.officialId, label: x.label }))} /> : <Body>{t('cond.noneYet')}</Body>}
                   </Panel>
                 );
               }
@@ -70,11 +71,11 @@ export default function Conditions() {
                   <Body>{t('cond.source', { source: f.source })}{f.sourceType === 'charity' ? t('cond.charity') : ''}</Body>
                   <Body>{t('cond.reviewed', { page: f.pageReviewed ?? t('cond.noDate'), checked: f.checkedOn })}</Body>
                   {sourceReviewOverdue(f, today) ? <Body tone="danger">{t('cond.overdue')}</Body> : null}
-                  <Pressable accessibilityRole="link" onPress={() => Linking.openURL(f.url)} style={{ minHeight: 56, justifyContent: 'center' }}>
+                  <Pressable accessibilityRole="link" onPress={() => Linking.openURL(f.url)} style={{ minHeight: 56, paddingVertical: 8, justifyContent: 'center' }}>
                     <Text style={{ fontSize: font.label, fontWeight: '700', color: color.primary, textDecorationLine: 'underline' }}>{t('cond.openPage')}</Text>
                   </Pressable>
                   <ReferenceBlock country={country} condition={c.id} accent={ACCENT[c.id] ?? 'blue'} />
-                  {hasTiles(c.id, country) ? <ConditionTiles country={country} condition={c.id} conditionLabel={c.label} accent={ACCENT[c.id] ?? 'blue'} /> : null}
+                  {hasTiles(c.id, country) ? <ConditionTiles country={country} condition={c.id} conditionLabel={c.label} accent={ACCENT[c.id] ?? 'blue'} others={cards.map((x) => ({ id: x.officialId, label: x.label }))} /> : null}
                 </Panel>
               );
             })}

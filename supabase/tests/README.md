@@ -21,3 +21,5 @@ Migration 0015 (My day: 30-task limit): after the stub, 0013 and 0014, run `psql
 Migration 0016 (appointments, the Calendar): after the stub, run `psql -f 0016_appointments.test.sql`. It runs 0016 twice and checks owner-only rows, title, note, date, time, repeat and reminder rules, that only the fields the person edits can be updated, the 100-appointment limit with its message, that another person and anon see nothing, and the two-step rule.
 
 Migration 0017 (profiles.calendar_app, the calendar the person says they use): run `psql -f 0017_calendar_app.test.sql` on a fresh scratch database (it makes a small stand-in profiles table). It runs 0017 twice and checks the default is empty, the six choices are accepted and anything else is refused.
+
+Migration 0018 (weight_readings, the body weight log): after the stub, run `psql -f 0018_body_weight.test.sql`. It runs 0018 twice and checks owner-only rows, the 10 to 500 kg limit, the kg/lb unit check, that rows cannot be updated, the 2000-weight limit with its message, that another person and anon see nothing, and the two-step rule.

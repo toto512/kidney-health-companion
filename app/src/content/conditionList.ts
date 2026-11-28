@@ -1,11 +1,13 @@
 // The 80 conditions a person can pick, grouped into 7 domains. Derived from the project's condition matrix (sheet "80-Condition Master Matrix"):
 // only a stable id, the domain, a plain-language name, and short tracking prompts. No medicines, foods, home remedies, targets or screening advice.
-// `bp: true` marks conditions whose prompts include blood pressure, the only log built so far. Everything else is "coming soon".
+// `bp: true` marks conditions whose prompts include blood pressure, and `weight: true` those with a weight prompt. Those are the only logs built so far. Everything else is "coming soon".
 export const DOMAINS = ["Cardiovascular & Metabolic", "Respiratory & Allergic", "Mental Health & Neurological", "Musculoskeletal & Skeletal", "GI, Renal & Endocrine", "Blood, Skin & Systemic", "Sensory, Infectious & Immune"] as const;
 export type Domain = (typeof DOMAINS)[number];
-export type ConditionItem = { id: string; domain: Domain; name: string; track: string[]; bp?: true };
+export type ConditionItem = { id: string; domain: Domain; name: string; track: string[]; bp?: true; weight?: true };
 
-const c = (d: number, id: string, name: string, track: string, bp?: 'bp'): ConditionItem => ({ id, domain: DOMAINS[d], name, track: track.split(';'), ...(bp ? { bp: true as const } : {}) });
+// `weight: true` is worked out from the prompts: any prompt that starts with or contains the word "weight" (Body weight, Daily weight, Weight and waist...).
+export const isWeightPrompt = (t: string) => /\bweight\b/i.test(t);
+const c = (d: number, id: string, name: string, track: string, bp?: 'bp'): ConditionItem => ({ id, domain: DOMAINS[d], name, track: track.split(';'), ...(bp ? { bp: true as const } : {}), ...(track.split(';').some(isWeightPrompt) ? { weight: true as const } : {}) });
 
 export const CONDITION_LIST: ConditionItem[] = [
   c(0, "hypertension", "High blood pressure", "Blood pressure and pulse;Salt in your food;Body weight;Stress level", "bp"),

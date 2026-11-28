@@ -1,0 +1,4 @@
+[
+  { "code": "BE", "name": "Belgium", "url": "https://www.belgium.be/fr/sante/soins_de_sante/urgences", "quote": "En Belgique, vous pouvez composer le 112 gratuitement jour et nuit, pour les pompiers ou une ambulance.", "tokens": ["112"] },
+  { "code": "BE", "name": "Belgium (second page)", "url": "https://www.health.belgium.be/fr/themes/sante/aide-medicale-urgente/acteurs-laide-medicale-urgente/centrale-durgence-112", "quote": "Le numéro 112 donne accès à l'aide médicale et aux pompiers", "tokens": ["112"] }
+]
